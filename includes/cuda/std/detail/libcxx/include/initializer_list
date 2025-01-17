@@ -1,0 +1,131 @@
+// -*- C++ -*-
+//===----------------------- initializer_list -----------------------------===//
+//
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+
+#ifndef _LIBCUDACXX_INITIALIZER_LIST
+#define _LIBCUDACXX_INITIALIZER_LIST
+
+/*
+    initializer_list synopsis
+
+namespace std
+{
+
+template<class E>
+class initializer_list
+{
+public:
+    typedef E        value_type;
+    typedef const E& reference;
+    typedef const E& const_reference;
+    typedef size_t   size_type;
+
+    typedef const E* iterator;
+    typedef const E* const_iterator;
+
+    initializer_list() noexcept; // constexpr in C++14
+
+    size_t   size()  const noexcept; // constexpr in C++14
+    const E* begin() const noexcept; // constexpr in C++14
+    const E* end()   const noexcept; // constexpr in C++14
+};
+
+template<class E> const E* begin(initializer_list<E> il) noexcept; // constexpr in C++14
+template<class E> const E* end(initializer_list<E> il) noexcept; // constexpr in C++14
+
+}  // std
+
+*/
+
+#ifndef __cuda_std__
+#include <__config>
+
+#include "cstddef"
+
+#if defined(_CCCL_IMPLICIT_SYSTEM_HEADER_GCC)
+#  pragma GCC system_header
+#elif defined(_CCCL_IMPLICIT_SYSTEM_HEADER_CLANG)
+#  pragma clang system_header
+#elif defined(_CCCL_IMPLICIT_SYSTEM_HEADER_MSVC)
+#  pragma system_header
+#endif // no system header
+
+namespace std  // purposefully not versioned
+{
+
+template<class _Ep>
+class _LIBCUDACXX_TEMPLATE_VIS initializer_list
+{
+    const _Ep* __begin_;
+    size_t    __size_;
+
+    _LIBCUDACXX_INLINE_VISIBILITY
+    _LIBCUDACXX_CONSTEXPR_AFTER_CXX11
+    initializer_list(const _Ep* __b, size_t __s) noexcept
+        : __begin_(__b),
+          __size_(__s)
+        {}
+public:
+    typedef _Ep        value_type;
+    typedef const _Ep& reference;
+    typedef const _Ep& const_reference;
+    typedef size_t    size_type;
+
+    typedef const _Ep* iterator;
+    typedef const _Ep* const_iterator;
+
+    _LIBCUDACXX_INLINE_VISIBILITY
+    _LIBCUDACXX_CONSTEXPR_AFTER_CXX11
+    initializer_list() noexcept : __begin_(nullptr), __size_(0) {}
+
+    _LIBCUDACXX_INLINE_VISIBILITY
+    _LIBCUDACXX_CONSTEXPR_AFTER_CXX11
+    size_t    size()  const noexcept {return __size_;}
+
+    _LIBCUDACXX_INLINE_VISIBILITY
+    _LIBCUDACXX_CONSTEXPR_AFTER_CXX11
+    const _Ep* begin() const noexcept {return __begin_;}
+
+    _LIBCUDACXX_INLINE_VISIBILITY
+    _LIBCUDACXX_CONSTEXPR_AFTER_CXX11
+    const _Ep* end()   const noexcept {return __begin_ + __size_;}
+};
+
+template<class _Ep>
+inline _LIBCUDACXX_INLINE_VISIBILITY
+_LIBCUDACXX_CONSTEXPR_AFTER_CXX11
+const _Ep*
+begin(initializer_list<_Ep> __il) noexcept
+{
+    return __il.begin();
+}
+
+template<class _Ep>
+inline _LIBCUDACXX_INLINE_VISIBILITY
+_LIBCUDACXX_CONSTEXPR_AFTER_CXX11
+const _Ep*
+end(initializer_list<_Ep> __il) noexcept
+{
+    return __il.end();
+}
+
+}  // std
+
+#else
+
+#if !defined(_LIBCUDACXX_COMPILER_NVRTC)
+#include <initializer_list>
+#endif
+
+_LIBCUDACXX_BEGIN_NAMESPACE_STD
+    using ::std::initializer_list;
+_LIBCUDACXX_END_NAMESPACE_STD
+
+#endif // __cuda_std__
+
+#endif  // _LIBCUDACXX_INITIALIZER_LIST
