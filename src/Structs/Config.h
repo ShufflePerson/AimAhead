@@ -54,6 +54,8 @@ struct AimConfig {
 	bool b_save_training_data;
 	//Only runs the AI model when the cursor is hidden (in-game)
 	bool b_only_run_on_hidden_cursor;
+	//Framerate cap
+	int i_fps_cap;
 
 	//Visuals
 	bool b_draw_targets_on_screen;

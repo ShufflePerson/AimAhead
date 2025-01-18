@@ -98,6 +98,10 @@ namespace ai {
         size_t i_jitter_detected_at = 0;
 
         while (true) {
+            start_time = high_resolution_clock::now();
+
+
+
             if (cfg->b_only_run_on_hidden_cursor && !utils::IsMouseCursorHidden()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 continue;
@@ -108,7 +112,6 @@ namespace ai {
 
             screen::clear_boxes();
 
-            start_time = high_resolution_clock::now();
 
             capturedData.clear();
             if (!holding_triggerbot_key) {
@@ -279,6 +282,19 @@ namespace ai {
             cpuImg.release();
 #endif
             gpuImg.release();
+
+
+            if (cfg->i_fps_cap != 0) {
+                high_resolution_clock::time_point current_time = high_resolution_clock::now();
+                duration<double> time_since_last_run = current_time - start_time;
+                double desired_frame_time = 1.0 / cfg->i_fps_cap;
+
+                if (time_since_last_run.count() < desired_frame_time) {
+                    duration<double> sleep_duration(desired_frame_time - time_since_last_run.count());
+                    auto target_time = high_resolution_clock::now() + sleep_duration;
+                    while (high_resolution_clock::now() < target_time);
+                }
+            }
 
             end_time = high_resolution_clock::now();
             elapsed_time = end_time - start_time;

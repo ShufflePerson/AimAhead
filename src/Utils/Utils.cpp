@@ -221,6 +221,7 @@ namespace utils {
         cfg->i_maximum_wait_time_for_target_reappearence = 40;
         cfg->i_sensitivity = 0.22;
         cfg->i_auto_trigger_delay = 0;
+        cfg->i_fps_cap = 120;
         cfg->read_only__i_fps = 0;
     }
 
