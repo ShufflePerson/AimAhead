@@ -70,17 +70,6 @@ namespace utils {
         return std::make_pair(deltaX_raw * sensitivity, deltaY_raw * sensitivity);
     }
 
-    std::pair<double, double> calculateNewFramePrediction(std::pair<double, double> oldPosition, std::pair<double, double> newPosition) {
-        double deltaX = oldPosition.first - newPosition.first;
-        double deltaY = oldPosition.second - newPosition.second;
-
-        double newX = newPosition.first + deltaX;
-        double newY = newPosition.second + deltaY;
-        std::pair<double, double> calculatedPos = { newX, newY };
-
-        return calculatedPos;
-    }
-
     std::pair<double, double> calculateNewFramePredictionBasedoOnHistory(std::vector<std::pair<double, double>> history, std::pair<double, double> current) {
         double deltaXSum = 0.0;
         double deltaYSum = 0.0;
