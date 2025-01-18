@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
 
 
     if (!capture::InitializeCapture()) {
-        throw std::runtime_error("Failed to start screen captuer.");
+        throw std::runtime_error("Failed to start screen capture.");
         return 1;
     }
 
