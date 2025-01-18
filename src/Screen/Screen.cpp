@@ -188,7 +188,7 @@ namespace screen {
             CLASS_NAME,
             L"Transparent Window",
             WS_POPUP | WS_VISIBLE,
-            windowX, windowY, // Use calculated centered position
+            windowX, windowY,
             windowWidth, windowHeight,
             nullptr,
             nullptr,
@@ -215,7 +215,6 @@ namespace screen {
         ShowWindow(g_hWnd, SW_SHOW);
         UpdateWindow(g_hWnd); 
         InitializeDrawing();
-        // Message loop
         MSG msg = {};
         while (GetMessage(&msg, nullptr, 0, 0)) {
             TranslateMessage(&msg);

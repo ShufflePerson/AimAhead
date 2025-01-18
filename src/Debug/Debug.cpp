@@ -9,14 +9,12 @@ namespace debug {
 	void init() {
 #ifndef __DEBUG__
         return;
-#endif // !__DEBUG__
+#endif
 
 
-        cv::Mat blankImage(640, 640, CV_8UC3, cv::Scalar(0, 0, 0)); // 640x640, 3-channel color (BGR), black background
+        cv::Mat blankImage(640, 640, CV_8UC3, cv::Scalar(0, 0, 0)); 
 
-        // Create a window with the specified name
-        cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE); // You can use WINDOW_AUTOSIZE as well
-        // Resize the window to the desired dimensions (important for WINDOW_NORMAL)
+        cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE); 
         cv::resizeWindow(windowName, 640, 640);
 
         sharedImage = blankImage.clone();
@@ -47,11 +45,9 @@ namespace debug {
 	}
 
     void drawBox(cv::Mat& image, int minX, int minY, int maxX, int maxY, const cv::Scalar& color, int thickness = 2) {
-        // Define the top-left and bottom-right points of the rectangle
         cv::Point topLeft(minX, minY);
         cv::Point bottomRight(maxX, maxY);
 
-        // Draw the rectangle on the image
         cv::rectangle(image, topLeft, bottomRight, color, thickness);
     }
 
