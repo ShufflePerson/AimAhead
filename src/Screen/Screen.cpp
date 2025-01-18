@@ -147,7 +147,7 @@ namespace screen {
         while (true) {
             if (!should_draw) {
                 clearScreen();
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                std::this_thread::sleep_for(std::chrono::milliseconds(33));
                 continue;
             }
             clearScreen();
@@ -156,7 +156,7 @@ namespace screen {
                 drawBox(box.xmin, box.ymin, box.xmax, box.ymax, box.confidence);
             }
             Present();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            std::this_thread::sleep_for(std::chrono::milliseconds(33));
         }
     }
 
