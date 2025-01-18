@@ -10,7 +10,7 @@ void gui::__render__misc_tab__(AimConfig* config) {
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(200);
 	ImGui::SliderInt("FPS Cap", &config->i_fps_cap, 0, 240);
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("The FPS of the Aimbot will be capped at this. Lower value = less CPU & GPU usage.");
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("The FPS of the Aimbot will be capped at this. Lower value = less CPU & GPU usage.\n0 = Unlimited.");
 
 	ImGui::NewLine();
 	ImGui::Checkbox("Predictions", &config->b_predict_next_frame);
