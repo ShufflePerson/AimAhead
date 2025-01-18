@@ -285,6 +285,7 @@ namespace ai {
 
 
             if (cfg->i_fps_cap != 0) {
+                averaging_interval = cfg->i_fps_cap;
                 high_resolution_clock::time_point current_time = high_resolution_clock::now();
                 duration<double> time_since_last_run = current_time - start_time;
                 double desired_frame_time = 1.0 / cfg->i_fps_cap;
