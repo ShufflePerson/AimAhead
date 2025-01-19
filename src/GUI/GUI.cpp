@@ -37,12 +37,12 @@ namespace gui {
         return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
     }
 
-    bool InitializeGlobalKeybind() {
+    bool initializeGlobalKeybind() {
         g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, GetModuleHandle(nullptr), 0);
         return g_keyboardHook != nullptr;
     }
 
-    void UninitializeGlobalKeybind() {
+    void uninitializeGlobalKeybind() {
         if (g_keyboardHook) {
             UnhookWindowsHookEx(g_keyboardHook);
             g_keyboardHook = nullptr;
@@ -71,7 +71,7 @@ namespace gui {
         glfwSetWindowPos(window, (screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2);
 
         g_hwnd = glfwGetWin32Window(window);
-        if (InitializeGlobalKeybind()) {
+        if (initializeGlobalKeybind()) {
             std::cout << "Global keybind (Insert) initialized." << std::endl;
         }
         else {
@@ -139,7 +139,7 @@ namespace gui {
         ImGui::DestroyContext();
         glfwDestroyWindow(window);
 
-        UninitializeGlobalKeybind();
+        uninitializeGlobalKeybind();
         glfwTerminate();
     }
 }

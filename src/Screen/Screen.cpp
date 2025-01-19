@@ -15,7 +15,7 @@ namespace screen {
         should_draw = value;
     }
 
-    void ResizeBuffer() {
+    void resizeBuffer() {
         if (g_hWnd) {
             RECT clientRect;
             GetClientRect(g_hWnd, &clientRect);
@@ -44,7 +44,7 @@ namespace screen {
     }
 
 
-    bool InitializeDrawing() {
+    bool initializeDrawing() {
         if (!g_hWnd) return false;
 
         HDC hdc = GetDC(g_hWnd);
@@ -108,7 +108,7 @@ namespace screen {
 
 
 
-    void Present() {
+    void present() {
         if (g_hWnd && g_hDCBuffer && g_hBitmapBuffer) {
             HDC hdc = GetDC(g_hWnd);
             if (hdc) {
@@ -155,7 +155,7 @@ namespace screen {
             for (auto& box : current_boxes) {
                 drawBox(box.xmin, box.ymin, box.xmax, box.ymax, box.confidence);
             }
-            Present();
+            present();
             std::this_thread::sleep_for(std::chrono::milliseconds(33));
         }
     }
@@ -214,13 +214,13 @@ namespace screen {
 
         ShowWindow(g_hWnd, SW_SHOW);
         UpdateWindow(g_hWnd); 
-        InitializeDrawing();
+        initializeDrawing();
         MSG msg = {};
         while (GetMessage(&msg, nullptr, 0, 0)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        ResizeBuffer();
+        resizeBuffer();
 
         return 0;
     }
