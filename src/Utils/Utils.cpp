@@ -71,29 +71,34 @@ namespace utils {
     }
 
     std::pair<double, double> calculateNewFramePredictionBasedoOnHistory(std::vector<std::pair<double, double>> history, std::pair<double, double> current) {
-        double deltaXSum = 0.0;
-        double deltaYSum = 0.0;
+        if (history.size() < 2) {
+            return current;
+        }
+
+        double weightedDeltaXSum = 0.0;
+        double weightedDeltaYSum = 0.0;
+        double totalWeight = 0.0;
         int total_size = history.size();
 
         for (int i = 1; i < total_size; i++) {
             auto currentHistory = history[i];
             auto previousHistory = history[i - 1];
-            deltaXSum += currentHistory.first - previousHistory.first;
-            deltaYSum += currentHistory.second - previousHistory.second;
+            double deltaX = currentHistory.first - previousHistory.first;
+            double deltaY = currentHistory.second - previousHistory.second;
+
+            double weight = (double)(total_size - i) / (total_size - 1);
+            weightedDeltaXSum += deltaX * weight;
+            weightedDeltaYSum += deltaY * weight;
+            totalWeight += weight;
         }
 
-        double deltaX = (deltaXSum / total_size) * 1.125;
-        double deltaY = (deltaYSum / total_size) * 1.125;
+        double deltaX = weightedDeltaXSum / totalWeight;
+        double deltaY = weightedDeltaYSum / totalWeight;
 
-        deltaX += current.first;
-        deltaY += current.second;
+        double predictedX = current.first + deltaX;
+        double predictedY = current.second + deltaY;
 
-#ifdef __LOG_PREDICTION_ERRORS__
-        double errorX = abs(deltaX - current.first);
-        double errorY = abs(deltaY - current.second);
-        printf("%f : %f\n", errorX, errorY);
-#endif
-        return std::pair<double, double>{deltaX, deltaY};
+        return std::pair<double, double>{predictedX, predictedY};
     }
 
     double getDeltaBetweenPositions(std::pair<double, double> old_pos, std::pair<double, double> new_pos) {
