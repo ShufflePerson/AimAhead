@@ -16,12 +16,14 @@ namespace gui {
         if (g_is_visible) {
             SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, GetWindowLongPtr(g_hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
             SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 0, LWA_ALPHA);
+            EnableWindow(g_hwnd, FALSE);
             g_is_visible = false;
         }
         else {
             SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, GetWindowLongPtr(g_hwnd, GWL_EXSTYLE) & ~WS_EX_TRANSPARENT);
             SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 255, LWA_ALPHA);
             SetWindowPos(g_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+            EnableWindow(g_hwnd, TRUE);
             g_is_visible = true;
         }
     }
@@ -71,10 +73,7 @@ namespace gui {
         glfwSetWindowPos(window, (screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2);
 
         g_hwnd = glfwGetWin32Window(window);
-        if (initializeGlobalKeybind()) {
-            std::cout << "Global keybind (Insert) initialized." << std::endl;
-        }
-        else {
+        if (!initializeGlobalKeybind()) {
             std::cerr << "Failed to initialize global keybind." << std::endl;
         }
 
