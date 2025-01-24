@@ -25,15 +25,21 @@
 namespace utils {
 	std::pair<double, double> calculateMouseMovement(int xmin, int xmax, int ymin, int ymax, double sensitivity, double startX = 640 / 2.0, double startY = 640 / 2.0, EAimPosition aim_position = MIDDLE);
 	std::pair<double, double> calculateNewFramePredictionBasedoOnHistory(std::vector<std::pair<double, double>> history, std::pair<double, double> current);
-	double getDeltaBetweenPositions(std::pair<double, double> old_pos, std::pair<double, double> new_pos);
+
+
+	std::string generate_uuidv4();
+	std::string getVKString(int vkCode);
+
 	void moveMouseRelative(double dx, double dy);
 	void auto_fire_tick(bool should_fire);
-	BoundingBox findClosest(std::vector<BoundingBox>& boxes);
-	HWND getHwndFromTitle(const std::string windowTitle);
-	bool IsMouseCursorHidden();
-	std::string generate_uuidv4();
 	void init_config_with_defaults(AimConfig* cfg);
 	void start_threads();
-	std::string getVKString(int vkCode);
+
+	bool IsMouseCursorHidden();
 	int getVKCode(const std::string& name);
+	double getDeltaBetweenPositions(std::pair<double, double> old_pos, std::pair<double, double> new_pos);
+
+	BoundingBox findClosest(std::vector<BoundingBox>& boxes);
+	HWND getHwndFromTitle(const std::string windowTitle);
+
 }
