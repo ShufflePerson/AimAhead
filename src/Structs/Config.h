@@ -17,6 +17,8 @@ enum EAimPosition {
 struct AimConfig {
 	bool b_aimbot;
 
+	//Aim at all times
+	bool b_always_aim;
 
 	//When an enemy is directly on the crosshair, start shooting automatically
 	bool b_auto_trigger;

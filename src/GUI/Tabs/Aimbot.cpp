@@ -47,6 +47,9 @@ void gui::__render__aimbot_tab__(AimConfig* config) {
 	ImGui::SetNextItemWidth(200);
 	ImGui::SliderScalar("##Sensitivity", ImGuiDataType_Double, &config->i_sensitivity, &minVal, &maxVal, "%.3f");
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("The distance to target in pixels is multiplied by this value.");
+	ImGui::Checkbox("Always Aim", &config->b_always_aim);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Always aim without having to hold down the aim key.");
+
 
 	ImGui::Text("Target Selection Mode");
 	ImGui::SameLine();

@@ -136,6 +136,7 @@ namespace utils {
     float squared_distance(float x1, float y1, float x2, float y2) {
         return std::pow(x1 - x2, 2) + std::pow(y1 - y2, 2);
     }
+
     std::pair<float, float> get_center(const BoundingBox& box) {
         float center_x = (box.xmin + box.xmax) / 2.0f;
         float center_y = (box.ymin + box.ymax) / 2.0f;
@@ -218,6 +219,7 @@ namespace utils {
         cfg->b_aimbot = true;
         cfg->b_draw_targets_on_screen = true;
         cfg->b_only_run_on_hidden_cursor = false;
+        cfg->b_always_aim = false;
         cfg->e_target_mode = CLOSEST;
         cfg->e_aim_position = CHEST;
         cfg->i_frames_needed_for_prediction = 4;

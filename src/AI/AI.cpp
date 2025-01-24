@@ -108,8 +108,7 @@ namespace ai {
             }
 
             bool holding_triggerbot_key = (GetAsyncKeyState(0x58) & 0x8000);
-            bool holding_aim_key = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) || (GetAsyncKeyState(VK_LSHIFT) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
-
+            bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(VK_RBUTTON) & 0x8000) || (GetAsyncKeyState(VK_LSHIFT) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
             screen::clear_boxes();
 
 
