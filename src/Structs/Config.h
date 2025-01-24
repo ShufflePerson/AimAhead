@@ -20,6 +20,10 @@ struct AimConfig {
 	//Aim at all times
 	bool b_always_aim;
 
+	//Keybindings
+	int k_aim_key = 0x02;
+	int k_triggerbot_key = 0x58;
+
 	//When an enemy is directly on the crosshair, start shooting automatically
 	bool b_auto_trigger;
 	int i_auto_trigger_delay;
