@@ -34,4 +34,6 @@ namespace utils {
 	std::string generate_uuidv4();
 	void init_config_with_defaults(AimConfig* cfg);
 	void start_threads();
+	std::string getVKString(int vkCode);
+	int getVKCode(const std::string& name);
 }
