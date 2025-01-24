@@ -24,7 +24,6 @@
 
 namespace utils {
 	std::pair<double, double> calculateMouseMovement(int xmin, int xmax, int ymin, int ymax, double sensitivity, double startX = 640 / 2.0, double startY = 640 / 2.0, EAimPosition aim_position = MIDDLE);
-	std::pair<double, double> calculateNewFramePrediction(std::pair<double, double> oldPosition, std::pair<double, double> newPosition);
 	std::pair<double, double> calculateNewFramePredictionBasedoOnHistory(std::vector<std::pair<double, double>> history, std::pair<double, double> current);
 	double getDeltaBetweenPositions(std::pair<double, double> old_pos, std::pair<double, double> new_pos);
 	void moveMouseRelative(double dx, double dy);
