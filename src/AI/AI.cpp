@@ -102,7 +102,7 @@ namespace ai {
 
 
 
-            if (cfg->b_only_run_on_hidden_cursor && !utils::IsMouseCursorHidden()) {
+            if (cfg->b_only_run_on_hidden_cursor && !input::is_mouse_hidden()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 continue;
             }
@@ -114,7 +114,7 @@ namespace ai {
 
             capturedData.clear();
             if (!holding_triggerbot_key) {
-                utils::auto_fire_tick(false);
+                triggerbot::auto_fire_tick(false);
             }
 
 
@@ -230,19 +230,19 @@ namespace ai {
                             debug::draw_target_prediction(movementExact, predictionOutcome);
 #endif
 #ifndef __DEBUG__
-                            utils::moveMouseRelative(predictionOutcome.first, predictionOutcome.second);
+                            input::send_input_mouse_relative(predictionOutcome.first, predictionOutcome.second);
 #endif
                         }
 
                         if (!(current_target.v_location_history.size() >= cfg->i_frames_needed_for_prediction)) {
 #ifndef __DEBUG__
-                            utils::moveMouseRelative(movementExact.first, movementExact.second);
+                            input::send_input_mouse_relative(movementExact.first, movementExact.second);
 #endif
                         }
                     }
                     else {
 #ifndef __DEBUG__
-                        utils::moveMouseRelative(movementExact.first, movementExact.second);
+                        input::send_input_mouse_relative(movementExact.first, movementExact.second);
 #endif
                     }
                 }
@@ -257,14 +257,14 @@ namespace ai {
                         std::this_thread::sleep_for(std::chrono::milliseconds(cfg->i_auto_trigger_delay));
                     }
                     if (abs(movement.first) <= 10) {
-                        utils::auto_fire_tick(true);
+                        triggerbot::auto_fire_tick(true);
                     }
                 }
                 lastTargetPosition = movementExact;
             }
             else {
                 if (cfg->b_auto_trigger) {
-                    utils::auto_fire_tick(false);
+                    triggerbot::auto_fire_tick(false);
                 }
                 lastTargetPosition.first = -5.0;
                 lastTargetPosition.second = -5.0;

@@ -144,6 +144,7 @@
     <ClCompile Include="src\Collector\Collector.cpp" />
     <ClCompile Include="src\Debug\Debug.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
+    <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp" />
     <ClCompile Include="src\GUI\GUI.cpp" />
     <ClCompile Include="src\GUI\Tabs\Aimbot.cpp" />
     <ClCompile Include="src\GUI\Tabs\Misc.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Screen\Screen.cpp" />
     <ClCompile Include="src\Utils\Utils.cpp" />
   </ItemGroup>
@@ -167,6 +169,7 @@
     <ClInclude Include="src\Collector\Collector.h" />
     <ClInclude Include="src\Debug\Debug.h" />
     <ClInclude Include="src\Engine\Engine.h" />
+    <ClInclude Include="src\Features\Triggerbot\Triggerbot.h" />
     <ClInclude Include="src\GUI\GUI.h" />
     <ClInclude Include="src\Helpers\Int8Calibrator.h" />
     <ClInclude Include="src\Helpers\interfaces\IEngine.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="src\Helpers\macros.h" />
     <ClInclude Include="src\Helpers\util\Stopwatch.h" />
     <ClInclude Include="src\Helpers\util\Util.h" />
+    <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\Screen\Screen.h" />
     <ClInclude Include="src\Structs\BoundingBox.h" />
     <ClInclude Include="src\Structs\Config.h" />

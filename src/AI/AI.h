@@ -9,6 +9,8 @@
 #include "../Structs/CurrentTarget.h"
 #include "../Screen/Screen.h"
 #include "../Utils/Utils.h"
+#include "../Input/Input.h"
+#include "../Features/Triggerbot/Triggerbot.h"
 
 namespace ai {
 	std::vector<BoundingBox> runInference(cv::cuda::GpuMat& img, float minObjectness, Engine<float>& engine);

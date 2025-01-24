@@ -3,41 +3,7 @@
 
 
 namespace utils {
-
-    bool fire_weapon = false;
-    bool currently_fire_active = false;
-
-    void auto_fire_tick(bool should_fire) {
-        if (!currently_fire_active && !should_fire) return;
-        INPUT input[2];
-        input[0].type = INPUT_MOUSE;
-        input[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-        input[0].mi.dx = 0;
-        input[0].mi.dy = 0;
-        input[0].mi.mouseData = 0;
-        input[0].mi.dwExtraInfo = 0;
-        input[0].mi.time = 0;
-
-        input[1].type = INPUT_MOUSE;
-        input[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
-        input[1].mi.dx = 0;
-        input[1].mi.dy = 0;
-        input[1].mi.mouseData = 0;
-        input[1].mi.dwExtraInfo = 0;
-        input[1].mi.time = 0;
-        if (should_fire) {
-            if (!currently_fire_active) {
-                currently_fire_active = true;
-                SendInput(1, &input[0], sizeof(INPUT));
-            }
-        }
-        else {
-            if (currently_fire_active) {
-                currently_fire_active = false;
-                SendInput(1, &input[1], sizeof(INPUT));
-            }
-        }
-    }
+    DWORD lastKey = 0;
 
     std::pair<double, double> calculateMouseMovement(int xmin, int xmax, int ymin, int ymax, double sensitivity, double startX, double startY, EAimPosition aim_position) {
         double targetX = (xmin + xmax) / 2.0;
@@ -109,30 +75,6 @@ namespace utils {
         return result;
     }
 
-    void moveMouseRelative(double dx, double dy) {
-        static double accumulated_dx = 0.0;
-        static double accumulated_dy = 0.0;
-
-        accumulated_dx += dx;
-        accumulated_dy += dy;
-
-        int move_x = static_cast<int>(floor(accumulated_dx));
-        int move_y = static_cast<int>(floor(accumulated_dy));
-
-        if (move_x != 0 || move_y != 0) {
-            INPUT input = {};
-            input.type = INPUT_MOUSE;
-            input.mi.dwFlags = MOUSEEVENTF_MOVE;
-            input.mi.dx = move_x;
-            input.mi.dy = move_y;
-            SendInput(1, &input, sizeof(INPUT));
-
-            accumulated_dx -= move_x;
-            accumulated_dy -= move_y;
-        }
-
-    }
-
     float squared_distance(float x1, float y1, float x2, float y2) {
         return std::pow(x1 - x2, 2) + std::pow(y1 - y2, 2);
     }
@@ -168,13 +110,7 @@ namespace utils {
         return hwnd;
     }
 
-    bool IsMouseCursorHidden() {
-        CURSORINFO cursorInfo = { sizeof(CURSORINFO) };
-        if (GetCursorInfo(&cursorInfo)) {
-            return !(cursorInfo.flags & CURSOR_SHOWING);
-        }
-        return false;
-    }
+
 
     std::string generate_uuidv4() {
         // Use a strong random number generator
@@ -238,7 +174,7 @@ namespace utils {
         std::thread screen_loop(screen::main_loop);
         std::thread collector_loop(collector::main_loop);
         std::thread gui_loop(gui::init_gui);
-        spdlog::info("Started debug::init, screen::run, screen::main_loop, collector::main_loop, gui::init_gui threads.");
+        spdlog::info("Started debug::init, screen::run, screen::main_loop, collector::main_loop, gui::init_gui, utils::keybind_thread threads.");
         init_debug.join();
         init_screen.join();
         screen_loop.join();
@@ -384,4 +320,7 @@ namespace utils {
         return -1; 
     }
 
+    DWORD get_last_pressed_key() {
+        return lastKey;
+    }
 }

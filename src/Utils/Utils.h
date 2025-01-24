@@ -30,16 +30,13 @@ namespace utils {
 	std::string generate_uuidv4();
 	std::string getVKString(int vkCode);
 
-	void moveMouseRelative(double dx, double dy);
-	void auto_fire_tick(bool should_fire);
 	void init_config_with_defaults(AimConfig* cfg);
 	void start_threads();
 
-	bool IsMouseCursorHidden();
 	int getVKCode(const std::string& name);
 	double getDeltaBetweenPositions(std::pair<double, double> old_pos, std::pair<double, double> new_pos);
 
 	BoundingBox findClosest(std::vector<BoundingBox>& boxes);
 	HWND getHwndFromTitle(const std::string windowTitle);
-
+	DWORD get_last_pressed_key();
 }
