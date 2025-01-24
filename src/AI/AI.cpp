@@ -157,7 +157,7 @@ namespace ai {
                 }
 
                 if (cfg->e_target_mode == CLOSEST) {
-                    box = utils::findClosest(results);
+                    box = math_helpers::find_closests(results);
                 }
 
                 if (cfg->b_draw_targets_on_screen) {
@@ -179,13 +179,13 @@ namespace ai {
 #endif
 
 
-                std::pair<double, double> movementExact = utils::calculateMouseMovement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position);
+                std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position);
                 int deltaX = static_cast<int>(round(movementExact.first));
                 int deltaY = static_cast<int>(round(movementExact.second));
                 std::pair<int, int> movement = { deltaX, deltaY };
 
                 if (current_target.p_last_position.first != 0.0 && current_target.p_last_position.second != 0.0) {
-                    double deltaBetweenLastAndNewTarget = utils::getDeltaBetweenPositions(current_target.p_last_position, movementExact);
+                    double deltaBetweenLastAndNewTarget = math_helpers::get_delta_between_positions(current_target.p_last_position, movementExact);
                     if (deltaBetweenLastAndNewTarget >= cfg->d_maximum_jitter_amount) {
                         if (!b_jitter_Detected)
                             i_jitter_detected_at = current_frame_count;
@@ -225,7 +225,7 @@ namespace ai {
                         }
 
                         if (current_target.v_location_history.size() >= cfg->i_frames_needed_for_prediction) {
-                            std::pair<double, double> predictionOutcome = utils::calculateNewFramePredictionBasedoOnHistory(current_target.v_location_history, movementExact);
+                            std::pair<double, double> predictionOutcome = math_helpers::calculate_new_frame_prediction_based_on_history(current_target.v_location_history, movementExact);
 #ifdef __DEBUG__
                             debug::draw_target_prediction(movementExact, predictionOutcome);
 #endif

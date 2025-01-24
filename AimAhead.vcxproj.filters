@@ -84,6 +84,9 @@
     <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\MathHelpers\MathHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI\AI.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Features\Triggerbot\Triggerbot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MathHelpers\MathHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

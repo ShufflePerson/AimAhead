@@ -9,6 +9,7 @@
 #include "../Structs/CurrentTarget.h"
 #include "../Screen/Screen.h"
 #include "../Utils/Utils.h"
+#include "../MathHelpers/MathHelpers.h"
 #include "../Input/Input.h"
 #include "../Features/Triggerbot/Triggerbot.h"
 
