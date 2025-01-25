@@ -135,7 +135,7 @@ namespace capture {
         ID3D11Texture2D* texture = nullptr;
         bool frameAcquired = false;
 
-        hr = g_desktopDuplication->AcquireNextFrame(0, &frameInfo, &tempDesktopResource);
+        hr = g_desktopDuplication->AcquireNextFrame(1000, &frameInfo, &tempDesktopResource);
         if (FAILED(hr)) {
             if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
                 return false; // It's okay if we time out
