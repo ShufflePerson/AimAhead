@@ -125,9 +125,19 @@ namespace ai {
 
         bool b_jitter_Detected = false;
         size_t i_jitter_detected_at = 0;
+        
+
+        //Cache for preview tab
+        double i_last_sensitivity = 0;
+        int i_last_head_margin = 0;
 
         while (true) {
             if (gui::get_is_visible()) {
+                if (i_last_sensitivity == cfg->i_sensitivity && i_last_head_margin == cfg->i_head_margin) {
+                    continue;
+                }
+                i_last_sensitivity = cfg->i_sensitivity;
+                i_last_head_margin = cfg->i_head_margin;
                 cv::cuda::GpuMat gpuImg;
                 cv::Mat cpuImg = preview::get_cached_preview_image();
                 gpuImg.upload(cpuImg);
