@@ -12,6 +12,11 @@ namespace gui {
     HWND g_hwnd = nullptr;
     bool g_is_visible = true;
 
+
+    bool get_is_visible() {
+        return g_is_visible;
+    }
+
     void toggle_window() {
         if (g_is_visible) {
             SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, GetWindowLongPtr(g_hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
@@ -178,6 +183,10 @@ namespace gui {
                 }
                 if (ImGui::BeginTabItem("Settings")) {
                     __render__settings_tab__(config);
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Preview")) {
+                    __render__preview_tab__(config);
                     ImGui::EndTabItem();
                 }
                 ImGui::EndTabBar();

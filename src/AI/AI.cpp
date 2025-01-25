@@ -127,6 +127,47 @@ namespace ai {
         size_t i_jitter_detected_at = 0;
 
         while (true) {
+            if (gui::get_is_visible()) {
+                cv::cuda::GpuMat gpuImg;
+                cv::Mat cpuImg = preview::get_cached_preview_image();
+                gpuImg.upload(cpuImg);
+                std::vector<BoundingBox> results = ai::runInference(gpuImg, minObjectness, *engine_ptr);
+                if (results.size() == 0) continue;
+
+                BoundingBox box = results[0];
+                float highestConf = 0.0f;
+                for (int i = 0; i < results.size(); i++) {
+                    if (results[i].confidence >= highestConf) {
+                        box = results[i];
+                        highestConf = box.confidence;
+                    }
+                }
+
+                std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position, cfg);
+                int deltaX = static_cast<int>(round(movementExact.first / cfg->i_sensitivity));
+                int deltaY = static_cast<int>(round(movementExact.second / cfg->i_sensitivity));
+                deltaX += 320;
+                deltaY += 320;
+            
+
+                cv::Mat newImg;
+                cpuImg.copyTo(newImg);
+
+                cv::Point topLeft(box.xmin, box.ymin);
+                cv::Point bottomRight(box.xmax, box.ymax);
+                cv::Scalar redColor(0, 0, 255);
+                int thickness = 1;
+                cv::rectangle(newImg, topLeft, bottomRight, redColor, thickness);
+
+
+                cv::Point center(deltaX, deltaY);
+                int radius = 5;
+                cv::circle(newImg, center, radius, redColor, cv::FILLED);
+
+                preview::set_rendered_image(newImg);
+                continue;
+            }
+
             start_time = high_resolution_clock::now();
 
             if (i_currently_loaded_model_index != cfg->i_selected_model_index) {
@@ -215,7 +256,7 @@ namespace ai {
 #endif
 
 
-                std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position);
+                std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position, cfg);
                 int deltaX = static_cast<int>(round(movementExact.first));
                 int deltaY = static_cast<int>(round(movementExact.second));
                 std::pair<int, int> movement = { deltaX, deltaY };

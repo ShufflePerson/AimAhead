@@ -1,7 +1,7 @@
 #include "MathHelpers.h"
 
 namespace math_helpers {
-    std::pair<double, double> calculate_mouse_movement(int xmin, int xmax, int ymin, int ymax, double sensitivity, double startX, double startY, EAimPosition aim_position) {
+    std::pair<double, double> calculate_mouse_movement(int xmin, int xmax, int ymin, int ymax, double sensitivity, double startX, double startY, EAimPosition aim_position, AimConfig* cfg) {
         double targetX = (xmin + xmax) / 2.0;
         double targetY = (ymin + ymax) / 2.0;
 
@@ -12,7 +12,7 @@ namespace math_helpers {
 
         if (aim_position == TOP) {
             double boxHeight = abs(ymax - ymin);
-            double margin_from_top = boxHeight * 0.20;
+            double margin_from_top = boxHeight * (cfg->i_head_margin / static_cast<double>(100));
             if (margin_from_top <= 15.0f) {
                 margin_from_top = 15.0f;
             }

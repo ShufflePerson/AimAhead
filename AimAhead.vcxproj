@@ -146,8 +146,10 @@
     <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp" />
     <ClCompile Include="src\GUI\GUI.cpp" />
+    <ClCompile Include="src\GUI\Preview\Preview.cpp" />
     <ClCompile Include="src\GUI\Tabs\Aimbot.cpp" />
     <ClCompile Include="src\GUI\Tabs\Misc.cpp" />
+    <ClCompile Include="src\GUI\Tabs\PreviewTab.cpp" />
     <ClCompile Include="src\GUI\Tabs\Settings.cpp" />
     <ClCompile Include="src\GUI\Tabs\Visuals.cpp" />
     <ClCompile Include="src\ImGui\glad.c" />
@@ -172,6 +174,7 @@
     <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Features\Triggerbot\Triggerbot.h" />
     <ClInclude Include="src\GUI\GUI.h" />
+    <ClInclude Include="src\GUI\Preview\Preview.h" />
     <ClInclude Include="src\Helpers\Int8Calibrator.h" />
     <ClInclude Include="src\Helpers\interfaces\IEngine.h" />
     <ClInclude Include="src\Helpers\logger.h" />

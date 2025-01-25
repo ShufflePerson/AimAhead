@@ -6,7 +6,7 @@
 #include "../Structs/BoundingBox.h"
 
 namespace math_helpers {
-	std::pair<double, double> calculate_mouse_movement(int xmin, int xmax, int ymin, int ymax, double sensitivity, double startX, double startY, EAimPosition aim_position);
+	std::pair<double, double> calculate_mouse_movement(int xmin, int xmax, int ymin, int ymax, double sensitivity, double startX, double startY, EAimPosition aim_position, AimConfig* cfg);
 	std::pair<double, double> calculate_new_frame_prediction_based_on_history(std::vector<std::pair<double, double>> history, std::pair<double, double> current);
 	std::pair<float, float> get_center(const BoundingBox& box);
 

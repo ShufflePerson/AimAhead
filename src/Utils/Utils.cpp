@@ -53,11 +53,12 @@ namespace utils {
         cfg->b_draw_targets_on_screen = true;
         cfg->b_only_run_on_hidden_cursor = false;
         cfg->b_always_aim = false;
-        cfg->e_target_mode = CLOSEST;
-        cfg->e_aim_position = CHEST;
+        cfg->e_target_mode = ETargetMode::CLOSEST;
+        cfg->e_aim_position = EAimPosition::TOP;
         cfg->i_frames_needed_for_prediction = 4;
         cfg->i_max_prediction_frames = 10;
         cfg->d_maximum_jitter_amount = 30.0f;
+        cfg->i_head_margin = 20;
         cfg->i_maximum_wait_time_for_target_reappearence = 40;
         cfg->i_sensitivity = 0.22;
         cfg->i_auto_trigger_delay = 0;

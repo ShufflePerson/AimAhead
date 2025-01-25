@@ -68,6 +68,8 @@ struct AimConfig {
 	//Visuals
 	bool b_draw_targets_on_screen;
 	
+	//Margin from the top of the box
+	int i_head_margin;
 
 	//Read Only
 	int read_only__i_fps;

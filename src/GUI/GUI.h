@@ -11,10 +11,13 @@
 #include <GLFW/glfw3native.h>
 #include <Windows.h>
 
+#include <opencv2/opencv.hpp>
+
 #include "../Structs/Config.h"
 #include "../Input/Input.h"
 #include "../Utils/Utils.h"
 #include "../ModelManager/ModelManager.h"
+#include "./Preview/Preview.h"
 
 
 namespace gui {
@@ -23,9 +26,12 @@ namespace gui {
 	void load_config(AimConfig* cfg);
 	AimConfig* get_config();
 
+	bool get_is_visible();
+
 
 	void __render__aimbot_tab__(AimConfig* config);
 	void __render__visuals_tab__(AimConfig* config);
 	void __render__misc_tab__(AimConfig* config);
 	void __render__settings_tab__(AimConfig* config);
+	void __render__preview_tab__(AimConfig* config);
 }
