@@ -15,5 +15,5 @@
 
 namespace ai {
 	std::vector<BoundingBox> runInference(cv::cuda::GpuMat& img, float minObjectness, Engine<float>& engine);
-	void main_loop(Engine<float>* engine, AimConfig* cfg);
+	void main_loop(AimConfig* cfg);
 }

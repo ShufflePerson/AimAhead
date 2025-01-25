@@ -61,7 +61,36 @@ namespace ai {
         return allBoundingBoxes;
     }
 
-    void main_loop(Engine<float>* engine, AimConfig* cfg) {
+    Options init_default_engine_options() {
+        Options options;
+        options.precision = Precision::FP16;
+        options.calibrationDataDirectoryPath = "";
+        options.optBatchSize = 1;
+        options.maxBatchSize = 1;
+        options.engineFileDir = "./models/";
+        return options;
+    }
+
+    void init_default_engine(Engine<float>* engine, AimConfig* config) {
+        std::array<float, 3> subVals{ 0.f, 0.f, 0.f };
+        std::array<float, 3> divVals{ 1.f, 1.f, 1.f };
+        bool normalize = true;
+
+        spdlog::info("Loading the AI model...");
+        std::string model_path = "./models/";
+        model_path += model_manager::get_loaded_models()[config->i_selected_model_index];
+        if (!engine->buildLoadNetwork(model_path, subVals, divVals, normalize)) {
+            throw std::runtime_error("Unable to build or load TensorRT engine.");
+        }
+        spdlog::info("AI Model loaded!");
+    }
+
+
+    void main_loop(AimConfig* cfg) {
+        int i_currently_loaded_model_index = cfg->i_selected_model_index;
+        Engine<float>* engine_ptr = new Engine<float>(init_default_engine_options());
+        init_default_engine(engine_ptr, cfg);
+
         using namespace std::chrono;
 
         // Data Capture
@@ -100,6 +129,13 @@ namespace ai {
         while (true) {
             start_time = high_resolution_clock::now();
 
+            if (i_currently_loaded_model_index != cfg->i_selected_model_index) {
+                i_currently_loaded_model_index = cfg->i_selected_model_index;
+                delete engine_ptr; 
+                engine_ptr = nullptr;
+                engine_ptr = new Engine<float>(init_default_engine_options());
+                init_default_engine(engine_ptr, cfg);
+            }
 
 
             if (cfg->b_only_run_on_hidden_cursor && !input::is_mouse_hidden()) {
@@ -134,7 +170,7 @@ namespace ai {
             stream.waitForCompletion();
 
 
-            std::vector<BoundingBox> results = ai::runInference(gpuImg, minObjectness, *engine);
+            std::vector<BoundingBox> results = ai::runInference(gpuImg, minObjectness, *engine_ptr);
 
 #ifdef __DEBUG__
             cv::Mat cpuImg;

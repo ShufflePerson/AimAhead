@@ -62,6 +62,7 @@ namespace utils {
         cfg->i_sensitivity = 0.22;
         cfg->i_auto_trigger_delay = 0;
         cfg->i_fps_cap = 120;
+        cfg->i_selected_model_index = 0;
         cfg->read_only__i_fps = 0;
     }
 
@@ -79,4 +80,11 @@ namespace utils {
         gui_loop.join();
     }
 
+
+    long long get_current_unix_time_s() {
+        auto now = std::chrono::system_clock::now();
+        auto duration = now.time_since_epoch();
+        auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
+        return seconds.count();
+    }
 }

@@ -14,6 +14,7 @@
 #include "../Structs/Config.h"
 #include "../Input/Input.h"
 #include "../Utils/Utils.h"
+#include "../ModelManager/ModelManager.h"
 
 
 namespace gui {

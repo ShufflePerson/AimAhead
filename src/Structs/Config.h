@@ -62,6 +62,8 @@ struct AimConfig {
 	bool b_only_run_on_hidden_cursor;
 	//Framerate cap
 	int i_fps_cap;
+	//Currently selected model
+	int i_selected_model_index;
 
 	//Visuals
 	bool b_draw_targets_on_screen;

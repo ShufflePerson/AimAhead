@@ -29,4 +29,6 @@ namespace utils {
 	void start_threads();
 
 	HWND getHwndFromTitle(const std::string windowTitle);
+
+	long long get_current_unix_time_s();
 }

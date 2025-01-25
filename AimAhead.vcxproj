@@ -160,13 +160,13 @@
     <ClCompile Include="src\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\MathHelpers\MathHelpers.cpp" />
+    <ClCompile Include="src\ModelManager\ModelManager.cpp" />
     <ClCompile Include="src\Screen\Screen.cpp" />
     <ClCompile Include="src\Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI\AI.h" />
     <ClInclude Include="src\Capture\Capture.h" />
-    <ClInclude Include="src\cmd_line_parser.h" />
     <ClInclude Include="src\Collector\Collector.h" />
     <ClInclude Include="src\Debug\Debug.h" />
     <ClInclude Include="src\Engine\Engine.h" />
@@ -180,6 +180,7 @@
     <ClInclude Include="src\Helpers\util\Util.h" />
     <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\MathHelpers\MathHelpers.h" />
+    <ClInclude Include="src\ModelManager\ModelManager.h" />
     <ClInclude Include="src\Screen\Screen.h" />
     <ClInclude Include="src\Structs\BoundingBox.h" />
     <ClInclude Include="src\Structs\Config.h" />
