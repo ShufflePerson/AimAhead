@@ -24,13 +24,9 @@
 
 namespace utils {
 	std::string generate_uuidv4();
-	std::string getVKString(int vkCode);
 
 	void init_config_with_defaults(AimConfig* cfg);
 	void start_threads();
 
-	int getVKCode(const std::string& name);
-
 	HWND getHwndFromTitle(const std::string windowTitle);
-	DWORD get_last_pressed_key();
 }

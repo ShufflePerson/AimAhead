@@ -12,9 +12,12 @@
 #include <Windows.h>
 
 #include "../Structs/Config.h"
+#include "../Input/Input.h"
+#include "../Utils/Utils.h"
 
 
 namespace gui {
+
 	void init_gui();
 	void load_config(AimConfig* cfg);
 	AimConfig* get_config();
