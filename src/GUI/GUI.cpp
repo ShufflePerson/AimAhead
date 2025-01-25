@@ -73,6 +73,7 @@ namespace gui {
         }
         glfwMakeContextCurrent(window);
 
+        //TODO get screen width and height
         int screenWidth = 3440;
         int screenHeight = 1440;
         int windowWidth = 800;
