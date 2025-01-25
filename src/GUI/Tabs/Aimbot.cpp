@@ -34,6 +34,8 @@ static const char* eAimPositionNames[] = {
 };
 
 
+bool b_aim_key_clicked = false;
+DWORD last_key = 0;
 void gui::__render__aimbot_tab__(AimConfig* config) {
 	double minVal = 0.0;
 	double maxVal = 1.0;
@@ -42,6 +44,24 @@ void gui::__render__aimbot_tab__(AimConfig* config) {
 	ImGui::NewLine();
 	ImGui::Checkbox("Aimbot", &config->b_aimbot);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Enables aimbot.");
+	ImGui::Text("Aim Key:");
+	ImGui::SameLine();
+	if (b_aim_key_clicked) {
+		ImGui::Button("Press a key!");
+		DWORD new_key = input::get_last_pressed_key();
+		if (last_key != new_key) {
+			config->k_aim_key = new_key;
+			last_key = new_key;
+			b_aim_key_clicked = false;
+		}
+	}
+	else {
+		if (ImGui::Button(input::get_vk_string(config->k_aim_key).c_str())) {
+			b_aim_key_clicked = true;
+			last_key = input::get_last_pressed_key();
+		}
+	}
+
 	ImGui::Text("Sensitivity:");
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(200);
