@@ -147,11 +147,11 @@
     <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp" />
     <ClCompile Include="src\GUI\GUI.cpp" />
     <ClCompile Include="src\GUI\Preview\Preview.cpp" />
-    <ClCompile Include="src\GUI\Tabs\Aimbot.cpp" />
-    <ClCompile Include="src\GUI\Tabs\Misc.cpp" />
+    <ClCompile Include="src\GUI\Tabs\AimbotTab.cpp" />
+    <ClCompile Include="src\GUI\Tabs\MiscTab.cpp" />
     <ClCompile Include="src\GUI\Tabs\PreviewTab.cpp" />
-    <ClCompile Include="src\GUI\Tabs\Settings.cpp" />
-    <ClCompile Include="src\GUI\Tabs\Visuals.cpp" />
+    <ClCompile Include="src\GUI\Tabs\SettingsTab.cpp" />
+    <ClCompile Include="src\GUI\Tabs\VisualsTab.cpp" />
     <ClCompile Include="src\ImGui\glad.c" />
     <ClCompile Include="src\ImGui\imgui.cpp" />
     <ClCompile Include="src\ImGui\imgui_demo.cpp" />
@@ -165,6 +165,7 @@
     <ClCompile Include="src\ModelManager\ModelManager.cpp" />
     <ClCompile Include="src\Screen\Screen.cpp" />
     <ClCompile Include="src\Utils\Utils.cpp" />
+    <ClCompile Include="src\Visuals\Visuals.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI\AI.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="src\Structs\Config.h" />
     <ClInclude Include="src\Structs\CurrentTarget.h" />
     <ClInclude Include="src\Utils\Utils.h" />
+    <ClInclude Include="src\Visuals\Visuals.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Helpers\engine\EngineBuildLoadNetwork.inl" />

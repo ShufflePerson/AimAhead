@@ -30,10 +30,10 @@
     <ClCompile Include="src\Engine\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\Tabs\Aimbot.cpp">
+    <ClCompile Include="src\GUI\Tabs\AimbotTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\Tabs\Visuals.cpp">
+    <ClCompile Include="src\GUI\Tabs\VisualsTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\GUI.cpp">
@@ -72,10 +72,10 @@
     <ClCompile Include="src\AimAhead.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\Tabs\Misc.cpp">
+    <ClCompile Include="src\GUI\Tabs\MiscTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUI\Tabs\Settings.cpp">
+    <ClCompile Include="src\GUI\Tabs\SettingsTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Input\Input.cpp">
@@ -94,6 +94,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\Preview\Preview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Visuals\Visuals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -162,6 +165,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GUI\Preview\Preview.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visuals\Visuals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
