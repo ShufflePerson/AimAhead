@@ -85,6 +85,7 @@ namespace gui {
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
         ImGui::StyleColorsDark();
+        io.IniFilename = nullptr;
 
         ImGuiStyle& style = ImGui::GetStyle();
 
