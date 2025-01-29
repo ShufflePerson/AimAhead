@@ -11,6 +11,7 @@
 #include "./Collector/Collector.h"
 #include "./GUI/GUI.h"
 #include "./ModelManager/ModelManager.h"
+#include "./ConfigManager/ConfigManager.h"
 #include "Structs/Config.h"
 #include "Structs/CurrentTarget.h"
 
@@ -18,7 +19,7 @@
 int main(int argc, char* argv[]) {
     AimConfig cfg;
     model_manager::update_models_list();
-    utils::init_config_with_defaults(&cfg);
+    config_manager::load_config_or_init_new(&cfg);
     gui::load_config(&cfg);
 
 

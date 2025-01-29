@@ -14,6 +14,10 @@ enum EAimPosition {
 
 
 
+//README - README - README
+//Whenever a value is added/changed/removed, ConfigManager/ConfigManager.cpp also needs to be updated!
+//README - README - README
+
 struct AimConfig {
 	bool b_aimbot;
 

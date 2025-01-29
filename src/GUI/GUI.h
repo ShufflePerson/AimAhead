@@ -16,6 +16,7 @@
 #include "../Input/Input.h"
 #include "../Utils/Utils.h"
 #include "../ModelManager/ModelManager.h"
+#include "../ConfigManager/ConfigManager.h"
 #include "./Preview/Preview.h"
 
 

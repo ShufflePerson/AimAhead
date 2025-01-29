@@ -142,6 +142,7 @@
     <ClCompile Include="src\AI\AI.cpp" />
     <ClCompile Include="src\Capture\Capture.cpp" />
     <ClCompile Include="src\Collector\Collector.cpp" />
+    <ClCompile Include="src\ConfigManager\ConfigManager.cpp" />
     <ClCompile Include="src\Debug\Debug.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\AI\AI.h" />
     <ClInclude Include="src\Capture\Capture.h" />
     <ClInclude Include="src\Collector\Collector.h" />
+    <ClInclude Include="src\ConfigManager\ConfigManager.h" />
     <ClInclude Include="src\Debug\Debug.h" />
     <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Features\Triggerbot\Triggerbot.h" />

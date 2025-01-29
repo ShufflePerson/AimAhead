@@ -13,6 +13,9 @@ namespace gui {
     std::vector<BoundingBox> g_bounding_boxes;
     bool g_is_visible = true;
 
+    auto last_config_save = std::chrono::system_clock::now();
+
+
     bool get_is_visible() {
         return g_is_visible;
     }
@@ -218,6 +221,14 @@ namespace gui {
                 ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10));
                 ImGui::Text(fps_text, config->read_only__i_fps);
                 ImGui::End();
+
+
+                auto current_time = std::chrono::system_clock::now();
+                auto time_diff = current_time - last_config_save;
+                auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(time_diff);
+                if (milliseconds > std::chrono::milliseconds(1000)) {
+                    config_manager::save_config(get_config());
+                }
             }
 
 
