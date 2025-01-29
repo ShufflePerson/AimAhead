@@ -4,13 +4,12 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 #include <Windows.h>
-
+#include <format> 
 #include <opencv2/opencv.hpp>
 
 #include "../Structs/Config.h"
@@ -28,6 +27,7 @@ namespace gui {
 
 	bool get_is_visible();
 
+	void update_boxes(const std::vector<BoundingBox>& boxes);
 
 	void __render__aimbot_tab__(AimConfig* config);
 	void __render__visuals_tab__(AimConfig* config);

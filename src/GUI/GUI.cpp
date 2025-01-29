@@ -10,23 +10,23 @@ namespace gui {
 	}
     HHOOK g_keyboardHook = nullptr;
     HWND g_hwnd = nullptr;
+    std::vector<BoundingBox> g_bounding_boxes;
     bool g_is_visible = true;
-
 
     bool get_is_visible() {
         return g_is_visible;
     }
 
-    void toggle_window() {
+    static void toggle_window() {
         if (g_is_visible) {
             SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, GetWindowLongPtr(g_hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-            SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 0, LWA_ALPHA);
+            //SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 0, LWA_ALPHA);
             EnableWindow(g_hwnd, FALSE);
             g_is_visible = false;
         }
         else {
             SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, GetWindowLongPtr(g_hwnd, GWL_EXSTYLE) & ~WS_EX_TRANSPARENT);
-            SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 255, LWA_ALPHA);
+            //SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 255, LWA_ALPHA);
             SetWindowPos(g_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
             EnableWindow(g_hwnd, TRUE);
             g_is_visible = true;
@@ -44,7 +44,7 @@ namespace gui {
         return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
     }
 
-    bool initializeGlobalKeybind() {
+    static bool initializeGlobalKeybind() {
         g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, GetModuleHandle(nullptr), 0);
         return g_keyboardHook != nullptr;
     }
@@ -56,6 +56,9 @@ namespace gui {
         }
     }
 
+    void update_boxes(const std::vector<BoundingBox>& boxes) {
+        g_bounding_boxes = boxes;
+    }
 
 
     void init_gui() {
@@ -76,8 +79,8 @@ namespace gui {
         //TODO get screen width and height
         int screenWidth = 3440;
         int screenHeight = 1440;
-        int windowWidth = 800;
-        int windowHeight = 800;
+        int windowWidth = 640;
+        int windowHeight = 640;
         glfwSetWindowPos(window, (screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2);
 
         g_hwnd = glfwGetWin32Window(window);
@@ -152,7 +155,7 @@ namespace gui {
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
         toggle_window();
-
+        toggle_window();
 
         while (!glfwWindowShouldClose(window)) {
             if (config == nullptr) continue;
@@ -166,39 +169,59 @@ namespace gui {
             ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
             if (!g_is_visible) {
                 flags |= ImGuiWindowFlags_NoBackground;
+
+                if (g_bounding_boxes.size() > 0) {
+                    ImGui::Begin("RedBoxOverlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+                    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+                    for (auto &box : g_bounding_boxes) {
+                        ImVec2 p_min = ImVec2(box.xmin, box.ymin);
+                        ImVec2 p_max = ImVec2(box.xmax, box.ymax);
+
+                        ImU32 red_color = IM_COL32(255, 0, 0, 255);
+
+                        draw_list->AddRect(p_min, p_max, red_color);
+                    }
+;
+
+                    ImGui::End();
+                }
+            }
+            else {
+                ImGui::Begin("Overlay", nullptr, flags);
+                if (ImGui::BeginTabBar("SettingsTabs")) {
+                    if (ImGui::BeginTabItem("Aimbot")) {
+                        __render__aimbot_tab__(config);
+                        ImGui::EndTabItem();
+                    }
+                    if (ImGui::BeginTabItem("Visuals")) {
+                        __render__visuals_tab__(config);
+                        ImGui::EndTabItem();
+                    }
+                    if (ImGui::BeginTabItem("Misc")) {
+                        __render__misc_tab__(config);
+                        ImGui::EndTabItem();
+                    }
+                    if (ImGui::BeginTabItem("Settings")) {
+                        __render__settings_tab__(config);
+                        ImGui::EndTabItem();
+                    }
+                    if (ImGui::BeginTabItem("Preview")) {
+                        __render__preview_tab__(config);
+                        ImGui::EndTabItem();
+                    }
+                    ImGui::EndTabBar();
+                }
+                const char* fps_text = "FPS: %d";
+                ImVec2 window_size = ImGui::GetWindowSize();
+                ImVec2 text_size = ImGui::CalcTextSize(fps_text);
+                ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10));
+                ImGui::Text(fps_text, config->read_only__i_fps);
+                ImGui::End();
             }
 
-            ImGui::Begin("Overlay", nullptr, flags);
-            if (ImGui::BeginTabBar("SettingsTabs")) {
-                if (ImGui::BeginTabItem("Aimbot")) {
-                    __render__aimbot_tab__(config);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Visuals")) {
-                    __render__visuals_tab__(config);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Misc")) {
-                    __render__misc_tab__(config);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Settings")) {
-                    __render__settings_tab__(config);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Preview")) {
-                    __render__preview_tab__(config);
-                    ImGui::EndTabItem();
-                }
-                ImGui::EndTabBar();
-            }
-            const char* fps_text = "FPS: %d";
-            ImVec2 window_size = ImGui::GetWindowSize();
-            ImVec2 text_size = ImGui::CalcTextSize(fps_text);
-            ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10)); 
-            ImGui::Text(fps_text, config->read_only__i_fps);
 
-            ImGui::End();
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
