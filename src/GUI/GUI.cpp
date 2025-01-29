@@ -206,7 +206,7 @@ namespace gui {
                         __render__settings_tab__(config);
                         ImGui::EndTabItem();
                     }
-                    if (ImGui::BeginTabItem("Preview")) {
+                    if (ImGui::BeginTabItem("Margins")) {
                         __render__preview_tab__(config);
                         ImGui::EndTabItem();
                     }
