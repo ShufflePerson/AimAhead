@@ -130,14 +130,17 @@ namespace ai {
         //Cache for preview tab
         double i_last_sensitivity = 0;
         int i_last_head_margin = 0;
+        float f_last_minimum_head_margin = 0.0f;
 
         while (true) {
             if (gui::get_is_visible()) {
-                if (i_last_sensitivity == cfg->i_sensitivity && i_last_head_margin == cfg->i_head_margin) {
+                if (i_last_sensitivity == cfg->i_sensitivity && i_last_head_margin == cfg->i_head_margin && cfg->f_minimum_top_margin == f_last_minimum_head_margin) {
                     continue;
                 }
+
                 i_last_sensitivity = cfg->i_sensitivity;
                 i_last_head_margin = cfg->i_head_margin;
+                f_last_minimum_head_margin = cfg->f_minimum_top_margin;
                 cv::cuda::GpuMat gpuImg;
                 cv::Mat cpuImg = preview::get_cached_preview_image();
                 gpuImg.upload(cpuImg);

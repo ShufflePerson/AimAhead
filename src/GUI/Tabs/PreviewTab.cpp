@@ -58,6 +58,9 @@ void gui::__render__preview_tab__(AimConfig* config) {
 	ImGui::SliderInt("##margin_top", &config->i_head_margin, 0, 100);
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("A percentege of a margin from the top of the box when TOP aim position is selected.");
 
+    ImGui::Text("TOP Minimum Margin");
+    ImGui::SliderFloat("##minimum_margin_top", &config->f_minimum_top_margin, 0.0f, 100.0f);
+
 	ImGui::NextColumn();
 	ImGui::SetColumnWidth(0, 300.0f);
 	ImGui::Image((void*)(intptr_t)textureID, ImVec2(image.cols / 1.45f, image.rows / 1.45f)); 

@@ -64,6 +64,8 @@ struct AimConfig {
 	int i_fps_cap;
 	//Currently selected model
 	int i_selected_model_index;
+	//Minimum margin for TOP::EAimPosition
+	float f_minimum_top_margin;
 
 	//Visuals
 	bool b_draw_targets_on_screen;

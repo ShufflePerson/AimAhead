@@ -13,8 +13,8 @@ namespace math_helpers {
         if (aim_position == TOP) {
             double boxHeight = abs(ymax - ymin);
             double margin_from_top = boxHeight * (cfg->i_head_margin / static_cast<double>(100));
-            if (margin_from_top <= 15.0f) {
-                margin_from_top = 15.0f;
+            if (margin_from_top <= cfg->f_minimum_top_margin) {
+                margin_from_top = cfg->f_minimum_top_margin;
             }
             deltaY_raw = (ymin + margin_from_top) - startY;
         }
@@ -22,9 +22,6 @@ namespace math_helpers {
         if (aim_position == CHEST) {
             double boxHeight = abs(ymax - ymin);
             double margin_from_top = boxHeight * 0.35;
-            if (margin_from_top <= 15.0f) {
-                margin_from_top = 15.0f;
-            }
             deltaY_raw = (ymin + margin_from_top) - startY;
         }
 

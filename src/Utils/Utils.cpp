@@ -58,6 +58,7 @@ namespace utils {
         cfg->i_frames_needed_for_prediction = 17;
         cfg->i_max_prediction_frames = 32;
         cfg->d_maximum_jitter_amount = 30.0f;
+        cfg->f_minimum_top_margin = 15.0f;
         cfg->i_head_margin = 20;
         cfg->i_maximum_wait_time_for_target_reappearence = 40;
         cfg->i_sensitivity = 0.22;
