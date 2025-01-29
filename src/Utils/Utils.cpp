@@ -115,4 +115,10 @@ namespace utils {
         outputFile.close();
         return true;
     }
+
+    std::pair<int, int> get_primary_display_size() {
+        int width = GetSystemMetrics(SM_CXSCREEN);
+        int height = GetSystemMetrics(SM_CYSCREEN);
+        return { width, height };
+    }
 }

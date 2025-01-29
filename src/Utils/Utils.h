@@ -35,4 +35,6 @@ namespace utils {
 	long long get_current_unix_time_s();
 
 	bool write_to_file(const std::string& filename, const std::string& contents);
+
+	std::pair<int, int> get_primary_display_size();
 }

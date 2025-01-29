@@ -76,9 +76,9 @@ namespace gui {
         }
         glfwMakeContextCurrent(window);
 
-        //TODO get screen width and height
-        int screenWidth = 3440;
-        int screenHeight = 1440;
+        std::pair<int, int> screen_size = utils::get_primary_display_size();
+        int screenWidth = screen_size.first;
+        int screenHeight = screen_size.second;
         int windowWidth = 640;
         int windowHeight = 640;
         glfwSetWindowPos(window, (screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2);
