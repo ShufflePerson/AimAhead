@@ -7,7 +7,6 @@
 #include "../Capture/Capture.h"
 #include "../Structs/BoundingBox.h"
 #include "../Structs/CurrentTarget.h"
-#include "../Screen/Screen.h"
 #include "../Utils/Utils.h"
 #include "../MathHelpers/MathHelpers.h"
 #include "../Input/Input.h"
