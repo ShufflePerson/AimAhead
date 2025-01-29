@@ -196,8 +196,6 @@ namespace ai {
 
             bool holding_triggerbot_key = (GetAsyncKeyState(cfg->k_triggerbot_key) & 0x8000);
             bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(cfg->k_aim_key) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
-            screen::clear_boxes();
-
 
             capturedData.clear();
             if (!holding_triggerbot_key) {
@@ -248,7 +246,7 @@ namespace ai {
                 }
 
                 if (cfg->b_draw_targets_on_screen) {
-                    screen::add_box(box);
+                    gui::update_boxes({ box });
                 }
 
 
@@ -350,6 +348,9 @@ namespace ai {
                 lastTargetPosition = movementExact;
             }
             else {
+                if (cfg->b_draw_targets_on_screen) {
+                    gui::update_boxes({});
+                }
                 if (cfg->b_auto_trigger) {
                     triggerbot::auto_fire_tick(false);
                 }
