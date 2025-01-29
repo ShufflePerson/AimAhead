@@ -8,13 +8,11 @@
 #include "./AI/AI.h"
 #include "./Utils/Utils.h"
 #include "./Debug/Debug.h"
-#include "./Screen/Screen.h"
 #include "./Collector/Collector.h"
 #include "./GUI/GUI.h"
 #include "./ModelManager/ModelManager.h"
 #include "Structs/Config.h"
 #include "Structs/CurrentTarget.h"
-
 
 
 int main(int argc, char* argv[]) {
@@ -30,7 +28,6 @@ int main(int argc, char* argv[]) {
     }
 
     std::thread all_threads(utils::start_threads);
-
 
     ai::main_loop(&cfg);
 
