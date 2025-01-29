@@ -55,8 +55,8 @@ namespace utils {
         cfg->b_always_aim = false;
         cfg->e_target_mode = ETargetMode::CLOSEST;
         cfg->e_aim_position = EAimPosition::TOP;
-        cfg->i_frames_needed_for_prediction = 4;
-        cfg->i_max_prediction_frames = 10;
+        cfg->i_frames_needed_for_prediction = 17;
+        cfg->i_max_prediction_frames = 32;
         cfg->d_maximum_jitter_amount = 30.0f;
         cfg->i_head_margin = 20;
         cfg->i_maximum_wait_time_for_target_reappearence = 40;
@@ -68,15 +68,11 @@ namespace utils {
     }
 
     void start_threads() {
-        std::thread init_debug(debug::init);
-        std::thread init_screen(screen::run);
-        std::thread screen_loop(screen::main_loop);
-        std::thread collector_loop(collector::main_loop);
         std::thread gui_loop(gui::init_gui);
-        spdlog::info("Started debug::init, screen::run, screen::main_loop, collector::main_loop, gui::init_gui, utils::keybind_thread threads.");
+        std::thread init_debug(debug::init);
+        std::thread collector_loop(collector::main_loop);
+        spdlog::info("Started debug::init, collector::main_loop, gui::init_gui threads.");
         init_debug.join();
-        init_screen.join();
-        screen_loop.join();
         collector_loop.join();
         gui_loop.join();
     }
@@ -87,5 +83,36 @@ namespace utils {
         auto duration = now.time_since_epoch();
         auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
         return seconds.count();
+    }
+
+    bool write_to_file(const std::string& filename, const std::string& contents) {
+        std::ofstream outputFile(filename);
+
+        if (!outputFile.is_open()) {
+            std::cerr << "Error opening file: " << filename << std::endl;
+
+            std::error_code ec;
+            outputFile.open(filename, std::ios::out);
+            if (ec) {
+                std::cerr << "System error: " << ec.message() << " (Error code: " << ec.value() << ", Category: " << ec.category().name() << ")" << std::endl;
+            }
+            return false; 
+        }
+
+        outputFile << contents; 
+
+        if (outputFile.fail()) {
+            std::cerr << "Error writing to file: " << filename << std::endl;
+            std::error_code ec;
+            outputFile.clear(); 
+            outputFile.setstate(std::ios::failbit); 
+            ec = std::make_error_code(std::errc::io_error); 
+            std::cerr << "System error: " << ec.message() << " (Error code: " << ec.value() << ", Category: " << ec.category().name() << ")" << std::endl;
+            outputFile.close();
+            return false; 
+        }
+
+        outputFile.close();
+        return true;
     }
 }

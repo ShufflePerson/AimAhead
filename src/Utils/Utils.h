@@ -11,13 +11,15 @@
 #include <array>
 #include <thread>
 #include <spdlog/spdlog.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <system_error> 
 #include "../Debug/Debug.h"
-#include "../Screen/Screen.h"
 #include "../Collector/Collector.h"
 #include "../GUI/GUI.h"
 #include "../Structs/BoundingBox.h"
 #include "../Structs/Config.h"
-
 
 
 //#define __LOG_PREDICTION_ERRORS__ 1
@@ -31,4 +33,6 @@ namespace utils {
 	HWND getHwndFromTitle(const std::string windowTitle);
 
 	long long get_current_unix_time_s();
+
+	bool write_to_file(const std::string& filename, const std::string& contents);
 }
