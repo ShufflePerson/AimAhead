@@ -53,6 +53,7 @@ namespace utils {
         cfg->b_draw_targets_on_screen = true;
         cfg->b_only_run_on_hidden_cursor = false;
         cfg->b_always_aim = false;
+        cfg->b_adjust_auto_trigger_for_recoil = true;
         cfg->e_target_mode = ETargetMode::CLOSEST;
         cfg->e_aim_position = EAimPosition::TOP;
         cfg->i_frames_needed_for_prediction = 17;
@@ -63,6 +64,8 @@ namespace utils {
         cfg->i_maximum_wait_time_for_target_reappearence = 40;
         cfg->i_sensitivity = 0.22;
         cfg->i_auto_trigger_delay = 0;
+        cfg->i_auto_trigger_recoil_adjustment_amount = 150;
+        cfg->i_auto_trigger_recoil_adjustment_wait_time = 500;
         cfg->i_fps_cap = 120;
         cfg->i_selected_model_index = 0;
         cfg->read_only__i_fps = 0;

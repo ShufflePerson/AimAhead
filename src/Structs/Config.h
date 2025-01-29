@@ -26,6 +26,9 @@ struct AimConfig {
 
 	//When an enemy is directly on the crosshair, start shooting automatically
 	bool b_auto_trigger;
+	bool b_adjust_auto_trigger_for_recoil;
+	int i_auto_trigger_recoil_adjustment_amount;
+	int i_auto_trigger_recoil_adjustment_wait_time;
 	int i_auto_trigger_delay;
 
 	//Sensitivity

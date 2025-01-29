@@ -132,15 +132,18 @@ namespace ai {
         int i_last_head_margin = 0;
         float f_last_minimum_head_margin = 0.0f;
 
+        //Triggerbot
+        double d_additional_y_sens_multiplier = 1.0;
+
         while (true) {
             if (gui::get_is_visible()) {
                 if (i_last_sensitivity == cfg->i_sensitivity && i_last_head_margin == cfg->i_head_margin && cfg->f_minimum_top_margin == f_last_minimum_head_margin) {
                     continue;
                 }
-
                 i_last_sensitivity = cfg->i_sensitivity;
                 i_last_head_margin = cfg->i_head_margin;
                 f_last_minimum_head_margin = cfg->f_minimum_top_margin;
+
                 cv::cuda::GpuMat gpuImg;
                 cv::Mat cpuImg = preview::get_cached_preview_image();
                 gpuImg.upload(cpuImg);
@@ -202,7 +205,7 @@ namespace ai {
 
             capturedData.clear();
             if (!holding_triggerbot_key) {
-                triggerbot::auto_fire_tick(false);
+                triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
             }
 
 
@@ -268,6 +271,7 @@ namespace ai {
 
 
                 std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position, cfg);
+                movementExact.second = movementExact.second * d_additional_y_sens_multiplier;
                 int deltaX = static_cast<int>(round(movementExact.first));
                 int deltaY = static_cast<int>(round(movementExact.second));
                 std::pair<int, int> movement = { deltaX, deltaY };
@@ -345,7 +349,7 @@ namespace ai {
                         std::this_thread::sleep_for(std::chrono::milliseconds(cfg->i_auto_trigger_delay));
                     }
                     if (abs(movement.first) <= 10) {
-                        triggerbot::auto_fire_tick(true);
+                        triggerbot::auto_fire_tick(true, d_additional_y_sens_multiplier, cfg);
                     }
                 }
                 lastTargetPosition = movementExact;
@@ -355,7 +359,7 @@ namespace ai {
                     gui::update_boxes({});
                 }
                 if (cfg->b_auto_trigger) {
-                    triggerbot::auto_fire_tick(false);
+                    triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
                 }
                 lastTargetPosition.first = -5.0;
                 lastTargetPosition.second = -5.0;
