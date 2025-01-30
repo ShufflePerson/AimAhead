@@ -177,13 +177,26 @@ namespace gui {
                     ImGui::Begin("RedBoxOverlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
                     ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-                    for (auto &box : g_bounding_boxes) {
+                    for (auto& box : g_bounding_boxes) {
                         ImVec2 p_min = ImVec2(box.xmin, box.ymin);
                         ImVec2 p_max = ImVec2(box.xmax, box.ymax);
 
-                        ImU32 red_color = IM_COL32(255, 0, 0, 255);
+                        ImU32 red_color = IM_COL32(243, 211, 11, 220);
 
-                        draw_list->AddRect(p_min, p_max, red_color);
+                        draw_list->AddRect(p_min, p_max, red_color, 5.0f, ImDrawListFlags_AntiAliasedLines, 1.10f);
+
+                        float percentageValue = box.confidence * 100.0f;
+                        int percentageInt = static_cast<int>(percentageValue);
+                        std::stringstream ss;
+                        ss << percentageInt;
+                        std::string confidence_text = ss.str();
+                        ImVec2 text_size = ImGui::CalcTextSize(confidence_text.c_str());
+                        ImVec2 text_pos;
+                        text_pos.x = (p_min.x + p_max.x) * 0.5f - text_size.x * 0.5f; 
+                        text_pos.y = p_min.y - text_size.y;
+
+                        ImU32 text_color = IM_COL32_WHITE;
+                        draw_list->AddText(text_pos, text_color, confidence_text.c_str());
                     }
 ;
 
