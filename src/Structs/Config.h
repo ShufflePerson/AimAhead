@@ -1,4 +1,5 @@
 #pragma once
+#define CONFIG_ITERATION 2
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -19,6 +20,8 @@ enum EAimPosition {
 //README - README - README
 
 struct AimConfig {
+	int config_iteration = CONFIG_ITERATION;
+
 	bool b_aimbot;
 
 	//Aim at all times

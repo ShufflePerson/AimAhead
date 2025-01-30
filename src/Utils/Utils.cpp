@@ -45,6 +45,7 @@ namespace utils {
     }
 
     void init_config_with_defaults(AimConfig* cfg) {
+        cfg->config_iteration = CONFIG_ITERATION;
         cfg->b_auto_trigger = true;
         cfg->b_predict_next_frame = false;
         cfg->b_anti_target_jitter = true;

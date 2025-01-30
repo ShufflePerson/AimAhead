@@ -10,7 +10,7 @@ namespace config_manager {
             std::cerr << "Error opening file for writing: " << filePath << std::endl;
             return false;
         }
-
+        file.write(reinterpret_cast<const char*>(&config.config_iteration), sizeof(config.config_iteration));
         file.write(reinterpret_cast<const char*>(&config.b_aimbot), sizeof(config.b_aimbot));
         file.write(reinterpret_cast<const char*>(&config.b_always_aim), sizeof(config.b_always_aim));
         file.write(reinterpret_cast<const char*>(&config.k_aim_key), sizeof(config.k_aim_key));
@@ -57,7 +57,7 @@ namespace config_manager {
             std::cerr << "Error opening file for reading: " << filePath << std::endl;
             return false;
         }
-
+        file.read(reinterpret_cast<char*>(&config.config_iteration), sizeof(config.config_iteration));
         file.read(reinterpret_cast<char*>(&config.b_aimbot), sizeof(config.b_aimbot));
         file.read(reinterpret_cast<char*>(&config.b_always_aim), sizeof(config.b_always_aim));
         file.read(reinterpret_cast<char*>(&config.k_aim_key), sizeof(config.k_aim_key));
@@ -101,6 +101,11 @@ namespace config_manager {
         namespace fs = std::filesystem;
         if (fs::exists(configFilePath)) {
             deserialize_aim_config(*cfg, configFilePath);
+            if (cfg->config_iteration != CONFIG_ITERATION) {
+                printf("Unable to load config from file as it is an older version. Regenerating a new one!\n");
+                utils::init_config_with_defaults(cfg);
+                serialize_aim_config(*cfg, configFilePath);
+            }
         }
         else {
             utils::init_config_with_defaults(cfg);
