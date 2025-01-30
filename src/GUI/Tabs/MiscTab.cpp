@@ -31,7 +31,7 @@ void gui::__render__misc_tab__(AimConfig* config) {
 		ImGui::Text("i_future_frames_to_predict:");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(200);
-		ImGui::SliderInt("##i_future_frames_to_predict", &config->i_max_prediction_frames, 1, 30);
+		ImGui::SliderInt("##i_future_frames_to_predict", &config->i_future_frames_to_predict, 1, 30);
 		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("How many frames into the future should it predict.");
 	}
 
