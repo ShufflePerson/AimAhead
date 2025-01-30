@@ -355,9 +355,7 @@ namespace ai {
                 lastTargetPosition = movementExact;
             }
             else {
-                if (cfg->b_draw_targets_on_screen) {
-                    gui::update_boxes({});
-                }
+                gui::update_boxes({});
                 if (cfg->b_auto_trigger) {
                     triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
                 }
