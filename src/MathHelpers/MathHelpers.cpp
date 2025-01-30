@@ -61,6 +61,17 @@ namespace math_helpers {
         return std::pair<double, double>{predictedX, predictedY};
     }
 
+    std::pair<double, double> calculate_future_frame_prediction(std::vector<std::pair<double, double>> history, std::pair<double, double> current, int frames_to_predict) {
+        std::pair<double, double> predicted_frame = current;
+        std::vector<std::pair<double, double>> current_history = history; 
+
+        for (int i = 0; i < frames_to_predict; ++i) {
+            predicted_frame = calculate_new_frame_prediction_based_on_history(current_history, predicted_frame);
+            current_history.push_back(predicted_frame); 
+        }
+        return predicted_frame;
+    }
+
     double get_delta_between_positions(std::pair<double, double> old_pos, std::pair<double, double> new_pos) {
         double deltaX = abs(old_pos.first - new_pos.first);
         double deltaY = abs(old_pos.second - new_pos.second);

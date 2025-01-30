@@ -24,6 +24,7 @@ namespace config_manager {
         file.write(reinterpret_cast<const char*>(&config.b_predict_next_frame), sizeof(config.b_predict_next_frame));
         file.write(reinterpret_cast<const char*>(&config.i_frames_needed_for_prediction), sizeof(config.i_frames_needed_for_prediction));
         file.write(reinterpret_cast<const char*>(&config.i_max_prediction_frames), sizeof(config.i_max_prediction_frames));
+        file.write(reinterpret_cast<const char*>(&config.i_future_frames_to_predict), sizeof(config.i_future_frames_to_predict));
         file.write(reinterpret_cast<const char*>(&config.e_target_mode), sizeof(config.e_target_mode));
         file.write(reinterpret_cast<const char*>(&config.e_aim_position), sizeof(config.e_aim_position));
         file.write(reinterpret_cast<const char*>(&config.b_anti_target_jitter), sizeof(config.b_anti_target_jitter));
@@ -71,6 +72,7 @@ namespace config_manager {
         file.read(reinterpret_cast<char*>(&config.b_predict_next_frame), sizeof(config.b_predict_next_frame));
         file.read(reinterpret_cast<char*>(&config.i_frames_needed_for_prediction), sizeof(config.i_frames_needed_for_prediction));
         file.read(reinterpret_cast<char*>(&config.i_max_prediction_frames), sizeof(config.i_max_prediction_frames));
+        file.read(reinterpret_cast<char*>(&config.i_future_frames_to_predict), sizeof(config.i_future_frames_to_predict));
         file.read(reinterpret_cast<char*>(&config.e_target_mode), sizeof(config.e_target_mode));
         file.read(reinterpret_cast<char*>(&config.e_aim_position), sizeof(config.e_aim_position));
         file.read(reinterpret_cast<char*>(&config.b_anti_target_jitter), sizeof(config.b_anti_target_jitter));

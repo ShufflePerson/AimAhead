@@ -321,7 +321,7 @@ namespace ai {
                         }
 
                         if (current_target.v_location_history.size() >= cfg->i_frames_needed_for_prediction) {
-                            std::pair<double, double> predictionOutcome = math_helpers::calculate_new_frame_prediction_based_on_history(current_target.v_location_history, movementExact);
+                            std::pair<double, double> predictionOutcome = math_helpers::calculate_future_frame_prediction(current_target.v_location_history, movementExact, cfg->i_future_frames_to_predict);
 #ifdef __DEBUG__
                             debug::draw_target_prediction(movementExact, predictionOutcome);
 #endif

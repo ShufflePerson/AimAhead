@@ -1,5 +1,5 @@
 #pragma once
-#define CONFIG_ITERATION 2
+#define CONFIG_ITERATION 3
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -47,6 +47,8 @@ struct AimConfig {
 	int i_frames_needed_for_prediction;
 	//What is the max amount of frames to use to make a prediction
 	int i_max_prediction_frames;
+	//How many frames into the future should it predict
+	int i_future_frames_to_predict;
 
 	//Sets how the target should be selected:
 	//OBJECTIVE - Targets the target that has the highest confidence
