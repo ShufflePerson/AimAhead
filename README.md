@@ -45,7 +45,7 @@ AimAhead works by capturing your screen, then running it through an AI model of 
 ## Requirements
 
 *   **NVIDIA Graphics Card:**  Only works on NVIDIA GPUs
-*   **CUDA 12.4:**  Cuda 12.4, download it from (here)[NVIDIA CUDA Toolkit Archive](developer.nvidia.com/cuda-12-4-0-download-archive).
+*   **CUDA 12.4:**  Cuda 12.4, download it from [NVIDIA CUDA Toolkit Archive](developer.nvidia.com/cuda-12-4-0-download-archive).
 
 ## Importing a model
 
