@@ -7,6 +7,8 @@
 
 AimAhead works by capturing your screen, then running it through an AI model of your liking to find the enemies, after which it aims towards them.
 
+![AimAhead Tab](github/images/aimbot.png)
+
 ## Features
 
 *   **AI:**  AimAhead uses AI to see enemies and lock onto them fast.
