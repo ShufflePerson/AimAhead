@@ -185,18 +185,20 @@ namespace gui {
 
                         draw_list->AddRect(p_min, p_max, red_color, 5.0f, ImDrawListFlags_AntiAliasedLines, 1.10f);
 
-                        float percentageValue = box.confidence * 100.0f;
-                        int percentageInt = static_cast<int>(percentageValue);
-                        std::stringstream ss;
-                        ss << percentageInt;
-                        std::string confidence_text = ss.str();
-                        ImVec2 text_size = ImGui::CalcTextSize(confidence_text.c_str());
-                        ImVec2 text_pos;
-                        text_pos.x = (p_min.x + p_max.x) * 0.5f - text_size.x * 0.5f; 
-                        text_pos.y = p_min.y - text_size.y;
+                        if (config->b_draw_confidence) {
+                            float percentageValue = box.confidence * 100.0f;
+                            int percentageInt = static_cast<int>(percentageValue);
+                            std::stringstream ss;
+                            ss << percentageInt;
+                            std::string confidence_text = ss.str() + "%";
+                            ImVec2 text_size = ImGui::CalcTextSize(confidence_text.c_str());
+                            ImVec2 text_pos;
+                            text_pos.x = (p_min.x + p_max.x) * 0.5f - text_size.x * 0.5f;
+                            text_pos.y = p_min.y - text_size.y;
 
-                        ImU32 text_color = IM_COL32_WHITE;
-                        draw_list->AddText(text_pos, text_color, confidence_text.c_str());
+                            ImU32 text_color = IM_COL32_WHITE;
+                            draw_list->AddText(text_pos, text_color, confidence_text.c_str());
+                        }
                     }
 ;
 

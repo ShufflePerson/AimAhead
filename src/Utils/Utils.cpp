@@ -54,6 +54,7 @@ namespace utils {
         cfg->b_only_run_on_hidden_cursor = false;
         cfg->b_always_aim = false;
         cfg->b_adjust_auto_trigger_for_recoil = true;
+        cfg->b_draw_confidence;
         cfg->e_target_mode = ETargetMode::CLOSEST;
         cfg->e_aim_position = EAimPosition::TOP;
         cfg->i_frames_needed_for_prediction = 17;

@@ -76,6 +76,7 @@ struct AimConfig {
 
 	//Visuals
 	bool b_draw_targets_on_screen;
+	bool b_draw_confidence;
 	
 	//Margin from the top of the box
 	int i_head_margin;
