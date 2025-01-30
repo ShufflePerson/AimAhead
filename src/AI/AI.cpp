@@ -271,7 +271,9 @@ namespace ai {
 
 
                 std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position, cfg);
-                movementExact.second = movementExact.second * d_additional_y_sens_multiplier;
+                if (cfg->b_adjust_auto_trigger_for_recoil) {
+                    movementExact.second = movementExact.second * d_additional_y_sens_multiplier;
+                }
                 int deltaX = static_cast<int>(round(movementExact.first));
                 int deltaY = static_cast<int>(round(movementExact.second));
                 std::pair<int, int> movement = { deltaX, deltaY };
