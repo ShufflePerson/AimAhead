@@ -48,7 +48,7 @@ namespace utils {
         cfg->b_auto_trigger = true;
         cfg->b_predict_next_frame = false;
         cfg->b_anti_target_jitter = true;
-        cfg->b_save_training_data = true;
+        cfg->b_save_training_data = false;
         cfg->b_aimbot = true;
         cfg->b_draw_targets_on_screen = true;
         cfg->b_only_run_on_hidden_cursor = false;
