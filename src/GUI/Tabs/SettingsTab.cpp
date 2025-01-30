@@ -5,6 +5,12 @@ void gui::__render__settings_tab__(AimConfig* config) {
 	ImGui::Checkbox("Save Training Data", &config->b_save_training_data);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Saves training data to the data folder.");
 
+    ImGui::NewLine();
+    ImGui::Text("Minimum Confidence");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(200);
+    ImGui::SliderInt("##min_confidence", &config->i_minimum_confidence, 0, 100);
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Only Targets that have a confidence level above the selected value will be processed.");
 
 
     std::vector<std::string> loaded_models = model_manager::get_loaded_models();

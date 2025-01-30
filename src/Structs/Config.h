@@ -73,6 +73,8 @@ struct AimConfig {
 	int i_selected_model_index;
 	//Minimum margin for TOP::EAimPosition
 	float f_minimum_top_margin;
+	//Minimum confidence level for a valid target
+	int i_minimum_confidence;
 
 	//Visuals
 	bool b_draw_targets_on_screen;

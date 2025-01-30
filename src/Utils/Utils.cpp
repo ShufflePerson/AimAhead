@@ -69,6 +69,7 @@ namespace utils {
         cfg->i_auto_trigger_recoil_adjustment_wait_time = 500;
         cfg->i_fps_cap = 120;
         cfg->i_selected_model_index = 0;
+        cfg->i_minimum_confidence = 55;
         cfg->read_only__i_fps = 0;
     }
 

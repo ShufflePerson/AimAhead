@@ -107,7 +107,6 @@ namespace ai {
 
         // Object Detection Parameters
         double area_middle = 640 / 2.0;
-        float minObjectness = 0.65f;
 
         // Target Tracking
         std::pair<double, double> lastTargetPosition = { -5.0, -5.0 };
@@ -136,6 +135,7 @@ namespace ai {
         double d_additional_y_sens_multiplier = 1.0;
 
         while (true) {
+            float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
             if (gui::get_is_visible()) {
                 if (i_last_sensitivity == cfg->i_sensitivity && i_last_head_margin == cfg->i_head_margin && cfg->f_minimum_top_margin == f_last_minimum_head_margin) {
                     continue;
