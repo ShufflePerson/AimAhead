@@ -58,8 +58,8 @@ namespace utils {
         cfg->b_draw_confidence;
         cfg->e_target_mode = ETargetMode::CLOSEST;
         cfg->e_aim_position = EAimPosition::TOP;
-        cfg->i_frames_needed_for_prediction = 17;
-        cfg->i_max_prediction_frames = 32;
+        cfg->i_frames_needed_for_prediction = 6;
+        cfg->i_max_prediction_frames = 24;
         cfg->i_future_frames_to_predict = 2;
         cfg->d_maximum_jitter_amount = 30.0f;
         cfg->f_minimum_top_margin = 15.0f;
