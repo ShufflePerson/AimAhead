@@ -92,33 +92,33 @@ namespace utils {
     }
 
     bool write_to_file(const std::string& filename, const std::string& contents) {
-        std::ofstream outputFile(filename);
+        std::ofstream output_file(filename);
 
-        if (!outputFile.is_open()) {
+        if (!output_file.is_open()) {
             std::cerr << "Error opening file: " << filename << std::endl;
 
-            std::error_code ec;
-            outputFile.open(filename, std::ios::out);
-            if (ec) {
-                std::cerr << "System error: " << ec.message() << " (Error code: " << ec.value() << ", Category: " << ec.category().name() << ")" << std::endl;
+            std::error_code error_code;
+            output_file.open(filename, std::ios::out);
+            if (error_code) {
+                std::cerr << "System error: " << error_code.message() << " (Error code: " << error_code.value() << ", Category: " << error_code.category().name() << ")" << std::endl;
             }
             return false; 
         }
 
-        outputFile << contents; 
+        output_file << contents; 
 
-        if (outputFile.fail()) {
+        if (output_file.fail()) {
             std::cerr << "Error writing to file: " << filename << std::endl;
-            std::error_code ec;
-            outputFile.clear(); 
-            outputFile.setstate(std::ios::failbit); 
-            ec = std::make_error_code(std::errc::io_error); 
-            std::cerr << "System error: " << ec.message() << " (Error code: " << ec.value() << ", Category: " << ec.category().name() << ")" << std::endl;
-            outputFile.close();
+            std::error_code error_code;
+            output_file.clear(); 
+            output_file.setstate(std::ios::failbit); 
+            error_code = std::make_error_code(std::errc::io_error); 
+            std::cerr << "System error: " << error_code.message() << " (Error code: " << error_code.value() << ", Category: " << error_code.category().name() << ")" << std::endl;
+            output_file.close();
             return false; 
         }
 
-        outputFile.close();
+        output_file.close();
         return true;
     }
 
