@@ -29,7 +29,22 @@ typedef struct _SYSTEM_KERNEL_DEBUGGER_INFORMATION {
 #define FLG_HEAP_VALIDATE_PARAMETERS 0x40
 #define NT_GLOBAL_FLAG_DEBUGGED (FLG_HEAP_ENABLE_TAIL_CHECK | FLG_HEAP_ENABLE_FREE_CHECK | FLG_HEAP_VALIDATE_PARAMETERS)
 
+#pragma pack(push, 1)
+struct DbgUiRemoteBreakinPatch
+{
+    WORD  push_0;
+    BYTE  push;
+    DWORD CurrentPorcessHandle;
+    BYTE  mov_eax;
+    DWORD TerminateProcess;
+    WORD  call_eax;
+};
+#pragma pack(pop)
+
+
 namespace security {
+
+   
 
     bool check_is_debugger_present(HMODULE hKernel32) {
         typedef BOOL(WINAPI* IsDebuggerPresentFunc)();
@@ -168,8 +183,123 @@ namespace security {
         return (*pdwHeapFlags & ~HEAP_GROWABLE) || (*pdwHeapForceFlags != 0);
     }
 
+    bool do_debug_registers_exist() {
+        CONTEXT ctx;
+        ZeroMemory(&ctx, sizeof(CONTEXT));
+        ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+
+        if (!GetThreadContext(GetCurrentThread(), &ctx))
+            return false;
+
+        return ctx.Dr0 || ctx.Dr1 || ctx.Dr2 || ctx.Dr3;
+    }
+
+    bool check_for_patched_is_debugger_present()
+    {
+        HMODULE hKernel32 = GetModuleHandleA(XorStr("kernel32.dll"));
+        if (!hKernel32)
+            return false;
+
+        FARPROC pIsDebuggerPresent = GetProcAddress(hKernel32, XorStr("IsDebuggerPresent"));
+        if (!pIsDebuggerPresent)
+            return false;
+
+        HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+        if (INVALID_HANDLE_VALUE == hSnapshot)
+            return false;
+
+        PROCESSENTRY32W ProcessEntry;
+        ProcessEntry.dwSize = sizeof(PROCESSENTRY32W);
+
+        if (!Process32FirstW(hSnapshot, &ProcessEntry))
+            return false;
+
+        bool bDebuggerPresent = false;
+        HANDLE hProcess = NULL;
+        DWORD dwFuncBytes = 0;
+        const DWORD dwCurrentPID = GetCurrentProcessId();
+        do
+        {
+            __try
+            {
+                if (dwCurrentPID == ProcessEntry.th32ProcessID)
+                    continue;
+
+                hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessEntry.th32ProcessID);
+                if (NULL == hProcess)
+                    continue;
+
+                if (!ReadProcessMemory(hProcess, pIsDebuggerPresent, &dwFuncBytes, sizeof(DWORD), NULL))
+                    continue;
+
+                if (dwFuncBytes != *(PDWORD)pIsDebuggerPresent)
+                {
+                    bDebuggerPresent = true;
+                    break;
+                }
+            }
+            __finally
+            {
+                if (hProcess)
+                    CloseHandle(hProcess);
+            }
+        } while (Process32NextW(hSnapshot, &ProcessEntry));
+
+        if (hSnapshot)
+            CloseHandle(hSnapshot);
+        return bDebuggerPresent;
+    }
+
+    void patch_DbgUiRemoteBreakin()
+    {
+        HMODULE hNtdll = GetModuleHandleA(XorStr("ntdll.dll"));
+        if (!hNtdll)
+            return;
+
+        FARPROC pDbgUiRemoteBreakin = GetProcAddress(hNtdll, XorStr("DbgUiRemoteBreakin"));
+        if (!pDbgUiRemoteBreakin)
+            return;
+
+        HMODULE hKernel32 = GetModuleHandleA(XorStr("kernel32.dll"));
+        if (!hKernel32)
+            return;
+
+        FARPROC pTerminateProcess = GetProcAddress(hKernel32, XorStr("TerminateProcess"));
+        if (!pTerminateProcess)
+            return;
+
+        DbgUiRemoteBreakinPatch patch = { 0 };
+        patch.push_0 = '\x6A\x00';
+        patch.push = '\x68';
+        patch.CurrentPorcessHandle = 0xFFFFFFFF;
+        patch.mov_eax = '\xB8';
+        patch.TerminateProcess = (DWORD)pTerminateProcess;
+        patch.call_eax = '\xFF\xD0';
+
+        DWORD dwOldProtect;
+        if (!VirtualProtect(pDbgUiRemoteBreakin, sizeof(DbgUiRemoteBreakinPatch), PAGE_READWRITE, &dwOldProtect))
+            return;
+
+        ::memcpy_s(pDbgUiRemoteBreakin, sizeof(DbgUiRemoteBreakinPatch),
+            &patch, sizeof(DbgUiRemoteBreakinPatch));
+        VirtualProtect(pDbgUiRemoteBreakin, sizeof(DbgUiRemoteBreakinPatch), dwOldProtect, &dwOldProtect);
+    }
 
     bool is_debugger_present() {
+        PVOID pRetAddress = _ReturnAddress();
+        BYTE uByte;
+        if (Toolhelp32ReadProcessMemory(GetCurrentProcessId(), _ReturnAddress(), &uByte, sizeof(BYTE), NULL) == TRUE) {
+            if (uByte == 0xCC) {
+                breach_detected();
+                return true;
+            }
+        }
+
+        patch_DbgUiRemoteBreakin();
+
+        if (do_debug_registers_exist()) return true;
+        if (check_for_patched_is_debugger_present()) return true;
+
         HMODULE hKernel32 = LoadLibraryA(XorStr("Kernel32.dll"));
         if (hKernel32 == NULL) {
             std::cerr << XorStr("Error loading Kernel32.dll. Error code: ") << GetLastError() << std::endl;

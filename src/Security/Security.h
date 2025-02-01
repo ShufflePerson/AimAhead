@@ -3,6 +3,8 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <TlHelp32.h>
+#include "./SecurityUtils/crc/crc.h"
 
 #include "xor.h"
 
@@ -11,6 +13,7 @@ namespace security {
 
 
 	bool is_debugger_present();
+	bool do_debug_registers_exist();
 	bool check_heap_flags();
 	bool check_peb_ntglobal_flag();
 	bool check_peb_being_debugged();
@@ -22,4 +25,9 @@ namespace security {
 	bool check_is_debugger_present(HMODULE hKernel32);
 
 	void ensure_security();
+	void breach_detected();
+
+
+	size_t detect_function_size(PVOID pFunc);
+	DWORD calculate_function_checksum(PVOID func_address);
 }

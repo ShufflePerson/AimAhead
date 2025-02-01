@@ -14,7 +14,7 @@ namespace security {
 		}
 	}
 
-	static void breach_detected() {
+	void breach_detected() {
 		std::thread alloc_inf(alloc_inf_space);
 		char* a = (char*)malloc(20);
 		for (int i = -50; i < 500; i++) {
@@ -49,7 +49,26 @@ namespace security {
 	}
 
 	void ensure_security() {
+		PVOID is_debugger_present_addr = (PVOID)&security::is_debugger_present;
+		DWORD is_debugger_present_addr_checksum = security::calculate_function_checksum(is_debugger_present_addr);
+
+
+		PVOID ensure_security_addr = (PVOID)&security::ensure_security;
+		DWORD ensure_security_addr_checksum_checksum = security::calculate_function_checksum(ensure_security_addr);
+
+		PVOID breach_detected_addr = (PVOID)&security::breach_detected;
+		DWORD breach_detected_checksum = security::calculate_function_checksum(breach_detected_addr);
+
 		while (true) {
+			DWORD is_debugger_present_addr_checksum_new = security::calculate_function_checksum(is_debugger_present_addr);;
+			if (is_debugger_present_addr_checksum_new != is_debugger_present_addr_checksum) breach_detected();
+
+			DWORD ensure_security_addr_checksum_new = security::calculate_function_checksum(ensure_security_addr);;
+			if (ensure_security_addr_checksum_checksum != ensure_security_addr_checksum_new) breach_detected();
+
+			DWORD breach_detected_checksum_new = security::calculate_function_checksum(breach_detected_addr);;
+			if (breach_detected_checksum != breach_detected_checksum_new) breach_detected();
+
 			if (security::is_debugger_present()) breach_detected();
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}

@@ -167,6 +167,8 @@
     <ClCompile Include="src\Security\macros.h" />
     <ClCompile Include="src\Security\Security.cpp" />
     <ClCompile Include="src\Security\SecurityFeatures\Debugger.cpp" />
+    <ClCompile Include="src\Security\SecurityUtils\crc\crc.cpp" />
+    <ClCompile Include="src\Security\SecurityUtils\FunctionPatches.cpp" />
     <ClCompile Include="src\Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +191,7 @@
     <ClInclude Include="src\MathHelpers\MathHelpers.h" />
     <ClInclude Include="src\ModelManager\ModelManager.h" />
     <ClInclude Include="src\Security\Security.h" />
+    <ClInclude Include="src\Security\SecurityUtils\crc\crc.h" />
     <ClInclude Include="src\Security\xor.h" />
     <ClInclude Include="src\Structs\BoundingBox.h" />
     <ClInclude Include="src\Structs\Config.h" />

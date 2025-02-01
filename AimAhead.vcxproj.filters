@@ -105,6 +105,12 @@
     <ClCompile Include="src\Security\macros.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Security\SecurityUtils\FunctionPatches.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Security\SecurityUtils\crc\crc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI\AI.h">
@@ -177,6 +183,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Security\xor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Security\SecurityUtils\crc\crc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
