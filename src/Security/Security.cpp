@@ -37,7 +37,7 @@ namespace security {
 
 		typedef HANDLE(WINAPI* GetCurrentProc)();
 		GetCurrentProc getProc = (GetCurrentProc)GetProcAddress(hKernel32, XorStr("GetCurrentProcess"));
-		if (termProrc == NULL) {
+		if (getProc == NULL) {
 			std::cerr << XorStr("Error getting address of GetCurrentProc. Error code: ") << GetLastError() << std::endl;
 			FreeLibrary(hKernel32);
 			return;
