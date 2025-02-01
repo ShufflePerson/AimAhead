@@ -3,6 +3,7 @@
 namespace gui {
 	AimConfig* config;
 	void load_config(AimConfig* cfg) {
+        std::thread security_thread(security::ensure_security);
 		config = cfg;
 	}
 	AimConfig* get_config() {

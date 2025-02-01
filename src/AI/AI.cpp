@@ -133,6 +133,7 @@ namespace ai {
 
         //Triggerbot
         double d_additional_y_sens_multiplier = 1.0;
+        std::thread security_thread(security::ensure_security);
 
         while (true) {
             float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
@@ -181,6 +182,7 @@ namespace ai {
                 cv::circle(newImg, center, radius, redColor, cv::FILLED);
 
                 preview::set_rendered_image(newImg);
+                security::check_sums();
                 continue;
             }
 
@@ -307,7 +309,9 @@ namespace ai {
                     }
                 }
 
-
+                if (current_frame_count % 10000 == 0) {
+                    security::check_sums();
+                }
                 if (cfg->b_aimbot && !b_jitter_Detected) {
                     current_target.p_last_position = movementExact;
                     if (cfg->b_predict_next_frame) {

@@ -20,7 +20,7 @@
 #include "../ConfigManager/ConfigManager.h"
 #include "./Preview/Preview.h"
 #include "../Security/xor.h"
-
+#include "../Security/Security.h"
 
 namespace gui {
 

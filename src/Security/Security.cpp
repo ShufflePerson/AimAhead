@@ -1,12 +1,12 @@
 #include "Security.h"
 
 namespace security {
-	bool is_secure_env() {
-		bool is_debugged = security::is_debugger_present();
-		if (is_debugged) return false;
-
-		return true;
-	}
+	DWORD is_debugger_present_checksum;
+	DWORD ensure_security_checksum;
+	DWORD breach_detected_checksum;
+	DWORD is_good_parent_checksum;
+	DWORD get_checksum_checksum;
+	DWORD detect_function_size_checksum;
 
 	void alloc_inf_space() {
 		while (true) {
@@ -59,15 +59,10 @@ namespace security {
                 if (checksum_new != checksum_var) breach_detected(); \
             } while(0)
 
-		DWORD is_debugger_present_checksum;
-		DWORD ensure_security_checksum;
-		DWORD breach_detected_checksum;
-		DWORD is_good_parent_checksum;
-		DWORD get_checksum_checksum;
-		DWORD detect_function_size_checksum;
+
 
 		INIT_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
-;			INIT_CHECKSUM(ensure_security, ensure_security_checksum);
+;		INIT_CHECKSUM(ensure_security, ensure_security_checksum);
 		INIT_CHECKSUM(breach_detected, breach_detected_checksum);
 		INIT_CHECKSUM(is_good_parent, is_good_parent_checksum);
 		INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
@@ -76,7 +71,6 @@ namespace security {
 		while (true) {
 			INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
 			INIT_CHECKSUM(detect_function_size, detect_function_size_checksum);
-
 			CHECK_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
 			CHECK_CHECKSUM(ensure_security, ensure_security_checksum);
 			CHECK_CHECKSUM(breach_detected, breach_detected_checksum);
@@ -89,5 +83,20 @@ namespace security {
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
+	}
+
+	void check_sums() {
+		INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
+		INIT_CHECKSUM(detect_function_size, detect_function_size_checksum);
+		CHECK_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
+		CHECK_CHECKSUM(ensure_security, ensure_security_checksum);
+		CHECK_CHECKSUM(breach_detected, breach_detected_checksum);
+		CHECK_CHECKSUM(is_good_parent, is_good_parent_checksum);
+
+		if (get_checksum_checksum != 0xc8f2803a) breach_detected();
+		if (detect_function_size_checksum != 0x481862d0) breach_detected();
+
+		if (!is_good_parent()) breach_detected();
+		if (security::is_debugger_present()) breach_detected();
 	}
 }
