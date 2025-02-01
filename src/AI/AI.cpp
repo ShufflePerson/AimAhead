@@ -209,6 +209,7 @@ namespace ai {
             }
 
 
+
             if (!capture::captureScreenRegion(capturedData)) {
                 continue;
             }
@@ -227,10 +228,10 @@ namespace ai {
 
             std::vector<BoundingBox> results = ai::runInference(gpuImg, minObjectness, *engine_ptr);
 
+
 #ifdef __DEBUG__
             cv::Mat cpuImg;
             gpuImg.download(cpuImg);
-            cv::cvtColor(cpuImg, cpuImg, cv::COLOR_BGRA2RGB);
             debug::update_image(cpuImg);
             debug::draw_boxes(results);
 #endif
