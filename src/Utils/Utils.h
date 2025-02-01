@@ -20,6 +20,7 @@
 #include "../GUI/GUI.h"
 #include "../Structs/BoundingBox.h"
 #include "../Structs/Config.h"
+#include "../Security/xor.h"
 
 
 //#define __LOG_PREDICTION_ERRORS__ 1

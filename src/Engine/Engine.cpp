@@ -27,7 +27,7 @@ void Logger::log(Severity severity, const char* msg) noexcept {
         spdlog::critical(msg);
         break;
     default:
-        spdlog::debug("Unexpected severity level");
+        spdlog::debug(XorStr("Unexpected severity level"));
     }
 }
 
@@ -44,14 +44,14 @@ Int8EntropyCalibrator2::Int8EntropyCalibrator2(int32_t batchSize, int32_t inputW
 
     // Read the name of all the files in the specified directory.
     if (!doesFileExist(calibDataDirPath)) {
-        auto msg = "Error, directory at provided path does not exist: " + calibDataDirPath;
+        auto msg = XorStr("Error, directory at provided path does not exist: ") + calibDataDirPath;
         spdlog::error(msg);
         throw std::runtime_error(msg);
     }
 
     m_imgPaths = getFilesInDirectory(calibDataDirPath);
     if (m_imgPaths.size() < static_cast<size_t>(batchSize)) {
-        auto msg = "Error, there are fewer calibration images than the specified batch size!";
+        auto msg = XorStr("Error, there are fewer calibration images than the specified batch size!");
         spdlog::error(msg);
         throw std::runtime_error(msg);
     }
@@ -79,10 +79,9 @@ bool Int8EntropyCalibrator2::getBatch(void** bindings, const char** names, int32
     // Read the calibration images into memory for the current batch
     std::vector<cv::cuda::GpuMat> inputImgs;
     for (int i = m_imgIdx; i < m_imgIdx + m_batchSize; i++) {
-        spdlog::debug("Reading image {}: {}", i, m_imgPaths[i]);
         auto cpuImg = cv::imread(m_imgPaths[i]);
         if (cpuImg.empty()) {
-            spdlog::error("Fatal error: Unable to read image at path: " + m_imgPaths[i]);
+            spdlog::error(XorStr("Fatal error: Unable to read image at path: ") + m_imgPaths[i]);
             return false;
         }
 
@@ -106,7 +105,7 @@ bool Int8EntropyCalibrator2::getBatch(void** bindings, const char** names, int32
 
     m_imgIdx += m_batchSize;
     if (std::string(names[0]) != m_inputBlobName) {
-        spdlog::error("Error: Incorrect input name provided!");
+        spdlog::error(XorStr("Error: Incorrect input name provided!"));
         return false;
     }
     bindings[0] = m_deviceInput;
@@ -114,12 +113,10 @@ bool Int8EntropyCalibrator2::getBatch(void** bindings, const char** names, int32
 }
 
 void const* Int8EntropyCalibrator2::readCalibrationCache(size_t& length) noexcept {
-    spdlog::debug("Searching for calibration cache: {}", m_calibTableName);
     m_calibCache.clear();
     std::ifstream input(m_calibTableName, std::ios::binary);
     input >> std::noskipws;
     if (m_readCache && input.good()) {
-        spdlog::debug("Reading calibration cache: {}", m_calibTableName);
         std::copy(std::istream_iterator<char>(input), std::istream_iterator<char>(), std::back_inserter(m_calibCache));
     }
     length = m_calibCache.size();
@@ -127,8 +124,6 @@ void const* Int8EntropyCalibrator2::readCalibrationCache(size_t& length) noexcep
 }
 
 void Int8EntropyCalibrator2::writeCalibrationCache(const void* ptr, std::size_t length) noexcept {
-    spdlog::debug("Writing calibration cache: {}", m_calibTableName);
-    spdlog::debug("Calibration cache size: {} bytes", length);
     std::ofstream output(m_calibTableName, std::ios::binary);
     output.write(reinterpret_cast<const char*>(ptr), length);
 }

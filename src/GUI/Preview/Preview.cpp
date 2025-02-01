@@ -7,7 +7,7 @@ namespace preview {
 
 	void load_preview_image_into_cache() {
 		b_loaded_cached_image = true;
-		std::string imagePath = "./bin/preview.jpg";
+		std::string imagePath = XorStr("./bin/preview.jpg");
 		cv::Mat image = cv::imread(imagePath, cv::IMREAD_COLOR);
 		cached_image = image;
 	}

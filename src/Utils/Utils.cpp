@@ -79,7 +79,7 @@ namespace utils {
         std::thread gui_loop(gui::init_gui);
         std::thread init_debug(debug::init);
         std::thread collector_loop(collector::main_loop);
-        spdlog::info("Started debug::init, collector::main_loop, gui::init_gui threads.");
+        spdlog::info(XorStr("Started all threads."));
         init_debug.join();
         collector_loop.join();
         gui_loop.join();
@@ -97,12 +97,12 @@ namespace utils {
         std::ofstream output_file(filename);
 
         if (!output_file.is_open()) {
-            std::cerr << "Error opening file: " << filename << std::endl;
+            std::cerr << XorStr("Error opening file: ") << filename << std::endl;
 
             std::error_code error_code;
             output_file.open(filename, std::ios::out);
             if (error_code) {
-                std::cerr << "System error: " << error_code.message() << " (Error code: " << error_code.value() << ", Category: " << error_code.category().name() << ")" << std::endl;
+                std::cerr << XorStr("System error: ") << error_code.message() << XorStr(" (Error code: ") << error_code.value() << XorStr(", Category: ") << error_code.category().name() << ")" << std::endl;
             }
             return false; 
         }
@@ -110,12 +110,12 @@ namespace utils {
         output_file << contents; 
 
         if (output_file.fail()) {
-            std::cerr << "Error writing to file: " << filename << std::endl;
+            std::cerr << XorStr("Error writing to file: ") << filename << std::endl;
             std::error_code error_code;
             output_file.clear(); 
             output_file.setstate(std::ios::failbit); 
             error_code = std::make_error_code(std::errc::io_error); 
-            std::cerr << "System error: " << error_code.message() << " (Error code: " << error_code.value() << ", Category: " << error_code.category().name() << ")" << std::endl;
+            std::cerr << XorStr("System error: ") << error_code.message() << XorStr(" (Error code: ") << error_code.value() << XorStr(", Category: ") << error_code.category().name() << XorStr(")") << std::endl;
             output_file.close();
             return false; 
         }

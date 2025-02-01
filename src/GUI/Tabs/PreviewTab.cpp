@@ -51,15 +51,15 @@ void gui::__render__preview_tab__(AimConfig* config) {
 
 	ImGui::NewLine();
 	ImGui::NewLine();
-	ImGui::Columns(2, "Columns");
+	ImGui::Columns(2, XorStr("Columns"));
 	
     
-    ImGui::Text("TOP Aim position margin");
-	ImGui::SliderInt("##margin_top", &config->i_head_margin, 0, 100);
-    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("A percentege of a margin from the top of the box when TOP aim position is selected.");
+    ImGui::Text(XorStr("TOP Aim position margin"));
+	ImGui::SliderInt(XorStr("##margin_top"), &config->i_head_margin, 0, 100);
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("A percentege of a margin from the top of the box when TOP aim position is selected."));
 
-    ImGui::Text("TOP Minimum Margin");
-    ImGui::SliderFloat("##minimum_margin_top", &config->f_minimum_top_margin, 0.0f, 100.0f);
+    ImGui::Text(XorStr("TOP Minimum Margin"));
+    ImGui::SliderFloat(XorStr("##minimum_margin_top"), &config->f_minimum_top_margin, 0.0f, 100.0f);
 
 	ImGui::NextColumn();
 	ImGui::SetColumnWidth(0, 300.0f);

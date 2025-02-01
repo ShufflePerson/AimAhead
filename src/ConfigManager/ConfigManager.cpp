@@ -2,12 +2,12 @@
 
 
 namespace config_manager {
-    const std::string configFilePath = "config.cfg";
+    const std::string configFilePath = XorStr("config.cfg");
 
     bool serialize_aim_config(const AimConfig& config, const std::string& filePath) {
         std::ofstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
-            std::cerr << "Error opening file for writing: " << filePath << std::endl;
+            std::cerr << XorStr("Error opening file for writing: ") << filePath << std::endl;
             return false;
         }
         file.write(reinterpret_cast<const char*>(&config.config_iteration), sizeof(config.config_iteration));
@@ -43,7 +43,7 @@ namespace config_manager {
 
 
         if (file.fail()) {
-            std::cerr << "Error writing to file: " << filePath << std::endl;
+            std::cerr << XorStr("Error writing to file: ") << filePath << std::endl;
             file.close();
             return false;
         }
@@ -55,7 +55,7 @@ namespace config_manager {
     bool deserialize_aim_config(AimConfig& config, const std::string& filePath) {
         std::ifstream file(filePath, std::ios::binary);
         if (!file.is_open()) {
-            std::cerr << "Error opening file for reading: " << filePath << std::endl;
+            std::cerr << XorStr("Error opening file for reading: ") << filePath << std::endl;
             return false;
         }
         file.read(reinterpret_cast<char*>(&config.config_iteration), sizeof(config.config_iteration));
@@ -91,7 +91,7 @@ namespace config_manager {
 
 
         if (file.fail()) {
-            std::cerr << "Error reading from file: " << filePath << std::endl;
+            std::cerr << XorStr("Error reading from file: ") << filePath << std::endl;
             file.close();
             return false;
         }
@@ -104,7 +104,7 @@ namespace config_manager {
         if (fs::exists(configFilePath)) {
             deserialize_aim_config(*cfg, configFilePath);
             if (cfg->config_iteration != CONFIG_ITERATION) {
-                printf("Unable to load config from file as it is an older version. Regenerating a new one!\n");
+                printf(XorStr("Unable to load config from file as it is an older version. Regenerating a new one!\n"));
                 utils::init_config_with_defaults(cfg);
                 serialize_aim_config(*cfg, configFilePath);
             }

@@ -19,6 +19,7 @@
 #include "../ModelManager/ModelManager.h"
 #include "../ConfigManager/ConfigManager.h"
 #include "./Preview/Preview.h"
+#include "../Security/xor.h"
 
 
 namespace gui {

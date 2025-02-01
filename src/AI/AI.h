@@ -11,6 +11,7 @@
 #include "../MathHelpers/MathHelpers.h"
 #include "../Input/Input.h"
 #include "../Features/Triggerbot/Triggerbot.h"
+#include "../Security/xor.h"
 
 namespace ai {
 	std::vector<BoundingBox> runInference(cv::cuda::GpuMat& img, float minObjectness, Engine<float>& engine);

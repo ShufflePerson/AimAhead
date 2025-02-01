@@ -5,6 +5,7 @@
 #include <mutex>
 #include "../Structs/BoundingBox.h"
 #include "../Utils/Utils.h"
+#include "../Security/xor.h"
 
 //#define __DEBUG__ 1
 //#define __BENCHMARK__ 1

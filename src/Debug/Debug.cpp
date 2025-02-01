@@ -1,7 +1,7 @@
 #include "Debug.h"
 
 namespace debug {
-    const std::string windowName = "AimAheadWnd";
+    const std::string windowName = XorStr("AimAheadWnd");
     cv::Mat sharedImage;
     std::mutex sharedImageMutex;
     const int cordinateOffset = 640 / 2.0;
@@ -32,11 +32,11 @@ namespace debug {
                     sharedImageMutex.unlock();
                 }
                 else {
-                    std::cout << "Error: Cannot display an empty image." << std::endl;
+                    std::cout << XorStr("Error: Cannot display an empty image.") << std::endl;
                 }
             }
             catch (const cv::Exception& e) {
-                std::cout << "OpenCV Error: " << e.what() << std::endl;
+                std::cout << XorStr("OpenCV Error: ") << e.what() << std::endl;
             }
             cv::waitKey(1);
         }

@@ -21,7 +21,7 @@ namespace collector {
 		while (true) {
 			if (queue.size() > 0) {
 				for (auto it = queue.begin(); it != queue.end(); ) {
-					std::string file_name = "./data/" + utils::generate_uuidv4() + ".jpg";
+					std::string file_name = XorStr("./data/") + utils::generate_uuidv4() + XorStr(".jpg");
 					cv::imwrite(file_name, *it);
 					it = queue.erase(it);
 				}

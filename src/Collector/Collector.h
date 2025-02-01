@@ -2,6 +2,7 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "../Utils/Utils.h"
+#include "../Security/xor.h"
 
 namespace collector {
 

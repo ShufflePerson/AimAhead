@@ -31,7 +31,7 @@ namespace capture {
             return rgb;  
         }
         else {
-            throw std::runtime_error("Input is not CV_8UC4");
+            throw std::runtime_error(XorStr("Input is not CV_8UC4"));
         }
     }
 
@@ -51,13 +51,13 @@ namespace capture {
 
         HRESULT hr = g_device->CreateTexture2D(&desc, nullptr, &g_cudaTexture);
         if (FAILED(hr)) {
-            std::cerr << "Failed to create CUDA texture: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Failed to create CUDA texture: ") << std::hex << hr << std::endl;
             return false;
         }
 
         cudaError_t cudaErr = cudaGraphicsD3D11RegisterResource(&g_cudaResource, g_cudaTexture, cudaGraphicsRegisterFlagsNone);
         if (cudaErr != cudaSuccess) {
-            std::cerr << "CUDA resource registration failed: " << cudaGetErrorString(cudaErr) << std::endl;
+            std::cerr << XorStr("CUDA resource registration failed: ") << cudaGetErrorString(cudaErr) << std::endl;
             return false;
         }
 
@@ -69,19 +69,19 @@ namespace capture {
 
         hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&g_factory);
         if (FAILED(hr)) {
-            std::cerr << "Error creating DXGIFactory: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Error creating DXGIFactory: ") << std::hex << hr << std::endl;
             return false;
         }
 
         hr = g_factory->EnumAdapters(0, &g_adapter);
         if (FAILED(hr)) {
-            std::cerr << "Error enumerating adapter: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Error enumerating adapter: ") << std::hex << hr << std::endl;
             return false;
         }
 
         hr = g_adapter->EnumOutputs(0, &g_output);
         if (FAILED(hr)) {
-            std::cerr << "Error enumerating output: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Error enumerating output: ") << std::hex << hr << std::endl;
             return false;
         }
 
@@ -104,19 +104,19 @@ namespace capture {
             &g_context
         );
         if (FAILED(hr)) {
-            std::cerr << "Error creating D3D11 device: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Error creating D3D11 device: ") << std::hex << hr << std::endl;
             return false;
         }
 
         hr = g_output->QueryInterface(__uuidof(IDXGIOutput1), (void**)&g_output1);
         if (FAILED(hr)) {
-            std::cerr << "Error getting IDXGIOutput1 interface: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Error getting IDXGIOutput1 interface: ") << std::hex << hr << std::endl;
             return false;
         }
 
         hr = g_output1->DuplicateOutput(g_device, &g_desktopDuplication);
         if (FAILED(hr)) {
-            std::cerr << "Error creating desktop duplication: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Error creating desktop duplication: ") << std::hex << hr << std::endl;
             return false;
         }
 
@@ -139,11 +139,11 @@ namespace capture {
         stagingDesc.MiscFlags = 0;
         hr = g_device->CreateTexture2D(&stagingDesc, nullptr, &g_stagingTexture);
         if (FAILED(hr)) {
-            std::cerr << "Error creating staging texture: " << std::hex << hr << std::endl;
+            std::cerr << XorStr("Error creating staging texture: ") << std::hex << hr << std::endl;
             return false;
         }
         initializeCUDAResources();
-        spdlog::info("D3D11 Capture initialized successfully!");
+        spdlog::info(XorStr("D3D11 Capture initialized successfully!"));
         return true;
     }
 
@@ -239,7 +239,7 @@ namespace capture {
     }
     inline void cudaCheckError(cudaError_t error) {
         if (error != cudaSuccess) {
-            std::cerr << "CUDA Error: " << cudaGetErrorString(error) << std::endl;
+            std::cerr << XorStr("CUDA Error: ") << cudaGetErrorString(error) << std::endl;
             exit(-1);
         }
     }
@@ -269,7 +269,7 @@ namespace capture {
         hr = g_desktopDuplication->AcquireNextFrame(1000, &frameInfo, &tempDesktopResource);
         if (FAILED(hr)) {
             if (hr != DXGI_ERROR_WAIT_TIMEOUT)
-                std::cerr << "AcquireNextFrame failed: 0x" << std::hex << hr << std::endl;
+                std::cerr << XorStr("AcquireNextFrame failed: 0x") << std::hex << hr << std::endl;
             return gpuMat; // Return empty GpuMat on failure
         }
         frameAcquired = true;
@@ -278,7 +278,7 @@ namespace capture {
             // Query for ID3D11Texture2D
             hr = tempDesktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture));
             if (FAILED(hr)) {
-                std::cerr << "Failed to get desktop texture: 0x" << std::hex << hr << std::endl;
+                std::cerr << XorStr("Failed to get desktop texture: 0x") << std::hex << hr << std::endl;
                 break;
             }
 
@@ -298,14 +298,14 @@ namespace capture {
             // Map CUDA resource
             cudaError_t cudaErr = cudaGraphicsMapResources(1, &g_cudaResource, 0);
             if (cudaErr != cudaSuccess) {
-                std::cerr << "cudaGraphicsMapResources failed: " << cudaGetErrorString(cudaErr) << std::endl;
+                std::cerr << XorStr("cudaGraphicsMapResources failed: ") << cudaGetErrorString(cudaErr) << std::endl;
                 break;
             }
 
             cudaArray* cuArray;
             cudaErr = cudaGraphicsSubResourceGetMappedArray(&cuArray, g_cudaResource, 0, 0);
             if (cudaErr != cudaSuccess) {
-                std::cerr << "cudaGraphicsSubResourceGetMappedArray failed: " << cudaGetErrorString(cudaErr) << std::endl;
+                std::cerr << XorStr("cudaGraphicsSubResourceGetMappedArray failed: ") << cudaGetErrorString(cudaErr) << std::endl;
                 cudaGraphicsUnmapResources(1, &g_cudaResource, 0);
                 break;
             }
@@ -315,7 +315,7 @@ namespace capture {
             size_t spitch = captureWidth * 4; // BGRA (4 bytes per pixel)
             cudaErr = cudaMemcpy2DFromArray(gpuMat.data, gpuMat.step, cuArray, 0, 0, spitch, captureHeight, cudaMemcpyDeviceToDevice);
             if (cudaErr != cudaSuccess) {
-                std::cerr << "cudaMemcpy2DFromArray failed: " << cudaGetErrorString(cudaErr) << std::endl;
+                std::cerr << XorStr("cudaMemcpy2DFromArray failed: ") << cudaGetErrorString(cudaErr) << std::endl;
                 gpuMat.release();
             }
 

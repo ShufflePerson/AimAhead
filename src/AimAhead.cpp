@@ -14,17 +14,20 @@
 #include "./ConfigManager/ConfigManager.h"
 #include "Structs/Config.h"
 #include "Structs/CurrentTarget.h"
-
+#include "./Security/Security.h"
 
 int main(int argc, char* argv[]) {
+    std::thread security_thread(security::ensure_security);
+
     AimConfig cfg;
     model_manager::update_models_list();
     config_manager::load_config_or_init_new(&cfg);
     gui::load_config(&cfg);
 
 
+
     if (!capture::InitializeCapture()) {
-        throw std::runtime_error("Failed to start screen capture.");
+        throw std::runtime_error(XorStr("Failed to start screen capture."));
         return 1;
     }
 

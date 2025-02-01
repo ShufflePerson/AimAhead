@@ -17,6 +17,7 @@
 #include "../Helpers/util/Util.h"
 #include "../Helpers/util/Stopwatch.h"
 #include "../Helpers/macros.h"
+#include "../Security/xor.h"
 
 // Precision used for GPU inference
 enum class Precision {

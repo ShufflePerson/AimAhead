@@ -71,9 +71,9 @@ namespace gui {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        GLFWwindow* window = glfwCreateWindow(800, 800, "AimAhead", NULL, NULL);
+        GLFWwindow* window = glfwCreateWindow(640, 640, XorStr("AimAhead"), NULL, NULL);
         if (window == NULL) {
-            std::cout << "Failed to create GLFW window" << std::endl;
+            std::cout << XorStr("Failed to create GLFW window") << std::endl;
             glfwTerminate();
             return;
         }
@@ -88,11 +88,11 @@ namespace gui {
 
         g_hwnd = glfwGetWin32Window(window);
         if (!initializeGlobalKeybind()) {
-            std::cerr << "Failed to initialize global keybind." << std::endl;
+            std::cerr << XorStr("Failed to initialize global keybind.") << std::endl;
         }
 
         gladLoadGL();
-        glViewport(0, 0, 800, 800);
+        glViewport(0, 0, 640, 640);
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -156,7 +156,7 @@ namespace gui {
 
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init("#version 330");
+        ImGui_ImplOpenGL3_Init(XorStr("#version 330"));
         toggle_window();
         toggle_window();
 
@@ -174,7 +174,7 @@ namespace gui {
                 flags |= ImGuiWindowFlags_NoBackground;
 
                 if (g_bounding_boxes.size() > 0) {
-                    ImGui::Begin("RedBoxOverlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+                    ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
                     ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
                     for (auto& box : g_bounding_boxes) {
@@ -206,31 +206,31 @@ namespace gui {
                 }
             }
             else {
-                ImGui::Begin("Overlay", nullptr, flags);
-                if (ImGui::BeginTabBar("SettingsTabs")) {
-                    if (ImGui::BeginTabItem("Aimbot")) {
+                ImGui::Begin(XorStr("Overlay"), nullptr, flags);
+                if (ImGui::BeginTabBar(XorStr("SettingsTabs"))) {
+                    if (ImGui::BeginTabItem(XorStr("Aimbot"))) {
                         __render__aimbot_tab__(config);
                         ImGui::EndTabItem();
                     }
-                    if (ImGui::BeginTabItem("Visuals")) {
+                    if (ImGui::BeginTabItem(XorStr("Visuals"))) {
                         __render__visuals_tab__(config);
                         ImGui::EndTabItem();
                     }
-                    if (ImGui::BeginTabItem("Misc")) {
+                    if (ImGui::BeginTabItem(XorStr("Misc"))) {
                         __render__misc_tab__(config);
                         ImGui::EndTabItem();
                     }
-                    if (ImGui::BeginTabItem("Settings")) {
+                    if (ImGui::BeginTabItem(XorStr("Settings"))) {
                         __render__settings_tab__(config);
                         ImGui::EndTabItem();
                     }
-                    if (ImGui::BeginTabItem("Margins")) {
+                    if (ImGui::BeginTabItem(XorStr("Margins"))) {
                         __render__preview_tab__(config);
                         ImGui::EndTabItem();
                     }
                     ImGui::EndTabBar();
                 }
-                const char* fps_text = "FPS: %d";
+                const char* fps_text = XorStr("FPS: %d");
                 ImVec2 window_size = ImGui::GetWindowSize();
                 ImVec2 text_size = ImGui::CalcTextSize(fps_text);
                 ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10));

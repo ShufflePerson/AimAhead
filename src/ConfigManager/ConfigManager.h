@@ -6,6 +6,7 @@
 #include <filesystem>
 #include "../Utils/Utils.h"
 #include "../Structs/Config.h"
+#include "../Security/xor.h"
 
 namespace config_manager {
 	bool serialize_aim_config(const AimConfig& config, const std::string& filePath);

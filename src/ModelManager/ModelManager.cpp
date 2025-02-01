@@ -21,7 +21,7 @@ namespace model_manager {
     }
 
     bool ends_with_onnx(const std::string& str) {
-        std::string suffix = ".onnx";
+        std::string suffix = XorStr(".onnx");
         if (str.length() >= suffix.length()) {
             return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
         }
@@ -34,10 +34,10 @@ namespace model_manager {
         namespace fs = std::filesystem;
 
         std::vector<std::string> files;
-        fs::path modelsDir = "./models";
+        fs::path modelsDir = XorStr("./models");
 
         if (!fs::exists(modelsDir) || !fs::is_directory(modelsDir)) {
-            std::cerr << "Error: './models' directory does not exist or is not a directory." << std::endl;
+            std::cerr << XorStr("Error: './models' directory does not exist or is not a directory.") << std::endl;
             return files;
         }
 

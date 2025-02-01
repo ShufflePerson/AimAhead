@@ -19,7 +19,7 @@ namespace ai {
 
         std::vector<std::vector<std::vector<float>>> featureVectors;
         if (!engine.runInference(inputs, featureVectors)) {
-            const std::string msg = "Unable to run inference.";
+            const std::string msg = XorStr("Unable to run inference.");
             spdlog::error(msg);
             throw std::runtime_error(msg);
         }
@@ -31,7 +31,7 @@ namespace ai {
                 const int dim3 = 8400;
 
                 if (currentFeatureVector.size() != dim2 * dim3) {
-                    std::cerr << "Error: Input vector size does not match the target tensor size." << std::endl;
+                    std::cerr << XorStr("Error: Input vector size does not match the target tensor size.") << std::endl;
                     continue;
                 }
 
@@ -67,7 +67,7 @@ namespace ai {
         options.calibrationDataDirectoryPath = "";
         options.optBatchSize = 1;
         options.maxBatchSize = 1;
-        options.engineFileDir = "./models/";
+        options.engineFileDir = XorStr("./models/");
         return options;
     }
 
@@ -76,13 +76,13 @@ namespace ai {
         std::array<float, 3> divVals{ 1.f, 1.f, 1.f };
         bool normalize = true;
 
-        spdlog::info("Loading the AI model...");
-        std::string model_path = "./models/";
+        spdlog::info(XorStr("Loading the AI model..."));
+        std::string model_path = XorStr("./models/");
         model_path += model_manager::get_loaded_models()[config->i_selected_model_index];
         if (!engine->buildLoadNetwork(model_path, subVals, divVals, normalize)) {
-            throw std::runtime_error("Unable to build or load TensorRT engine.");
+            throw std::runtime_error(XorStr("Unable to build or load TensorRT engine."));
         }
-        spdlog::info("AI Model loaded!");
+        spdlog::info(XorStr("AI Model loaded!"));
     }
 
 

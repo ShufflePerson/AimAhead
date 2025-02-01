@@ -5,6 +5,7 @@
 #include <filesystem>
 
 #include "../Utils/Utils.h"
+#include "../Security/xor.h"
 
 namespace model_manager {
 	void update_models_list();

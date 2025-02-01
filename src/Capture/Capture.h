@@ -14,6 +14,7 @@
 #include <opencv2/cudawarping.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include "../Helpers/logger.h"
+#include "../Security/xor.h"
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
@@ -22,5 +23,4 @@ namespace capture {
     bool InitializeCapture();
     void _ReleaseCapture();
     bool captureScreenRegion(std::vector<BYTE>& capturedData);
-    cv::cuda::GpuMat captureScreenRegionCuda();
 }
