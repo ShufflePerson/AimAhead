@@ -167,6 +167,7 @@
     <ClCompile Include="src\Security\macros.h" />
     <ClCompile Include="src\Security\Security.cpp" />
     <ClCompile Include="src\Security\SecurityFeatures\Debugger.cpp" />
+    <ClCompile Include="src\Security\SecurityFeatures\MiscSecurity.cpp" />
     <ClCompile Include="src\Security\SecurityUtils\crc\crc.cpp" />
     <ClCompile Include="src\Security\SecurityUtils\FunctionPatches.cpp" />
     <ClCompile Include="src\Utils\Utils.cpp" />

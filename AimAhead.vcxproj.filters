@@ -111,6 +111,9 @@
     <ClCompile Include="src\Security\SecurityUtils\crc\crc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Security\SecurityFeatures\MiscSecurity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI\AI.h">

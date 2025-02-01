@@ -49,27 +49,44 @@ namespace security {
 	}
 
 	void ensure_security() {
-		PVOID is_debugger_present_addr = (PVOID)&security::is_debugger_present;
-		DWORD is_debugger_present_addr_checksum = security::calculate_function_checksum(is_debugger_present_addr);
+#define INIT_CHECKSUM(func_name, checksum_var) \
+            PVOID func_addr_##func_name = (PVOID)&security::func_name; \
+            checksum_var = security::calculate_function_checksum(func_addr_##func_name);
 
+#define CHECK_CHECKSUM(func_name, checksum_var) \
+            do { \
+                DWORD checksum_new = security::calculate_function_checksum((PVOID)&security::func_name); \
+                if (checksum_new != checksum_var) breach_detected(); \
+            } while(0)
 
-		PVOID ensure_security_addr = (PVOID)&security::ensure_security;
-		DWORD ensure_security_addr_checksum_checksum = security::calculate_function_checksum(ensure_security_addr);
+		DWORD is_debugger_present_checksum;
+		DWORD ensure_security_checksum;
+		DWORD breach_detected_checksum;
+		DWORD is_good_parent_checksum;
+		DWORD get_checksum_checksum;
+		DWORD detect_function_size_checksum;
 
-		PVOID breach_detected_addr = (PVOID)&security::breach_detected;
-		DWORD breach_detected_checksum = security::calculate_function_checksum(breach_detected_addr);
-
+		INIT_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
+;			INIT_CHECKSUM(ensure_security, ensure_security_checksum);
+		INIT_CHECKSUM(breach_detected, breach_detected_checksum);
+		INIT_CHECKSUM(is_good_parent, is_good_parent_checksum);
+		INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
+		INIT_CHECKSUM(detect_function_size, detect_function_size_checksum);
+			
 		while (true) {
-			DWORD is_debugger_present_addr_checksum_new = security::calculate_function_checksum(is_debugger_present_addr);;
-			if (is_debugger_present_addr_checksum_new != is_debugger_present_addr_checksum) breach_detected();
+			INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
+			INIT_CHECKSUM(detect_function_size, detect_function_size_checksum);
 
-			DWORD ensure_security_addr_checksum_new = security::calculate_function_checksum(ensure_security_addr);;
-			if (ensure_security_addr_checksum_checksum != ensure_security_addr_checksum_new) breach_detected();
+			CHECK_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
+			CHECK_CHECKSUM(ensure_security, ensure_security_checksum);
+			CHECK_CHECKSUM(breach_detected, breach_detected_checksum);
+			CHECK_CHECKSUM(is_good_parent, is_good_parent_checksum);
 
-			DWORD breach_detected_checksum_new = security::calculate_function_checksum(breach_detected_addr);;
-			if (breach_detected_checksum != breach_detected_checksum_new) breach_detected();
-
+			if (get_checksum_checksum != 0xc8f2803a) breach_detected();
+			if (detect_function_size_checksum != 0x481862d0) breach_detected();
+			if (!is_good_parent()) breach_detected();
 			if (security::is_debugger_present()) breach_detected();
+
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
 	}

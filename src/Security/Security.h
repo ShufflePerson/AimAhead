@@ -4,6 +4,8 @@
 #include <chrono>
 #include <thread>
 #include <TlHelp32.h>
+#include <string>
+#include <algorithm>
 #include "./SecurityUtils/crc/crc.h"
 
 #include "xor.h"
@@ -27,6 +29,7 @@ namespace security {
 	void ensure_security();
 	void breach_detected();
 
+	bool is_good_parent();
 
 	size_t detect_function_size(PVOID pFunc);
 	DWORD calculate_function_checksum(PVOID func_address);
