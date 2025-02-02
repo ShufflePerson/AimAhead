@@ -1,4 +1,5 @@
 #include "Security.h"
+#define PRINT_NEW_SUMS 0
 
 namespace security {
 	DWORD is_debugger_present_checksum;
@@ -48,6 +49,7 @@ namespace security {
 		FreeLibrary(hKernel32);
 	}
 
+
 	void ensure_security() {
 #define INIT_CHECKSUM(func_name, checksum_var) \
             PVOID func_addr_##func_name = (PVOID)&security::func_name; \
@@ -67,7 +69,14 @@ namespace security {
 		INIT_CHECKSUM(is_good_parent, is_good_parent_checksum);
 		INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
 		INIT_CHECKSUM(detect_function_size, detect_function_size_checksum);
+
+#if PRINT_NEW_SUMS == 1
+		std::cout << "#pragma once" << std::endl;
+		std::cout << "#define CALC_FUNC_SUM 0x" << std::hex << std::setw(8) << std::setfill('0') << get_checksum_checksum << std::endl;
+		std::cout << "#define DETECT_FUNC_SUM 0x" << std::hex << std::setw(8) << std::setfill('0') << detect_function_size_checksum << std::endl;
+#endif
 			
+
 		while (true) {
 			INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
 			INIT_CHECKSUM(detect_function_size, detect_function_size_checksum);
@@ -76,8 +85,10 @@ namespace security {
 			CHECK_CHECKSUM(breach_detected, breach_detected_checksum);
 			CHECK_CHECKSUM(is_good_parent, is_good_parent_checksum);
 
-			if (get_checksum_checksum != 0xc8f2803a) breach_detected();
-			if (detect_function_size_checksum != 0x481862d0) breach_detected();
+#if PRINT_NEW_SUMS == 1
+			if (get_checksum_checksum != CALC_FUNC_SUM) breach_detected();
+			if (detect_function_size_checksum != DETECT_FUNC_SUM) breach_detected();
+#endif
 			if (!is_good_parent()) breach_detected();
 			if (security::is_debugger_present()) breach_detected();
 
@@ -93,9 +104,10 @@ namespace security {
 		CHECK_CHECKSUM(breach_detected, breach_detected_checksum);
 		CHECK_CHECKSUM(is_good_parent, is_good_parent_checksum);
 
-		if (get_checksum_checksum != 0xc8f2803a) breach_detected();
-		if (detect_function_size_checksum != 0x481862d0) breach_detected();
-
+#if PRINT_NEW_SUMS == 1
+		if (get_checksum_checksum != CALC_FUNC_SUM) breach_detected();
+		if (detect_function_size_checksum != DETECT_FUNC_SUM) breach_detected();
+#endif
 		if (!is_good_parent()) breach_detected();
 		if (security::is_debugger_present()) breach_detected();
 	}

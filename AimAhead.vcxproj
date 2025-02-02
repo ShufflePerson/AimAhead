@@ -128,6 +128,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>MaxSpeed</Optimization>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -191,6 +193,7 @@
     <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\MathHelpers\MathHelpers.h" />
     <ClInclude Include="src\ModelManager\ModelManager.h" />
+    <ClInclude Include="src\Security\checksums.h" />
     <ClInclude Include="src\Security\Security.h" />
     <ClInclude Include="src\Security\SecurityUtils\crc\crc.h" />
     <ClInclude Include="src\Security\xor.h" />

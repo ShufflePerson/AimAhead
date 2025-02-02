@@ -6,6 +6,7 @@
 #include <TlHelp32.h>
 #include <string>
 #include <algorithm>
+#include "checksums.h"
 #include "./SecurityUtils/crc/crc.h"
 
 #include "xor.h"

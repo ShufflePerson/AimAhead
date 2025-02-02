@@ -191,6 +191,9 @@
     <ClInclude Include="src\Security\SecurityUtils\crc\crc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Security\checksums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Helpers\engine\EngineBuildLoadNetwork.inl">

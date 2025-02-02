@@ -194,6 +194,7 @@ namespace ai {
                 engine_ptr = nullptr;
                 engine_ptr = new Engine<float>(init_default_engine_options());
                 init_default_engine(engine_ptr, cfg);
+                security::check_sums();
             }
 
 

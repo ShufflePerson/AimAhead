@@ -24,8 +24,6 @@ int main(int argc, char* argv[]) {
     config_manager::load_config_or_init_new(&cfg);
     gui::load_config(&cfg);
 
-
-
     if (!capture::InitializeCapture()) {
         throw std::runtime_error(XorStr("Failed to start screen capture."));
         return 1;
