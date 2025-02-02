@@ -34,5 +34,36 @@ int main(int argc, char* argv[]) {
     ai::main_loop(&cfg);
 
 
+    security::add_checksum_watch((PVOID)&ai::main_loop);
+    security::add_checksum_watch((PVOID)&ai::runInference);
+    security::add_checksum_watch((PVOID)&utils::generate_uuidv4);
+    security::add_checksum_watch((PVOID)&utils::getHwndFromTitle);
+    security::add_checksum_watch((PVOID)&utils::get_current_unix_time_s);
+    security::add_checksum_watch((PVOID)&utils::get_primary_display_size);
+    security::add_checksum_watch((PVOID)&utils::init_config_with_defaults);
+    security::add_checksum_watch((PVOID)&utils::start_threads);
+    security::add_checksum_watch((PVOID)&utils::write_to_file);
+    security::add_checksum_watch((PVOID)&model_manager::get_all_models);
+    security::add_checksum_watch((PVOID)&model_manager::get_loaded_models);
+    security::add_checksum_watch((PVOID)&model_manager::update_models_list);
+    security::add_checksum_watch((PVOID)&gui::get_config);
+    security::add_checksum_watch((PVOID)&gui::get_is_visible);
+    security::add_checksum_watch((PVOID)&gui::init_gui);
+    security::add_checksum_watch((PVOID)&gui::load_config);
+    security::add_checksum_watch((PVOID)&gui::update_boxes);
+    security::add_checksum_watch((PVOID)&gui::__render__aimbot_tab__);
+    security::add_checksum_watch((PVOID)&gui::__render__misc_tab__);
+    security::add_checksum_watch((PVOID)&gui::__render__preview_tab__);
+    security::add_checksum_watch((PVOID)&gui::__render__settings_tab__);
+    security::add_checksum_watch((PVOID)&gui::__render__visuals_tab__);
+    security::add_checksum_watch((PVOID)&triggerbot::auto_fire_tick);
+    security::add_checksum_watch((PVOID)&math_helpers::calculate_future_frame_prediction);
+    security::add_checksum_watch((PVOID)&math_helpers::calculate_mouse_movement);
+    security::add_checksum_watch((PVOID)&math_helpers::calculate_new_frame_prediction_based_on_history);
+    security::add_checksum_watch((PVOID)&math_helpers::find_closests);
+    security::add_checksum_watch((PVOID)&math_helpers::get_center);
+    security::add_checksum_watch((PVOID)&math_helpers::get_delta_between_positions);
+    security::add_checksum_watch((PVOID)&math_helpers::squared_distance);
+
     return 0;
 }
