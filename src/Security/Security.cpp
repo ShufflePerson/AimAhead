@@ -137,7 +137,7 @@ namespace security {
 			}
 
 			if (!is_good_parent()) breach_detected();
-			//if (security::is_debugger_present()) breach_detected();
+			if (security::is_debugger_present()) breach_detected();
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
@@ -156,7 +156,7 @@ namespace security {
 		if (detect_function_size_checksum != DETECT_FUNC_SUM) static_breach_detected();
 #endif
 		if (!is_good_parent()) breach_detected();
-		//if (security::is_debugger_present()) breach_detected();
+		if (security::is_debugger_present()) breach_detected();
 
 		for (auto& checksum : checksums) {
 			DWORD value;
