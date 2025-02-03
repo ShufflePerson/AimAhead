@@ -5,10 +5,14 @@
 #include <map>
 #include <iostream>
 #include <sstream> 
+#include <dinput.h>
+
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
 
 #include "../Structs/Config.h"
 #include "../Utils/Utils.h"
-
+#include "../GUI/GUI.h"
 
 namespace input {
 	void send_input_mouse_relative(double dx, double dy, AimConfig *cfg);
