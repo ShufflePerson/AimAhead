@@ -207,7 +207,7 @@ namespace gui {
                     }
                 }
                 ImVec2 center = ImVec2(320, 320);
-                if (config->b_draw_aim_fov) {
+                if (config->b_draw_aim_fov && config->b_aim_fov) {
                     draw_list->AddCircle(center, (float)config->i_fov_radius, config->c_fov, 360);
                 }
                 ImGui::End();
