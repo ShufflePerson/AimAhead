@@ -75,6 +75,8 @@ namespace utils {
         cfg->b_aim_fov = true;
         cfg->b_draw_aim_fov = true;
         cfg->i_fov_radius = 20;
+        cfg->c_esp = IM_COL32(243, 211, 11, 220);
+        cfg->c_fov = IM_COL32(243, 211, 11, 220);
         cfg->read_only__i_fps = 0;
     }
 

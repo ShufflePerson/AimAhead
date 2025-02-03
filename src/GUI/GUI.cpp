@@ -183,13 +183,12 @@ namespace gui {
                 flags |= ImGuiWindowFlags_NoBackground;
                 ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
                 ImDrawList* draw_list = ImGui::GetWindowDrawList();
-                ImU32 red_color = IM_COL32(243, 211, 11, 220);
 
                 if (g_bounding_boxes.size() > 0) {
                     for (auto& box : g_bounding_boxes) {
                         ImVec2 p_min = ImVec2(box.xmin, box.ymin);
                         ImVec2 p_max = ImVec2(box.xmax, box.ymax);
-                        draw_list->AddRect(p_min, p_max, red_color, 5.0f, ImDrawListFlags_AntiAliasedLines, 1.10f);
+                        draw_list->AddRect(p_min, p_max, config->c_esp, 5.0f, ImDrawListFlags_AntiAliasedLines, 1.10f);
 
                         if (config->b_draw_confidence) {
                             float percentageValue = box.confidence * 100.0f;
@@ -209,7 +208,7 @@ namespace gui {
                 }
                 ImVec2 center = ImVec2(320, 320);
                 if (config->b_draw_aim_fov) {
-                    draw_list->AddCircle(center, (float)config->i_fov_radius, red_color, 360);
+                    draw_list->AddCircle(center, (float)config->i_fov_radius, config->c_fov, 360);
                 }
                 ImGui::End();
 

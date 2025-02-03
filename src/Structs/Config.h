@@ -1,5 +1,5 @@
 #pragma once
-#define CONFIG_ITERATION 4
+#define CONFIG_ITERATION 5
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -91,6 +91,10 @@ struct AimConfig {
 	bool b_aim_fov;
 	bool b_draw_aim_fov;
 	int i_fov_radius;
+
+	//Colors
+	unsigned int c_fov;
+	unsigned int c_esp;
 
 	//Read Only
 	int read_only__i_fps;
