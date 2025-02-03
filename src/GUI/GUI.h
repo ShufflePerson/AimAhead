@@ -42,4 +42,6 @@ namespace gui {
 	void add_tab(size_t index, const char* text, size_t &currentTab);
 	void render_tabs(size_t& current_tab);
 	void render_rgb_outline();
+
+	HWND get_hwnd();
 }

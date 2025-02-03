@@ -16,6 +16,10 @@ namespace gui {
     auto last_config_save = std::chrono::system_clock::now();
 
 
+    HWND get_hwnd() {
+        return g_hwnd;
+    }
+
     bool get_is_visible() {
         return g_is_visible;
     }

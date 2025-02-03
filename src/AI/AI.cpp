@@ -288,34 +288,40 @@ namespace ai {
                 int deltaX = static_cast<int>(round(movementExact.first));
                 int deltaY = static_cast<int>(round(movementExact.second));
                 std::pair<int, int> movement = { deltaX, deltaY };
+                bool is_point_inside_box = (deltaX >= box.xmin && deltaX <= box.xmax && deltaY >= box.ymin && deltaY <= box.ymax);
+               
 
 
-
-                if (current_target.p_last_position.first != 0.0 && current_target.p_last_position.second != 0.0) {
-                    double deltaBetweenLastAndNewTarget = math_helpers::get_delta_between_positions(current_target.p_last_position, movementExact);
-                    if (deltaBetweenLastAndNewTarget >= cfg->d_maximum_jitter_amount) {
-                        if (!b_jitter_Detected)
-                            i_jitter_detected_at = current_frame_count;
-                        b_jitter_Detected = true;
+                if (cfg->b_anti_target_jitter) {
+                    if (current_target.p_last_position.first != 0.0 && current_target.p_last_position.second != 0.0) {
+                        double deltaBetweenLastAndNewTarget = math_helpers::get_delta_between_positions(current_target.p_last_position, movementExact);
+                        if (deltaBetweenLastAndNewTarget >= cfg->d_maximum_jitter_amount) {
+                            if (!b_jitter_Detected)
+                                i_jitter_detected_at = current_frame_count;
+                            b_jitter_Detected = true;
+                        }
+                        else {
+                            b_jitter_Detected = false;
+                            i_jitter_detected_at = 0;
+                        }
                     }
-                    else {
-                        b_jitter_Detected = false;
-                        i_jitter_detected_at = 0;
+
+
+                    if (b_jitter_Detected) {
+                        size_t frameDelta = current_frame_count - i_jitter_detected_at;
+                        if (frameDelta >= cfg->i_maximum_wait_time_for_target_reappearence) {
+                            b_jitter_Detected = false;
+                            i_jitter_detected_at = 0;
+                        }
+                        else {
+                            continue;
+                        }
                     }
                 }
-
-
-                if (b_jitter_Detected) {
-                    size_t frameDelta = current_frame_count - i_jitter_detected_at;
-                    if (frameDelta >= cfg->i_maximum_wait_time_for_target_reappearence) {
-                        b_jitter_Detected = false;
-                        i_jitter_detected_at = 0;
-                    }
-                    else {
-                        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                        continue;
-                    }
+                else {
+                    b_jitter_Detected = false;
                 }
+
 
                 if (current_frame_count % 1000 == 0) {
                     if (!connection::get_keepalive()) {
@@ -366,7 +372,7 @@ namespace ai {
 
 
                 if (cfg->b_auto_trigger && holding_triggerbot_key) {
-                    if (abs(movement.first) <= 10) {
+                    if (is_point_inside_box) {
                         if (cfg->i_auto_trigger_delay > 0) {
                             std::this_thread::sleep_for(std::chrono::milliseconds(cfg->i_auto_trigger_delay));
                         }

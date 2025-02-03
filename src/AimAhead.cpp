@@ -27,7 +27,6 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-
     AimConfig cfg;
     model_manager::update_models_list();
     config_manager::load_config_or_init_new(&cfg);
