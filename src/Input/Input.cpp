@@ -3,7 +3,7 @@
 namespace input {
     DWORD lastKey = 0;
 
-	void send_input_mouse_relative(double dx, double dy) {
+	void send_input_mouse_relative(double dx, double dy, AimConfig *cfg) {
         static double accumulated_dx = 0.0;
         static double accumulated_dy = 0.0;
 
@@ -14,15 +14,27 @@ namespace input {
         int move_y = static_cast<int>(floor(accumulated_dy));
 
         if (move_x != 0 || move_y != 0) {
-            INPUT input = {};
-            input.type = INPUT_MOUSE;
-            input.mi.dwFlags = MOUSEEVENTF_MOVE;
-            input.mi.dx = move_x;
-            input.mi.dy = move_y;
-            SendInput(1, &input, sizeof(INPUT));
+            if (cfg->b_geforce_now_mode) {
+                HWND hwnd = utils::get_geforce_now_hwnd();
+                if (hwnd != nullptr) {
+                    POINT currentPos = { 0,0 };
+                    GetCursorPos(&currentPos);
+                    LPARAM lParam = MAKELPARAM(move_x + currentPos.x, move_y + currentPos.y);
+                    SendMessage(hwnd, WM_MOUSEMOVE, 0, lParam);
+                }
+            }
+            else {
+                INPUT input = {};
+                input.type = INPUT_MOUSE;
+                input.mi.dwFlags = MOUSEEVENTF_MOVE;
+                input.mi.dx = move_x;
+                input.mi.dy = move_y;
+                SendInput(1, &input, sizeof(INPUT));
 
-            accumulated_dx -= move_x;
-            accumulated_dy -= move_y;
+                accumulated_dx -= move_x;
+                accumulated_dy -= move_y;
+            }
+
         }
 	}
 

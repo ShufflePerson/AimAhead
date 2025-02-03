@@ -1,5 +1,5 @@
 #pragma once
-#define CONFIG_ITERATION 5
+#define CONFIG_ITERATION 6
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -16,7 +16,8 @@ enum EAimPosition {
 
 
 //README - README - README
-//Whenever a value is added/changed/removed, ConfigManager/ConfigManager.cpp also needs to be updated!
+//Whenever a value is added/changed/removed, Utils/Utils.cpp & ConfigManager/ConfigManager.cpp also needs to be updated!
+// Also the CONFIG_ITERATION macro needs to be incremented by 1
 //README - README - README
 
 struct AimConfig {
@@ -80,6 +81,8 @@ struct AimConfig {
 	float f_minimum_top_margin;
 	//Minimum confidence level for a valid target
 	int i_minimum_confidence;
+	//Sends inputs directly to Geforce Now, only runs aimbot when GFN is in focus
+	bool b_geforce_now_mode;
 
 	//Visuals
 	bool b_draw_targets_on_screen;

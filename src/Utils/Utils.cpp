@@ -3,14 +3,73 @@
 
 
 namespace utils {
+    HWND geforce_now_window = nullptr;
 
     HWND getHwndFromTitle(const std::string windowTitle) {
         HWND hwnd = FindWindow(nullptr, windowTitle.c_str());
         return hwnd;
     }
+
+    BOOL CALLBACK enumWindowsProc(HWND hwnd, LPARAM lParam) {
+
+        DWORD processId = 0;
+        GetWindowThreadProcessId(hwnd, &processId);
+
+        std::vector<std::pair<HWND, DWORD>>* windowInfo = reinterpret_cast<std::vector<std::pair<HWND, DWORD>>*>(lParam);
+
+        if (windowInfo)
+            windowInfo->push_back(std::make_pair(hwnd, processId));
+
+        return TRUE; 
+    }
+
+    bool compareProcessName(DWORD processId, const std::wstring& processName) {
+        HANDLE processHandle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, processId);
+        if (processHandle)
+        {
+            WCHAR currentName[MAX_PATH];
+            DWORD actualNameLength = MAX_PATH;
+            QueryFullProcessImageNameW(processHandle, 0, currentName, &actualNameLength);
+
+            std::wstring baseName;
+            for (int i = actualNameLength; i > 0; --i) {
+                if (currentName[i - 1] == '\\') {
+                    baseName = currentName[i];
+                    break;
+                }
+            }
+            CloseHandle(processHandle);
+            return (baseName == processName);
+        }
+
+        return false;
+    }
+
+    HWND GetHWNDByProcessName(const std::wstring& processName) {
+
+        std::vector<std::pair<HWND, DWORD>> windows;
+        EnumWindows(enumWindowsProc, (LPARAM)&windows);
+
+        HWND result = nullptr;
+        for (auto window : windows)
+        {
+            if (compareProcessName(window.second, processName)) {
+                result = window.first;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    HWND get_geforce_now_hwnd() {
+        if (geforce_now_window == nullptr) {
+            geforce_now_window = getHwndFromTitle(XorStr("NVIDIA Geforce NOW"));
+        }
+        return geforce_now_window;
+    }
     
     std::string generate_uuidv4() {
-        // Use a strong random number generator
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dis(0, 15); // Generate hex digits (0-F)
@@ -72,6 +131,7 @@ namespace utils {
         cfg->i_fps_cap = 120;
         cfg->i_selected_model_index = 0;
         cfg->i_minimum_confidence = 55;
+        cfg->b_geforce_now_mode = false;
         cfg->b_aim_fov = true;
         cfg->b_draw_aim_fov = true;
         cfg->i_fov_radius = 20;

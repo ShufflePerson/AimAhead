@@ -6,9 +6,12 @@
 #include <iostream>
 #include <sstream> 
 
+#include "../Structs/Config.h"
+#include "../Utils/Utils.h"
+
 
 namespace input {
-	void send_input_mouse_relative(double dx, double dy);
+	void send_input_mouse_relative(double dx, double dy, AimConfig *cfg);
 	void send_input_mouse_event(bool down);
 
 	bool is_mouse_hidden();

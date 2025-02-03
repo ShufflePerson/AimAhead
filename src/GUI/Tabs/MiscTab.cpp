@@ -6,6 +6,11 @@ void gui::__render__misc_tab__(AimConfig* config) {
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Only run the AI if the cursor is hidden, hence in-game.");
 
 	ImGui::NewLine();
+	ImGui::Checkbox(XorStr("Geforce Now Mode"), &config->b_geforce_now_mode);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Aimbot only runs when Geforce Now is in focus. All inputs are sent towards Geforce Now directly.");
+
+
+	ImGui::NewLine();
 	ImGui::Text(XorStr("FPS Cap:"));
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(200);

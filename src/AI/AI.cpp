@@ -343,19 +343,19 @@ namespace ai {
                             debug::draw_target_prediction(movementExact, predictionOutcome);
 #endif
 #ifndef __DEBUG__
-                            input::send_input_mouse_relative(predictionOutcome.first, predictionOutcome.second);
+                            input::send_input_mouse_relative(predictionOutcome.first, predictionOutcome.second, cfg);
 #endif
                         }
 
                         if (!(current_target.v_location_history.size() >= cfg->i_frames_needed_for_prediction)) {
 #ifndef __DEBUG__
-                            input::send_input_mouse_relative(movementExact.first, movementExact.second);
+                            input::send_input_mouse_relative(movementExact.first, movementExact.second, cfg);
 #endif
                         }
                     }
                     else {
 #ifndef __DEBUG__
-                        input::send_input_mouse_relative(movementExact.first, movementExact.second);
+                        input::send_input_mouse_relative(movementExact.first, movementExact.second, cfg);
 #endif
                     }
                 }
