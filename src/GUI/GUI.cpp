@@ -23,16 +23,15 @@ namespace gui {
     static void toggle_window() {
         if (g_is_visible) {
             SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, GetWindowLongPtr(g_hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-            //SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 0, LWA_ALPHA);
             EnableWindow(g_hwnd, FALSE);
             g_is_visible = false;
         }
         else {
             SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, GetWindowLongPtr(g_hwnd, GWL_EXSTYLE) & ~WS_EX_TRANSPARENT);
-            //SetLayeredWindowAttributes(g_hwnd, RGB(0, 0, 0), 255, LWA_ALPHA);
             SetWindowPos(g_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
             EnableWindow(g_hwnd, TRUE);
             g_is_visible = true;
+            ShowCursor(TRUE);
         }
     }
 
@@ -158,17 +157,15 @@ namespace gui {
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(XorStr("#version 330"));
         toggle_window();
-        toggle_window();
 
         size_t current_tab = 0;
         ImFontConfig fontcfg = {
         };
-        ImFont* font_large = io.Fonts->AddFontFromFileTTF("./bin/font.ttf", 25.0f);
+        ImFont* font_large = io.Fonts->AddFontFromFileTTF("./bin/font.ttf", 18.0f);
         if (font_large == nullptr) {
             font_large = io.Fonts->AddFontDefault();
         }
-        io.FontGlobalScale = 0.70f;
-
+        
         while (!glfwWindowShouldClose(window)) {
             if (config == nullptr) continue;
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

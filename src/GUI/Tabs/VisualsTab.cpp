@@ -27,6 +27,7 @@ void gui::__render__visuals_tab__(AimConfig* config) {
 	if (config->b_draw_aim_fov) {
 		ImVec4 color_vec4 = ImU32ToImVec4(config->c_fov);
 
+		ImGui::Dummy(ImVec2(0, 3));
 		if (ImGui::ColorButton("Fov Color", color_vec4, 0, ImVec2(50, 20))) {
 			show_fov_color_changer = true;
 		}
@@ -51,12 +52,13 @@ void gui::__render__visuals_tab__(AimConfig* config) {
 	ImGui::Checkbox(XorStr("Show Detected Targets"), &config->b_draw_targets_on_screen);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Renders a box around detected targets."));
 	if (config->b_draw_targets_on_screen) {
+		ImGui::Dummy(ImVec2(0, 3));
 		ImGui::Checkbox(XorStr("Draw Confidence"), &config->b_draw_confidence);
 		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Renders the confidence level on top of every box."));
 	}
 	if (config->b_draw_targets_on_screen) {
 		ImVec4 color_vec4 = ImU32ToImVec4(config->c_esp);
-
+		ImGui::Dummy(ImVec2(0, 3));
 		if (ImGui::ColorButton("ESP Color", color_vec4, 0, ImVec2(50, 20))) {
 			show_esp_color_changer = true;
 		}
