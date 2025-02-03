@@ -46,7 +46,7 @@ void gui::__render__misc_tab__(AimConfig* config) {
 		ImGui::Text(XorStr("d_maximum_jitter_amount:"));
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(200);
-		ImGui::SliderScalar(XorStr("##d_maximum_jitter_amount"), ImGuiDataType_Double, &config->d_maximum_jitter_amount, &minVal, &maxVal, XorStr("%.3f"));
+		ImGui::SliderScalar(XorStr("##d_maximum_jitter_amount"), ImGuiDataType_Double, &config->d_maximum_jitter_amount, &minVal, &maxVal, XorStr("%.0f"));
 		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("The amount of pixels to the target that is considered a jitter."));
 
 		ImGui::Text(XorStr("i_maximum_wait_time_for_target_reappearence:"));

@@ -160,6 +160,15 @@ namespace gui {
         toggle_window();
         toggle_window();
 
+        size_t current_tab = 0;
+        ImFontConfig fontcfg = {
+        };
+        ImFont* font_large = io.Fonts->AddFontFromFileTTF("./bin/font.ttf", 25.0f);
+        if (font_large == nullptr) {
+            font_large = io.Fonts->AddFontDefault();
+        }
+        io.FontGlobalScale = 0.70f;
+
         while (!glfwWindowShouldClose(window)) {
             if (config == nullptr) continue;
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -207,28 +216,26 @@ namespace gui {
             }
             else {
                 ImGui::Begin(XorStr("Overlay"), nullptr, flags);
-                if (ImGui::BeginTabBar(XorStr("SettingsTabs"))) {
-                    if (ImGui::BeginTabItem(XorStr("Aimbot"))) {
-                        __render__aimbot_tab__(config);
-                        ImGui::EndTabItem();
-                    }
-                    if (ImGui::BeginTabItem(XorStr("Visuals"))) {
-                        __render__visuals_tab__(config);
-                        ImGui::EndTabItem();
-                    }
-                    if (ImGui::BeginTabItem(XorStr("Misc"))) {
-                        __render__misc_tab__(config);
-                        ImGui::EndTabItem();
-                    }
-                    if (ImGui::BeginTabItem(XorStr("Settings"))) {
-                        __render__settings_tab__(config);
-                        ImGui::EndTabItem();
-                    }
-                    if (ImGui::BeginTabItem(XorStr("Margins"))) {
-                        __render__preview_tab__(config);
-                        ImGui::EndTabItem();
-                    }
-                    ImGui::EndTabBar();
+                //render_rgb_outline();
+                ImGui::PushFont(font_large);
+                ImGui::NewLine();
+
+
+                render_tabs(current_tab);
+                if (current_tab == 0) {
+                    __render__aimbot_tab__(config);
+                }
+                if (current_tab == 1) {
+                    __render__visuals_tab__(config);
+                }
+                if (current_tab == 2) {
+                    __render__misc_tab__(config);
+                }
+                if (current_tab == 3) {
+                    __render__preview_tab__(config);
+                }
+                if (current_tab == 4) {
+                    __render__settings_tab__(config);
                 }
                 const char* fps_text = XorStr("FPS: %d");
                 ImVec2 window_size = ImGui::GetWindowSize();
@@ -236,7 +243,7 @@ namespace gui {
                 ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10));
                 ImGui::Text(fps_text, config->read_only__i_fps);
                 ImGui::End();
-
+                ImGui::PopFont();
 
                 auto current_time = std::chrono::system_clock::now();
                 auto time_diff = current_time - last_config_save;

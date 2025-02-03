@@ -37,4 +37,9 @@ namespace gui {
 	void __render__misc_tab__(AimConfig* config);
 	void __render__settings_tab__(AimConfig* config);
 	void __render__preview_tab__(AimConfig* config);
+
+
+	void add_tab(size_t index, const char* text, size_t &currentTab);
+	void render_tabs(size_t& current_tab);
+	void render_rgb_outline();
 }

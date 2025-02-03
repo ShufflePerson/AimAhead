@@ -3,8 +3,8 @@
 
 static const char* ETargetModeToString(ETargetMode value) {
 	switch (value) {
-	case ETargetMode::OBJECTIVE: return XorStr("Objective");
-	case ETargetMode::CLOSEST: return XorStr("Closest");
+	case ETargetMode::OBJECTIVE: return ("Objective");
+	case ETargetMode::CLOSEST: return ("Closest");
 	default: return "Unknown";
 	}
 }
@@ -18,9 +18,9 @@ static const char* eTargetModeNames[] = {
 
 static const char* EAimPositionToString(EAimPosition value) {
 	switch (value) {
-	case EAimPosition::TOP: return XorStr("Head");
-	case EAimPosition::CHEST: return XorStr("Chest");
-	case EAimPosition::MIDDLE: return XorStr("Middle");
+	case EAimPosition::TOP: return ("Head");
+	case EAimPosition::CHEST: return ("Chest");
+	case EAimPosition::MIDDLE: return ("Middle");
 	default: return "Unknown";
 	}
 }
@@ -100,7 +100,7 @@ void gui::__render__aimbot_tab__(AimConfig* config) {
 		{
 			for (int i = 0; eAimPositionNames[i] != nullptr; ++i)
 			{
-				bool isSelected = (config->e_target_mode == static_cast<EAimPosition>(i));
+				bool isSelected = (config->e_aim_position == static_cast<EAimPosition>(i));
 				if (ImGui::Selectable(eAimPositionNames[i], isSelected))
 				{
 					config->e_aim_position = static_cast<EAimPosition>(i);
