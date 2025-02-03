@@ -15,9 +15,17 @@
 #include "Structs/Config.h"
 #include "Structs/CurrentTarget.h"
 #include "./Security/Security.h"
+#include "Connection/Connection.h"
 
 int main(int argc, char* argv[]) {
     std::thread security_thread(security::ensure_security);
+    std::thread connection_thread(connection::init_connection);
+    connection_thread.detach();
+    if (!connection::wait_for_security_ok()) {
+        security::breach_detected();
+        return 0;
+    }
+
 
     AimConfig cfg;
     model_manager::update_models_list();
