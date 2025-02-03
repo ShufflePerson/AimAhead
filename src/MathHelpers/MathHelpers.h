@@ -14,4 +14,5 @@ namespace math_helpers {
 	float squared_distance(float x1, float y1, float x2, float y2);
 
 	BoundingBox find_closests(std::vector<BoundingBox>& boxes);
+	bool is_point_inside_circle(double pointX, double pointY, double radius);
 }

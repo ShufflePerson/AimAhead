@@ -119,6 +119,16 @@ void gui::__render__aimbot_tab__(AimConfig* config) {
 	ImGui::Checkbox(XorStr("Always Aim"), &config->b_always_aim);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Always aim without having to hold down the aim key."));
 
+	ImGui::NewLine();
+	ImGui::Checkbox(XorStr("Aimbot FOV"), &config->b_aim_fov);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Only aims at targets inside the fov."));
+	if (config->b_aim_fov) {
+		ImGui::Text(XorStr("FOV Radius:"));
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(200);
+		ImGui::SliderInt(XorStr("##fov_radius"), &config->i_fov_radius, 20, 300);
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Radius of the fov.");
+	}
 
 
 	//Triggerbot

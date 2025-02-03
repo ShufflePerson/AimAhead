@@ -39,6 +39,9 @@ namespace config_manager {
         file.write(reinterpret_cast<const char*>(&config.b_draw_targets_on_screen), sizeof(config.b_draw_targets_on_screen));
         file.write(reinterpret_cast<const char*>(&config.b_draw_confidence), sizeof(config.b_draw_confidence));
         file.write(reinterpret_cast<const char*>(&config.i_head_margin), sizeof(config.i_head_margin));
+        file.write(reinterpret_cast<const char*>(&config.b_aim_fov), sizeof(config.b_aim_fov));
+        file.write(reinterpret_cast<const char*>(&config.b_draw_aim_fov), sizeof(config.b_draw_aim_fov));
+        file.write(reinterpret_cast<const char*>(&config.i_fov_radius), sizeof(config.i_fov_radius));
         file.write(reinterpret_cast<const char*>(&config.read_only__i_fps), sizeof(config.read_only__i_fps));
 
 
@@ -87,6 +90,9 @@ namespace config_manager {
         file.read(reinterpret_cast<char*>(&config.b_draw_targets_on_screen), sizeof(config.b_draw_targets_on_screen));
         file.read(reinterpret_cast<char*>(&config.b_draw_confidence), sizeof(config.b_draw_confidence));
         file.read(reinterpret_cast<char*>(&config.i_head_margin), sizeof(config.i_head_margin));
+        file.read(reinterpret_cast<char*>(&config.b_aim_fov), sizeof(config.b_aim_fov));
+        file.read(reinterpret_cast<char*>(&config.b_draw_aim_fov), sizeof(config.b_draw_aim_fov));
+        file.read(reinterpret_cast<char*>(&config.i_fov_radius), sizeof(config.i_fov_radius));
         file.read(reinterpret_cast<char*>(&config.read_only__i_fps), sizeof(config.read_only__i_fps));
 
 

@@ -280,9 +280,16 @@ namespace ai {
                         movementExact.second = movementExact.second * d_additional_y_sens_multiplier;
                     }
                 }
+                if (cfg->b_aim_fov) {
+                    if (!math_helpers::is_point_inside_circle(movementExact.first / cfg->i_sensitivity + 320, movementExact.second / cfg->i_sensitivity + 320, static_cast<double>(cfg->i_fov_radius))) {
+                        continue;
+                    }
+                }
                 int deltaX = static_cast<int>(round(movementExact.first));
                 int deltaY = static_cast<int>(round(movementExact.second));
                 std::pair<int, int> movement = { deltaX, deltaY };
+
+
 
                 if (current_target.p_last_position.first != 0.0 && current_target.p_last_position.second != 0.0) {
                     double deltaBetweenLastAndNewTarget = math_helpers::get_delta_between_positions(current_target.p_last_position, movementExact);

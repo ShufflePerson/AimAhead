@@ -181,17 +181,14 @@ namespace gui {
             ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
             if (!g_is_visible) {
                 flags |= ImGuiWindowFlags_NoBackground;
+                ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+                ImDrawList* draw_list = ImGui::GetWindowDrawList();
+                ImU32 red_color = IM_COL32(243, 211, 11, 220);
 
                 if (g_bounding_boxes.size() > 0) {
-                    ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-                    ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
                     for (auto& box : g_bounding_boxes) {
                         ImVec2 p_min = ImVec2(box.xmin, box.ymin);
                         ImVec2 p_max = ImVec2(box.xmax, box.ymax);
-
-                        ImU32 red_color = IM_COL32(243, 211, 11, 220);
-
                         draw_list->AddRect(p_min, p_max, red_color, 5.0f, ImDrawListFlags_AntiAliasedLines, 1.10f);
 
                         if (config->b_draw_confidence) {
@@ -209,10 +206,13 @@ namespace gui {
                             draw_list->AddText(text_pos, text_color, confidence_text.c_str());
                         }
                     }
-;
-
-                    ImGui::End();
                 }
+                ImVec2 center = ImVec2(320, 320);
+                if (config->b_draw_aim_fov) {
+                    draw_list->AddCircle(center, (float)config->i_fov_radius, red_color, 360);
+                }
+                ImGui::End();
+
             }
             else {
                 ImGui::Begin(XorStr("Overlay"), nullptr, flags);

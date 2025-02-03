@@ -1,5 +1,5 @@
 #pragma once
-#define CONFIG_ITERATION 3
+#define CONFIG_ITERATION 4
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -87,6 +87,10 @@ struct AimConfig {
 	
 	//Margin from the top of the box
 	int i_head_margin;
+
+	bool b_aim_fov;
+	bool b_draw_aim_fov;
+	int i_fov_radius;
 
 	//Read Only
 	int read_only__i_fps;

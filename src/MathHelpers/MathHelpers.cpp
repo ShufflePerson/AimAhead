@@ -109,4 +109,14 @@ namespace math_helpers {
         return closest_box;
 
     }
+
+    bool is_point_inside_circle(double pointX, double pointY, double radius) {
+        double centerX = 320;
+        double centerY = 320;
+        double distanceSquared = std::pow(pointX - centerX, 2) + std::pow(pointY - centerY, 2);
+
+        double radiusSquared = std::pow(radius, 2);
+
+        return distanceSquared <= radiusSquared;
+    }
 }
