@@ -366,10 +366,10 @@ namespace ai {
 
 
                 if (cfg->b_auto_trigger && holding_triggerbot_key) {
-                    if (cfg->i_auto_trigger_delay > 0) {
-                        std::this_thread::sleep_for(std::chrono::milliseconds(cfg->i_auto_trigger_delay));
-                    }
                     if (abs(movement.first) <= 10) {
+                        if (cfg->i_auto_trigger_delay > 0) {
+                            std::this_thread::sleep_for(std::chrono::milliseconds(cfg->i_auto_trigger_delay));
+                        }
                         triggerbot::auto_fire_tick(true, d_additional_y_sens_multiplier, cfg);
                     }
                 }
