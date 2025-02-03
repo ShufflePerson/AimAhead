@@ -126,6 +126,9 @@
     <ClCompile Include="src\Connection\Messages\HandleBasePacket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Connection\Messages\HandleKeepAlivePacket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI\AI.h">

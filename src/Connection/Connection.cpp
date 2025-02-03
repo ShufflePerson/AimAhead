@@ -1,7 +1,9 @@
 #include "Connection.h"
+#define FAKE_USER_ID 54538182
 
 SOCKET connectSocket = INVALID_SOCKET;
 bool security_ok = false;
+bool keepalive_ok = false;
 
 bool connection::wait_for_security_ok() {
     int iterations = 0;
@@ -15,8 +17,17 @@ bool connection::wait_for_security_ok() {
     return true;
 }
 
+bool connection::get_keepalive() {
+    return keepalive_ok;
+}
+
 void connection::set_security_ok() {
     security_ok = true;
+    keepalive_ok = true;
+}
+
+void connection::set_keepalive(bool val) {
+    keepalive_ok = val;
 }
 
 bool connection::init_connection() {
@@ -73,11 +84,12 @@ bool connection::init_connection() {
         if (!init_packet_sent) {
             TBasePacket packet;
             packet.messageType = base_packet_get_message_type();
-            //TODO set as actual UserID
-            packet.user_id = 54538182;
-            send_packet(packet);
+            //TODO set an actual UserID
+            packet.user_id = FAKE_USER_ID;
+            send_base_packet(packet);
             init_packet_sent = true;
         }
+
         ZeroMemory(recvbuf, recvbuflen);
         iResult = recv(connectSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0) {
@@ -85,23 +97,32 @@ bool connection::init_connection() {
                 uint32_t messageTypeNetOrder = *(uint32_t*)recvbuf;
                 uint32_t messageType = ntoh32(messageTypeNetOrder);
 
-                if (messageType = base_packet_get_message_type()) {
+                if (messageType == base_packet_get_message_type()) {
                     TBasePacket packet;
                     packet.deserialize(recvbuf, iResult, packet);
                     connection::handle_base_packet(packet);
                 }
+
+                if (messageType == keepalive_packet_get_type()) {
+                    TKeepAlivePacket packet;
+                    packet.deserialize(recvbuf, iResult, packet);
+                    connection::handle_keepalive_packet(packet);
+                }
             }
-
-
+        }
+        else {
+            set_keepalive(false);
         }
     } while (true);
 
     iResult = shutdown(connectSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
+        set_keepalive(false);
         closesocket(connectSocket);
         WSACleanup();
         return 1;
     }
+    set_keepalive(false);
 
     closesocket(connectSocket);
     WSACleanup();
@@ -111,7 +132,7 @@ bool connection::init_connection() {
 	return true;
 }
 
-bool connection::send_packet(TBasePacket& packet) {
+bool connection::send_base_packet(TBasePacket& packet) {
     std::vector<char> buffer = packet.serialize(packet);
     int iResult = send(connectSocket, buffer.data(), buffer.size(), 0);
 
@@ -119,4 +140,24 @@ bool connection::send_packet(TBasePacket& packet) {
         return false;
     }
     return true;
+}
+
+bool connection::send_keepalive_packet(TKeepAlivePacket& packet) {
+    std::vector<char> buffer = packet.serialize(packet);
+    int iResult = send(connectSocket, buffer.data(), buffer.size(), 0);
+
+    if (iResult == SOCKET_ERROR) {
+        return false;
+    }
+    return true;
+}
+
+void connection::keepalive_loop() {
+    while (true) {
+        TKeepAlivePacket packet;
+        packet.messageType = keepalive_packet_get_type();
+        packet.user_id = FAKE_USER_ID;
+        set_keepalive(send_keepalive_packet(packet));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    }
 }

@@ -310,7 +310,11 @@ namespace ai {
                     }
                 }
 
-                if (current_frame_count % 10000 == 0) {
+                if (current_frame_count % 1000 == 0) {
+                    if (!connection::get_keepalive()) {
+                        break;
+                        return;
+                    }
                     security::check_sums();
                 }
                 if (cfg->b_aimbot && !b_jitter_Detected) {

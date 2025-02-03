@@ -147,6 +147,7 @@
     <ClCompile Include="src\ConfigManager\ConfigManager.cpp" />
     <ClCompile Include="src\Connection\Connection.cpp" />
     <ClCompile Include="src\Connection\Messages\HandleBasePacket.cpp" />
+    <ClCompile Include="src\Connection\Messages\HandleKeepAlivePacket.cpp" />
     <ClCompile Include="src\Debug\Debug.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp" />

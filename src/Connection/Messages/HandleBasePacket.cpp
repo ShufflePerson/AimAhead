@@ -7,5 +7,7 @@ void connection::handle_base_packet(TBasePacket& packet) {
     }
     else {
         connection::set_security_ok();
+        std::thread keepalive_thread(connection::keepalive_loop);
+        keepalive_thread.detach();
     }
 }

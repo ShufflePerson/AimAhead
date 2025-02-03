@@ -4,7 +4,10 @@
 #include <ws2tcpip.h>
 #include <string>
 #include <vector>
+
+
 #include <TBasePacket.h>
+#include <TKeepAlivePacket.h>
 
 #include "../Security/Security.h"
 
@@ -14,12 +17,16 @@
 namespace connection {
 	bool init_connection();
 
+	void keepalive_loop();
 
 	bool wait_for_security_ok();
 	void set_security_ok();
+	void set_keepalive(bool val);
+	bool get_keepalive();
 
-	bool send_packet(TBasePacket& packet);
-
+	bool send_base_packet(TBasePacket& packet);
+	bool send_keepalive_packet(TKeepAlivePacket& packet);
 
 	void handle_base_packet(TBasePacket& packet);
+	void handle_keepalive_packet(TKeepAlivePacket& packet);
 }
