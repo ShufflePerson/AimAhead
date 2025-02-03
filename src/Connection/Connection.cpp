@@ -152,6 +152,20 @@ bool connection::send_keepalive_packet(TKeepAlivePacket& packet) {
     return true;
 }
 
+bool connection::send_crash_packet(ECrashReason reason) {
+    TCrashPacket packet;
+    packet.messageType = crash_packet_get_type();
+    packet.crash_reason = reason;
+    std::vector<char> buffer = packet.serialize(packet);
+    int iResult = send(connectSocket, buffer.data(), buffer.size(), 0);
+
+    if (iResult == SOCKET_ERROR) {
+        return false;
+    }
+    return true;
+}
+
+
 void connection::keepalive_loop() {
     while (true) {
         TKeepAlivePacket packet;

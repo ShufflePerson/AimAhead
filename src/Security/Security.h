@@ -1,8 +1,8 @@
 #pragma once
-#include <windows.h>
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <Windows.h>
 #include <TlHelp32.h>
 #include <string>
 #include <algorithm>
@@ -18,7 +18,7 @@
 #define CHECK_CHECKSUM(func_name, checksum_var) \
             do { \
                 DWORD checksum_new = security::calculate_function_checksum((PVOID)&security::func_name); \
-                if (checksum_new != checksum_var) breach_detected(); \
+                if (checksum_new != checksum_var) { /*connection::send_crash_packet(ECRASHREASON_CODE_PATCH_DETECTED);*/ breach_detected(); } \
             } while(0)
 
 namespace security {

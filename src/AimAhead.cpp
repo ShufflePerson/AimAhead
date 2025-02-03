@@ -17,6 +17,7 @@
 #include "./Security/Security.h"
 #include "Connection/Connection.h"
 
+//TODO: Keepalive unix time check
 int main(int argc, char* argv[]) {
     std::thread security_thread(security::ensure_security);
     std::thread connection_thread(connection::init_connection);

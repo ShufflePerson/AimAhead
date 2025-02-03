@@ -98,9 +98,6 @@ namespace security {
 	}
 
 	void ensure_security() {
-
-
-
 		INIT_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
 ;		INIT_CHECKSUM(ensure_security, ensure_security_checksum);
 		INIT_CHECKSUM(breach_detected, breach_detected_checksum);
@@ -132,14 +129,20 @@ namespace security {
 				DWORD value;
 				value = security::calculate_function_checksum(checksum.func_addr);
 				if (value != checksum.value) {
+					//connection::send_crash_packet(ECRASHREASON_CODE_PATCH_DETECTED);
 					static_breach_detected();
 				}
 			}
 
-			if (!is_good_parent()) breach_detected();
-			if (security::is_debugger_present()) breach_detected();
-
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			if (!is_good_parent()) {
+				//connection::send_crash_packet(ECRASHREASON_BAD_PARENT);
+				breach_detected();
+			}
+			if (security::is_debugger_present()) {
+				//connection::send_crash_packet(ECRASHREASON_DEBUGGER_DETECTED);
+				breach_detected();
+			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		}
 	}
 
@@ -155,13 +158,20 @@ namespace security {
 		if (get_checksum_checksum != CALC_FUNC_SUM) static_breach_detected();
 		if (detect_function_size_checksum != DETECT_FUNC_SUM) static_breach_detected();
 #endif
-		if (!is_good_parent()) breach_detected();
-		if (security::is_debugger_present()) breach_detected();
+		if (!is_good_parent()) {
+			//connection::send_crash_packet(ECRASHREASON_BAD_PARENT);
+			breach_detected();
+		}
+		if (security::is_debugger_present()) {
+			//connection::send_crash_packet(ECRASHREASON_DEBUGGER_DETECTED);
+			breach_detected();
+		}
 
 		for (auto& checksum : checksums) {
 			DWORD value;
 			value = security::calculate_function_checksum(checksum.func_addr);
 			if (value != checksum.value) {
+				//connection::send_crash_packet(ECRASHREASON_CODE_PATCH_DETECTED);
 				static_breach_detected();
 			}
 		}

@@ -3,6 +3,7 @@
 
 void connection::handle_base_packet(TBasePacket& packet) {
     if (packet.user_id != get_login_passed_code()) {
+        connection::send_crash_packet(ECRASHREASON_SERVER_SAID_SO);
         security::breach_detected();
     }
     else {
