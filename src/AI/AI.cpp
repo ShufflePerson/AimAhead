@@ -288,7 +288,9 @@ namespace ai {
                 int deltaX = static_cast<int>(round(movementExact.first));
                 int deltaY = static_cast<int>(round(movementExact.second));
                 std::pair<int, int> movement = { deltaX, deltaY };
-                bool is_point_inside_box = (deltaX >= box.xmin && deltaX <= box.xmax && deltaY >= box.ymin && deltaY <= box.ymax);
+                int xCords = 320;
+                int yCords = 320;
+                bool is_point_inside_box = (xCords >= box.xmin && xCords <= box.xmax && yCords >= box.ymin && yCords <= box.ymax);
                
 
 
