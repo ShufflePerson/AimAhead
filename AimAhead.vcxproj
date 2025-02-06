@@ -206,6 +206,7 @@
     <ClInclude Include="src\Structs\BoundingBox.h" />
     <ClInclude Include="src\Structs\Config.h" />
     <ClInclude Include="src\Structs\CurrentTarget.h" />
+    <ClInclude Include="src\Structs\DebugInfo.h" />
     <ClInclude Include="src\Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>

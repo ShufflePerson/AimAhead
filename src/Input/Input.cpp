@@ -38,6 +38,16 @@ namespace input {
         }
 	}
 
+    void send_key(WORD vkCode) {
+        INPUT input[2] = { 0 };
+
+        input[0].type = input[1].type = INPUT_KEYBOARD;
+        input[0].ki.wVk = input[1].ki.wVk = vkCode;
+
+        input[1].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(2, input, sizeof(INPUT));
+    }
+
     void send_input_mouse_event(bool down) {
         INPUT input[2];
         input[0].type = INPUT_MOUSE;

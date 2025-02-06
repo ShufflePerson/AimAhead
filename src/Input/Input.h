@@ -23,4 +23,5 @@ namespace input {
 	std::string get_vk_string(int vkCode);
 	int get_vk_code(const std::string& name);
 	DWORD get_last_pressed_key();
+	void send_key(WORD vkCode);
 }

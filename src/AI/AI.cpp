@@ -111,9 +111,13 @@ namespace ai {
         // Target Tracking
         std::pair<double, double> lastTargetPosition = { -5.0, -5.0 };
         double sens = 1.0;
+        std::pair<double, double> previous_error = {0.0, 0.0};
 
         // Frame Information
         std::size_t current_frame_count = 0;
+        steady_clock::time_point last_frame_time = steady_clock::now();;
+        steady_clock::time_point current_frame_time = steady_clock::now();;
+        double dt = 0.0;
 
         // Current Target State
         CurrentTarget current_target;
@@ -135,7 +139,19 @@ namespace ai {
         double d_additional_y_sens_multiplier = 1.0;
         std::thread security_thread(security::ensure_security);
 
+        //Debug info
+        DebugInfo dbg_info;
+        dbg_info.b_have_active_target = false;
+        dbg_info.i_frames_since_target_was_seen = 0;
+        dbg_info.target_velocity_x = 0.0;
+        dbg_info.target_velocity_y = 0.0;
+        dbg_info.i_prediction_frames_gathered = 0;
+        gui::set_debug_info_ptr(&dbg_info);
+
         while (true) {
+            current_frame_time = steady_clock::now();
+            dt = duration<double>(current_frame_time - last_frame_time).count();
+
             float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
             if (gui::get_is_visible()) {
                 if (i_last_sensitivity == cfg->i_sensitivity && i_last_head_margin == cfg->i_head_margin && cfg->f_minimum_top_margin == f_last_minimum_head_margin) {
@@ -240,7 +256,9 @@ namespace ai {
 #endif
             if (results.size() > 0) {
                 BoundingBox box = results[0];
-
+                current_target.i_last_seen_frame = current_frame_count;
+                dbg_info.i_frames_since_target_was_seen = current_frame_count - current_target.i_last_seen_frame;
+                dbg_info.b_have_active_target = current_target.b_active;
                 if (cfg->e_target_mode == OBJECTIVE) {
                     float highestConf = 0.0f;
                     for (int i = 0; i < results.size(); i++) {
@@ -273,8 +291,23 @@ namespace ai {
                 }
 #endif
 
-
+                /*
                 std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, cfg->e_aim_position, cfg);
+                */
+                std::pair<double, double> aim_position = math_helpers::get_aim_position(box.xmin, box.xmax, box.ymin, box.ymax, area_middle, area_middle, cfg->e_aim_position, cfg);
+                current_target.v_location_history.push_back(aim_position);
+
+                if (current_target.v_location_history.size() > cfg->i_max_prediction_frames) {
+                    int amount_to_remove = current_target.v_location_history.size() - cfg->i_max_prediction_frames;
+                    current_target.v_location_history.erase(current_target.v_location_history.begin(), current_target.v_location_history.begin() + amount_to_remove);
+                }
+                std::pair<double, double> target_velocity = math_helpers::get_target_velocity(current_target.v_location_history);
+                dbg_info.target_velocity_x = target_velocity.first;
+                dbg_info.target_velocity_y = target_velocity.second;
+                dbg_info.i_prediction_frames_gathered = current_target.v_location_history.size();
+                std::pair<double, double> movementExact = math_helpers::calculate_mouse_movement_pid(box.xmin, box.xmax, box.ymin, box.ymax, cfg->i_sensitivity, area_middle, area_middle, previous_error, dt, target_velocity, cfg->e_aim_position, cfg);
+                double deltaBetweenLastAndNewTarget = math_helpers::get_delta_between_positions(current_target.p_last_position, movementExact);
+                previous_error = movementExact;
                 if (cfg->b_adjust_auto_trigger_for_recoil) {
                     if (movementExact.second > 0) {
                         movementExact.second = movementExact.second * d_additional_y_sens_multiplier;
@@ -285,18 +318,18 @@ namespace ai {
                         continue;
                     }
                 }
-                int deltaX = static_cast<int>(round(movementExact.first));
-                int deltaY = static_cast<int>(round(movementExact.second));
-                std::pair<int, int> movement = { deltaX, deltaY };
+                int movementX = static_cast<int>(round(movementExact.first));
+                int movementY = static_cast<int>(round(movementExact.second));
+                int deltaX = movementX / cfg->i_sensitivity;
+                int deltaY = movementY / cfg->i_sensitivity;
+                bool should_aim = (abs(deltaX) >= 3) || (abs(deltaY) >= 3);
+                std::pair<int, int> movement = { movementX, movementY };
                 int xCords = 320;
                 int yCords = 320;
                 bool is_point_inside_box = (xCords >= box.xmin && xCords <= box.xmax && yCords >= box.ymin && yCords <= box.ymax);
-               
-
 
                 if (cfg->b_anti_target_jitter) {
                     if (current_target.p_last_position.first != 0.0 && current_target.p_last_position.second != 0.0) {
-                        double deltaBetweenLastAndNewTarget = math_helpers::get_delta_between_positions(current_target.p_last_position, movementExact);
                         if (deltaBetweenLastAndNewTarget >= cfg->d_maximum_jitter_amount) {
                             if (!b_jitter_Detected)
                                 i_jitter_detected_at = current_frame_count;
@@ -325,6 +358,24 @@ namespace ai {
                 }
 
 
+                int max_aim_pixels = 40;
+                if (abs(movementX) > max_aim_pixels) {
+                    if (movementX < 0) {
+                        movement.first = -max_aim_pixels;
+                    }
+                    if (movementX > 0) {
+                        movement.first = max_aim_pixels;
+                    }
+                }
+                if (abs(movementY) > max_aim_pixels) {
+                    if (movementY < 0) {
+                        movement.second = -max_aim_pixels;
+                    }
+                    if (movementY > 0) {
+                        movement.second = max_aim_pixels;
+                    }
+                }
+
                 if (current_frame_count % 1000 == 0) {
                     if (!connection::get_keepalive()) {
                         break;
@@ -332,45 +383,29 @@ namespace ai {
                     }
                     security::check_sums();
                 }
-                if (cfg->b_aimbot && !b_jitter_Detected) {
-                    current_target.p_last_position = movementExact;
+
+
+                if (cfg->b_aimbot && !b_jitter_Detected && should_aim) {
+                    current_target.p_last_position = aim_position;
                     if (cfg->b_predict_next_frame) {
                         if (!current_target.b_active) {
                             current_target.b_active = true;
                         }
-                        current_target.v_location_history.push_back(movementExact);
 
-                        if (current_target.v_location_history.size() > cfg->i_max_prediction_frames) {
-                            int amount_to_remove = current_target.v_location_history.size() - cfg->i_max_prediction_frames;
-                            current_target.v_location_history.erase(current_target.v_location_history.begin(), current_target.v_location_history.begin() + amount_to_remove);
-                        }
 
                         if (current_target.v_location_history.size() >= cfg->i_frames_needed_for_prediction) {
-                            std::pair<double, double> predictionOutcome = math_helpers::calculate_future_frame_prediction(current_target.v_location_history, movementExact, cfg->i_future_frames_to_predict);
-#ifdef __DEBUG__
-                            debug::draw_target_prediction(movementExact, predictionOutcome);
-#endif
-#ifndef __DEBUG__
-                            input::send_input_mouse_relative(predictionOutcome.first, predictionOutcome.second, cfg);
-#endif
+                            std::pair<double, double> predictionOutcome = math_helpers::calculate_future_frame_prediction(current_target.v_location_history, aim_position, cfg->i_future_frames_to_predict);
+                            std::pair<double, double> newCalc = math_helpers::calculate_mouse_movement_from_given_point(predictionOutcome.first, predictionOutcome.second, previous_error, dt, target_velocity);
+                            input::send_input_mouse_relative(newCalc.first * cfg->i_sensitivity, newCalc.second * cfg->i_sensitivity, cfg);
                         }
-
-                        if (!(current_target.v_location_history.size() >= cfg->i_frames_needed_for_prediction)) {
-#ifndef __DEBUG__
+                        else {
                             input::send_input_mouse_relative(movementExact.first, movementExact.second, cfg);
-#endif
                         }
                     }
                     else {
-#ifndef __DEBUG__
                         input::send_input_mouse_relative(movementExact.first, movementExact.second, cfg);
-#endif
                     }
                 }
-
-#ifdef __DEBUG__
-                debug::draw_target_location(movementExact);
-#endif
 
 
                 if (cfg->b_auto_trigger && holding_triggerbot_key) {
@@ -382,6 +417,7 @@ namespace ai {
                     }
                 }
                 lastTargetPosition = movementExact;
+                last_frame_time = current_frame_time;
             }
             else {
                 gui::update_boxes({});
@@ -390,10 +426,18 @@ namespace ai {
                 }
                 lastTargetPosition.first = -5.0;
                 lastTargetPosition.second = -5.0;
+                dbg_info.i_frames_since_target_was_seen = current_frame_count - current_target.i_last_seen_frame;
 
-                current_target.b_active = false;
-                current_target.v_location_history.clear();
-                current_target.p_last_position = std::pair<double, double>{ 0.0, 0.0 };
+                if (current_frame_count - current_target.i_last_seen_frame > 30) {
+                    current_target.b_active = false;
+                    current_target.v_location_history.clear();
+                    current_target.p_last_position = std::pair<double, double>{ 0.0, 0.0 };
+                    dbg_info.b_have_active_target = false;
+                    dbg_info.i_frames_since_target_was_seen = 0;
+                    dbg_info.i_prediction_frames_gathered = 0;
+                    dbg_info.target_velocity_x = 0.0;
+                    dbg_info.target_velocity_y = 0.0;
+                }
                 i_jitter_detected_at = 0;
                 b_jitter_Detected = false;
             }
@@ -420,7 +464,7 @@ namespace ai {
 
             end_time = high_resolution_clock::now();
             elapsed_time = end_time - start_time;
-
+            previous_error = { 0.0, 0.0 };
             total_elapsed_time += elapsed_time.count();
             iteration_count++;
             if (iteration_count % averaging_interval == 0) {

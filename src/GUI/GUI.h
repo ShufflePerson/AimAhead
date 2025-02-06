@@ -14,6 +14,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "../Structs/Config.h"
+#include "../Structs/DebugInfo.h"
 #include "../Input/Input.h"
 #include "../Utils/Utils.h"
 #include "../ModelManager/ModelManager.h"
@@ -21,6 +22,7 @@
 #include "./Preview/Preview.h"
 #include "../Security/xor.h"
 #include "../Security/Security.h"
+
 
 namespace gui {
 
@@ -44,4 +46,6 @@ namespace gui {
 	void render_rgb_outline();
 
 	HWND get_hwnd();
+	void set_debug_info_ptr(DebugInfo* ptr);
 }
+

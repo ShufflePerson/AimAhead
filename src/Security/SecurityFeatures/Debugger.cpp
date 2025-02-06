@@ -240,8 +240,6 @@ namespace security {
             }
             __finally
             {
-                if (hProcess)
-                    CloseHandle(hProcess);
             }
         } while (Process32NextW(hSnapshot, &ProcessEntry));
 

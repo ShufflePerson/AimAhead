@@ -212,6 +212,9 @@
     <ClInclude Include="src\Connection\Connection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Structs\DebugInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Helpers\engine\EngineBuildLoadNetwork.inl">

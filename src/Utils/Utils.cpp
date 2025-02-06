@@ -132,6 +132,7 @@ namespace utils {
         cfg->i_selected_model_index = 0;
         cfg->i_minimum_confidence = 55;
         cfg->b_geforce_now_mode = false;
+        cfg->b_counter_strafe = false;
         cfg->b_aim_fov = true;
         cfg->b_draw_aim_fov = true;
         cfg->i_fov_radius = 20;
@@ -194,5 +195,6 @@ namespace utils {
         int height = GetSystemMetrics(SM_CYSCREEN);
         return { width, height };
     }
+
     
 }

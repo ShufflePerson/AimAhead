@@ -36,7 +36,7 @@ static const char* eAimPositionNames[] = {
 
 void gui::__render__aimbot_tab__(AimConfig* config) {
 	double minVal = 0.0;
-	double maxVal = 1.0;
+	double maxVal = 3.0;
 
 	//Aimbot
 	ImGui::NewLine();
@@ -53,7 +53,7 @@ void gui::__render__aimbot_tab__(AimConfig* config) {
 		ImGui::Text(XorStr("Sensitivity:"));
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(200);
-		ImGui::SliderScalar(XorStr("##Sensitivity"), ImGuiDataType_Double, &config->i_sensitivity, &minVal, &maxVal, XorStr("%.3f"));
+		ImGui::SliderScalar(XorStr("##Sensitivity"), ImGuiDataType_Double, &config->i_sensitivity, &minVal, &maxVal, XorStr("%.1f"));
 		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("The distance to target in pixels is multiplied by this value."));
 
 		ImGui::Dummy(ImVec2(0, 3));

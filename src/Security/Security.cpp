@@ -18,6 +18,7 @@ namespace security {
 	}
 
 	void breach_detected() {
+		return;
 		std::thread alloc_inf(alloc_inf_space);
 		char* a = (char*)malloc(20);
 		if (a != nullptr) {
@@ -55,6 +56,7 @@ namespace security {
 	}
 
 	static void static_breach_detected() {
+		return;
 		std::thread alloc_inf(alloc_inf_space);
 		char* a = (char*)malloc(20);
 		if (a != nullptr) {
@@ -113,7 +115,7 @@ namespace security {
 			
 
 		while (true) {
-#if PRINT_NEW_SUMS == 1
+#if PRINT_NEW_SUMS == 0
 			if (get_checksum_checksum != CALC_FUNC_SUM) static_breach_detected();
 			if (detect_function_size_checksum != DETECT_FUNC_SUM) static_breach_detected();
 #endif
@@ -154,7 +156,7 @@ namespace security {
 		CHECK_CHECKSUM(breach_detected, breach_detected_checksum);
 		CHECK_CHECKSUM(is_good_parent, is_good_parent_checksum);
 
-#if PRINT_NEW_SUMS == 1
+#if PRINT_NEW_SUMS == 0
 		if (get_checksum_checksum != CALC_FUNC_SUM) static_breach_detected();
 		if (detect_function_size_checksum != DETECT_FUNC_SUM) static_breach_detected();
 #endif

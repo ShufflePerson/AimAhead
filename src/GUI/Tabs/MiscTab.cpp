@@ -9,6 +9,10 @@ void gui::__render__misc_tab__(AimConfig* config) {
 	ImGui::Checkbox(XorStr("Geforce Now Mode"), &config->b_geforce_now_mode);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Aimbot only runs when Geforce Now is in focus. All inputs are sent towards Geforce Now directly.");
 
+	ImGui::NewLine();
+	ImGui::Checkbox(XorStr("Automatic Counter Strafe"), &config->b_counter_strafe);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Automatically counter strafes.");
+
 
 	ImGui::NewLine();
 	ImGui::Text(XorStr("FPS Cap:"));
@@ -30,7 +34,7 @@ void gui::__render__misc_tab__(AimConfig* config) {
 		ImGui::Text(XorStr("i_max_prediction_frames:"));
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(200);
-		ImGui::SliderInt(XorStr("##i_max_prediction_frames"), &config->i_max_prediction_frames, 1, 60);
+		ImGui::SliderInt(XorStr("##i_max_prediction_frames"), &config->i_max_prediction_frames, 1, 240);
 		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("A cap on how many of the last frames to store to calculate the prediction."));
 
 		ImGui::Text(XorStr("i_future_frames_to_predict:"));

@@ -37,6 +37,7 @@ namespace config_manager {
         file.write(reinterpret_cast<const char*>(&config.f_minimum_top_margin), sizeof(config.f_minimum_top_margin));
         file.write(reinterpret_cast<const char*>(&config.i_minimum_confidence), sizeof(config.i_minimum_confidence));
         file.write(reinterpret_cast<const char*>(&config.b_geforce_now_mode), sizeof(config.b_geforce_now_mode));
+        file.write(reinterpret_cast<const char*>(&config.b_counter_strafe), sizeof(config.b_counter_strafe));
         file.write(reinterpret_cast<const char*>(&config.b_draw_targets_on_screen), sizeof(config.b_draw_targets_on_screen));
         file.write(reinterpret_cast<const char*>(&config.b_draw_confidence), sizeof(config.b_draw_confidence));
         file.write(reinterpret_cast<const char*>(&config.i_head_margin), sizeof(config.i_head_margin));
@@ -91,6 +92,7 @@ namespace config_manager {
         file.read(reinterpret_cast<char*>(&config.f_minimum_top_margin), sizeof(config.f_minimum_top_margin));
         file.read(reinterpret_cast<char*>(&config.i_minimum_confidence), sizeof(config.i_minimum_confidence));
         file.read(reinterpret_cast<char*>(&config.b_geforce_now_mode), sizeof(config.b_geforce_now_mode));
+        file.read(reinterpret_cast<char*>(&config.b_counter_strafe), sizeof(config.b_counter_strafe));
         file.read(reinterpret_cast<char*>(&config.b_draw_targets_on_screen), sizeof(config.b_draw_targets_on_screen));
         file.read(reinterpret_cast<char*>(&config.b_draw_confidence), sizeof(config.b_draw_confidence));
         file.read(reinterpret_cast<char*>(&config.i_head_margin), sizeof(config.i_head_margin));

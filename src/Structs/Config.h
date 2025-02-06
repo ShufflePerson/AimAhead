@@ -1,5 +1,5 @@
 #pragma once
-#define CONFIG_ITERATION 6
+#define CONFIG_ITERATION 7
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -83,6 +83,8 @@ struct AimConfig {
 	int i_minimum_confidence;
 	//Sends inputs directly to Geforce Now, only runs aimbot when GFN is in focus
 	bool b_geforce_now_mode;
+	//Automatic counter strafing
+	bool b_counter_strafe;
 
 	//Visuals
 	bool b_draw_targets_on_screen;
