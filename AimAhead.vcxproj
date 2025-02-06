@@ -142,6 +142,10 @@
   <ItemGroup>
     <ClCompile Include="src\AimAhead.cpp" />
     <ClCompile Include="src\AI\AI.cpp" />
+    <ClCompile Include="src\AI\Funcs\calculateTargetBox.cpp" />
+    <ClCompile Include="src\AI\Funcs\handleModelChanges.cpp" />
+    <ClCompile Include="src\AI\Funcs\handlePreview.cpp" />
+    <ClCompile Include="src\AI\Funcs\handleSaveTrainingData.cpp" />
     <ClCompile Include="src\Capture\Capture.cpp" />
     <ClCompile Include="src\Collector\Collector.cpp" />
     <ClCompile Include="src\ConfigManager\ConfigManager.cpp" />
@@ -207,6 +211,7 @@
     <ClInclude Include="src\Structs\Config.h" />
     <ClInclude Include="src\Structs\CurrentTarget.h" />
     <ClInclude Include="src\Structs\DebugInfo.h" />
+    <ClInclude Include="src\Structs\Vector2.h" />
     <ClInclude Include="src\Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>

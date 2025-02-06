@@ -65,9 +65,6 @@ int main(int argc, char* argv[]) {
     security::add_checksum_watch((PVOID)&gui::__render__settings_tab__);
     security::add_checksum_watch((PVOID)&gui::__render__visuals_tab__);
     security::add_checksum_watch((PVOID)&triggerbot::auto_fire_tick);
-    security::add_checksum_watch((PVOID)&math_helpers::calculate_future_frame_prediction);
-    security::add_checksum_watch((PVOID)&math_helpers::calculate_mouse_movement);
-    security::add_checksum_watch((PVOID)&math_helpers::calculate_new_frame_prediction_based_on_history);
     security::add_checksum_watch((PVOID)&math_helpers::find_closests);
     security::add_checksum_watch((PVOID)&math_helpers::get_center);
     security::add_checksum_watch((PVOID)&math_helpers::get_delta_between_positions);
