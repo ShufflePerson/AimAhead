@@ -191,19 +191,31 @@ namespace ai {
 
             if (results.size() > 0) {
                 BoundingBox box = results[0];
-
+                if (cfg->b_draw_targets_on_screen) {
+                    gui::update_boxes({ box });
+                }
                 dbg_info.i_frames_since_target_was_seen = current_frame_count - current_target.i_last_seen_frame;
                 dbg_info.b_have_active_target = current_target.b_active;
                 dbg_info.i_prediction_frames_gathered = current_target.v_location_history.size();
                 box = calculate_target_box(results, cfg);
                 handle_save_training_data(cfg, gpuImg);
-                if (cfg->b_draw_targets_on_screen) {
-                    gui::update_boxes({ box });
-                }
 
                 Vector2 target_cordinates = math_helpers::get_aim_position(box.xmin, box.xmax, box.ymin, box.ymax, cfg->e_aim_position, cfg);
                 bool is_target_hittable = (target_cordinates.x >= box.xmin && target_cordinates.x <= box.xmax && target_cordinates.y >= box.ymin && target_cordinates.y <= box.ymax);
                 Vector2 last_position = current_target.p_last_position;
+
+                if (cfg->b_anti_target_jitter && current_target.b_active) {
+                    double delta_between_old_and_new_pos = math_helpers::get_delta_between_positions(last_position, target_cordinates);
+                    if (delta_between_old_and_new_pos > cfg->d_maximum_jitter_amount) {
+                        if (dbg_info.i_frames_since_target_was_seen > cfg->i_maximum_wait_time_for_target_reappearence) {
+                            current_target.b_active = false;
+                            current_target.v_location_history.clear();
+                            current_target.p_last_position = { 0.0, 0.0 };
+                        }
+                        continue;
+                    }
+                }
+
                 if (cfg->b_auto_trigger && holding_triggerbot_key) {
                     if (is_target_hittable) {
                         triggerbot::auto_fire_tick(true, d_additional_y_sens_multiplier, cfg);
@@ -215,6 +227,7 @@ namespace ai {
                 if (last_position.x == target_cordinates.x && last_position.y == target_cordinates.y) {
                     continue;
                 }
+    
                 current_target.b_active = true;
                 current_target.i_last_seen_frame = current_frame_count;
                 current_target.p_last_position = target_cordinates;
