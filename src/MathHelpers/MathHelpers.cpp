@@ -51,11 +51,11 @@ namespace math_helpers {
     }
 
 
-    double medium_sens = 0.45; 
-    double high_sens = 0.75;
+    double medium_sens = 0.35; 
+    double high_sens = 0.55;
     double close_zone_radius = 20.0;
     double transition_zone_radius = 80.0;
-    double max_movement = 45.0;
+    double max_movement = 35.0;
     double deadzone_threshold = 10.0;
     Vector2 get_mouse_movement(Vector2 aim_cordinates, double sens, double dt) {
         Vector2 mouse_movements;
