@@ -250,6 +250,8 @@ namespace security {
 
     void patch_DbgUiRemoteBreakin()
     {
+        //todo fix crash with memcpy
+        return;
         HMODULE hNtdll = GetModuleHandleA(XorStr("ntdll.dll"));
         if (!hNtdll)
             return;
