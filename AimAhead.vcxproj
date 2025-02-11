@@ -155,6 +155,10 @@
     <ClCompile Include="src\Debug\Debug.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp" />
+    <ClCompile Include="src\GUI\AimAheadUI\AimAheadUI.cpp" />
+    <ClCompile Include="src\GUI\AimAheadUI\UIMath\UIMath.cpp" />
+    <ClCompile Include="src\GUI\AimAheadUI\Utils\Fonts.cpp" />
+    <ClCompile Include="src\GUI\AimAheadUI\Utils\MatToTexture.cpp" />
     <ClCompile Include="src\GUI\CustomGUI\HandleTabs.cpp" />
     <ClCompile Include="src\GUI\CustomGUI\RGBOutline.cpp" />
     <ClCompile Include="src\GUI\GUI.cpp" />
@@ -192,6 +196,8 @@
     <ClInclude Include="src\Debug\Debug.h" />
     <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Features\Triggerbot\Triggerbot.h" />
+    <ClInclude Include="src\GUI\AimAheadUI\AimAheadUI.h" />
+    <ClInclude Include="src\GUI\AimAheadUI\UIMath\UIMath.h" />
     <ClInclude Include="src\GUI\GUI.h" />
     <ClInclude Include="src\GUI\Preview\Preview.h" />
     <ClInclude Include="src\Helpers\Int8Calibrator.h" />
@@ -212,6 +218,7 @@
     <ClInclude Include="src\Structs\CurrentTarget.h" />
     <ClInclude Include="src\Structs\DebugInfo.h" />
     <ClInclude Include="src\Structs\Vector2.h" />
+    <ClInclude Include="src\Utils\Timer.h" />
     <ClInclude Include="src\Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>

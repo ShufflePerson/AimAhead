@@ -6,16 +6,8 @@ namespace ai {
 
     std::vector<BoundingBox> runInference(cv::cuda::GpuMat& img, float minObjectness, Engine<float>& engine) {
         const auto& inputDims = engine.getInputDims();
-        std::vector<std::vector<cv::cuda::GpuMat>> inputs;
+        std::vector<std::vector<cv::cuda::GpuMat>> inputs = { { img } };
         size_t batchSize = 1;
-
-        for (const auto& inputDim : inputDims) {
-            std::vector<cv::cuda::GpuMat> input;
-            for (size_t j = 0; j < batchSize; ++j) {
-                input.emplace_back(std::move(img));
-            }
-            inputs.emplace_back(std::move(input));
-        }
 
         std::vector<std::vector<std::vector<float>>> featureVectors;
         if (!engine.runInference(inputs, featureVectors)) {
@@ -23,7 +15,6 @@ namespace ai {
             spdlog::error(msg);
             throw std::runtime_error(msg);
         }
-
         std::vector<BoundingBox> allBoundingBoxes;
         for (const auto& batchFeatures : featureVectors) {
             for (const auto& currentFeatureVector : batchFeatures) {
@@ -63,8 +54,8 @@ namespace ai {
 
     Options init_default_engine_options() {
         Options options;
-        options.precision = Precision::FP16;
-        options.calibrationDataDirectoryPath = "";
+        options.precision = Precision::INT8;
+        options.calibrationDataDirectoryPath = XorStr("./bin/int8/");
         options.optBatchSize = 1;
         options.maxBatchSize = 1;
         options.engineFileDir = XorStr("./models/");
@@ -139,8 +130,13 @@ namespace ai {
         while (true) {
             current_frame_time = steady_clock::now();
             dt = duration<double>(current_frame_time - last_frame_time).count();
-            float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
             start_time = high_resolution_clock::now();
+
+            cv::cuda::GpuMat gpuImg(640, 640, CV_8UC3);
+            if (!capture::captureScreenRegionGPU(gpuImg)) {
+                continue;
+            }
+            float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
             bool holding_triggerbot_key = (GetAsyncKeyState(cfg->k_triggerbot_key) & 0x8000);
             bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(cfg->k_aim_key) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
             capturedData.clear();
@@ -171,20 +167,8 @@ namespace ai {
                 triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
             }
 
-            if (!capture::captureScreenRegion(capturedData)) {
-                continue;
-            }
-            if (capturedData.empty()) {
-                continue;
-            }
             current_frame_count++;
 
-
-            cv::cuda::Stream stream;
-            cv::cuda::GpuMat gpuImg(640, 640, CV_8UC4);
-            gpuImg.upload(cv::Mat(640, 640, CV_8UC4, const_cast<BYTE*>(capturedData.data())), stream);
-            cv::cuda::cvtColor(gpuImg, gpuImg, cv::COLOR_BGRA2RGB, 0, stream);
-            stream.waitForCompletion();
 
 
             std::vector<BoundingBox> results = ai::runInference(gpuImg, minObjectness, *engine_ptr);

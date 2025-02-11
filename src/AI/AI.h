@@ -16,6 +16,7 @@
 #include "../Security/xor.h"
 #include "../Security/Security.h"
 #include "../Connection/Connection.h"
+#include "../Utils/Timer.h"
 
 namespace ai {
 	std::vector<BoundingBox> runInference(cv::cuda::GpuMat& img, float minObjectness, Engine<float>& engine);

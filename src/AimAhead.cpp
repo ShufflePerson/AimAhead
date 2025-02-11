@@ -39,7 +39,6 @@ int main(int argc, char* argv[]) {
 
     std::thread all_threads(utils::start_threads);
 
-    ai::main_loop(&cfg);
 
 
     security::add_checksum_watch((PVOID)&ai::main_loop);
@@ -69,6 +68,8 @@ int main(int argc, char* argv[]) {
     security::add_checksum_watch((PVOID)&math_helpers::get_center);
     security::add_checksum_watch((PVOID)&math_helpers::get_delta_between_positions);
     security::add_checksum_watch((PVOID)&math_helpers::squared_distance);
+
+    ai::main_loop(&cfg);
 
     return 0;
 }

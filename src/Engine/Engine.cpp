@@ -43,12 +43,7 @@ Int8EntropyCalibrator2::Int8EntropyCalibrator2(int32_t batchSize, int32_t inputW
     checkCudaErrorCode(cudaMalloc(&m_deviceInput, m_inputCount * sizeof(float)));
 
     // Read the name of all the files in the specified directory.
-    if (!doesFileExist(calibDataDirPath)) {
-        auto msg = XorStr("Error, directory at provided path does not exist: ") + calibDataDirPath;
-        spdlog::error(msg);
-        throw std::runtime_error(msg);
-    }
-
+    
     m_imgPaths = getFilesInDirectory(calibDataDirPath);
     if (m_imgPaths.size() < static_cast<size_t>(batchSize)) {
         auto msg = XorStr("Error, there are fewer calibration images than the specified batch size!");
@@ -89,10 +84,7 @@ bool Int8EntropyCalibrator2::getBatch(void** bindings, const char** names, int32
         gpuImg.upload(cpuImg);
         //cv::cuda::cvtColor(gpuImg, gpuImg, cv::COLOR_BGR2RGB);
 
-        // TODO: Define any preprocessing code here, such as resizing
-        auto resized = Engine<float>::resizeKeepAspectRatioPadRightBottom(gpuImg, m_inputH, m_inputW);
-
-        inputImgs.emplace_back(std::move(resized));
+        inputImgs.emplace_back(std::move(gpuImg));
     }
 
     // Convert the batch from NHWC to NCHW

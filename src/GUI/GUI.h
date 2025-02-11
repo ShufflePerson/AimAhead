@@ -23,6 +23,8 @@
 #include "../Security/xor.h"
 #include "../Security/Security.h"
 
+#include "./AimAheadUI/AimAheadUI.h"
+
 
 namespace gui {
 

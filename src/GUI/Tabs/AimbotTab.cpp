@@ -39,6 +39,7 @@ void gui::__render__aimbot_tab__(AimConfig* config) {
 	double maxVal = 3.0;
 
 	//Aimbot
+	float x_space = 200.0f;
 	ImGui::NewLine();
 	ImGui::Checkbox(XorStr("Aimbot"), &config->b_aimbot);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Enables aimbot."));
@@ -115,7 +116,7 @@ void gui::__render__aimbot_tab__(AimConfig* config) {
 
 	//Triggerbot
 	ImGui::NewLine();
-	ImGui::Checkbox("Triggerbot", &config->b_auto_trigger);
+	ImGui::Checkbox(XorStr("Triggerbot"),  &config->b_auto_trigger);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("When the Triggerbot key is being held down, it will aim at the target and start shooting once the target is on the crosshair."));
 
 	if (config->b_auto_trigger) {

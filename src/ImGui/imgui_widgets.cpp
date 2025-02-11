@@ -682,7 +682,6 @@ bool ImGui::ButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlags
     if ((flags & ImGuiButtonFlags_AlignTextBaseLine) && style.FramePadding.y < window->DC.CurrLineTextBaseOffset) // Try to vertically align buttons that are smaller/have no padding so that text baseline matches (bit hacky, since it shouldn't be a flag)
         pos.y += window->DC.CurrLineTextBaseOffset - style.FramePadding.y;
     ImVec2 size = CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
-
     const ImRect bb(pos, pos + size);
     ItemSize(size, style.FramePadding.y);
     if (!ItemAdd(bb, id))
@@ -8048,6 +8047,115 @@ void ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
 
     if (out_just_closed)
         *out_just_closed = close_button_pressed;
+}
+
+
+
+
+//Utils
+void drawSwitchBackground(ImDrawList* draw_list, ImVec2 pos, bool active, ImVec2 size, ImU32 color, ImU32 unselected_color, ImU32 selected_color) {
+    float radius = size.y / 2.0f; // Radius is half the height for a fully rounded end
+
+    // Clamp radius to avoid issues with very small sizes
+    radius = ImMin(radius, size.x / 2.0f); // Ensure radius doesn't exceed half the width
+
+    // 1. Draw the central rectangle
+    draw_list->AddRectFilled(
+        ImVec2(pos.x + radius, pos.y), // Top-left corner (shifted by radius)
+        ImVec2(pos.x + size.x - radius, pos.y + size.y), // Bottom-right corner (shifted by radius)
+        color,
+        0.0f // No rounding for the central rectangle
+    );
+
+    // 2. Draw the left semi-circle (actually a full circle, but part is covered by the rectangle)
+    draw_list->AddCircleFilled(
+        ImVec2(pos.x + radius, pos.y + radius), // Center of the left circle
+        radius,
+        color
+    );
+
+    // 3. Draw the right semi-circle
+    draw_list->AddCircleFilled(
+        ImVec2(pos.x + size.x - radius, pos.y + radius), // Center of the right circle
+        radius,
+        color
+    );
+
+    if (active) {
+        draw_list->AddCircleFilled(
+            ImVec2(pos.x + size.x - radius, pos.y + radius),
+            radius,
+            selected_color
+        );
+    }
+    else {
+        draw_list->AddCircleFilled(
+            ImVec2(pos.x + radius, pos.y + radius), 
+            radius,
+            unselected_color
+        );
+    }
+}
+
+
+bool ImGui::AH_Checkbox(const char* label, const char* description, bool* v, AH_Checkbox_Prop* prop_data)
+{
+    float x_space_can_use = prop_data->f_available_x_space;
+    // 1. Get current window and check if items should be skipped
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+    // 2. Get ImGui context and style
+    ImGuiContext& g = *GImGui;
+    const ImGuiStyle& style = g.Style;
+
+    // 3. Generate unique ID for the checkbox
+    const ImGuiID id = window->GetID(label);
+
+    // 4. Calculate label size
+    const ImVec2 label_size = prop_data->primary_font->CalcTextSizeA(0, FLT_MAX, 24.0f, label);
+    const ImVec2 description_size = prop_data->primary_font->CalcTextSizeA(0, FLT_MAX, 18.0f, description);
+
+    const ImVec2 pos = window->DC.CursorPos; // Current cursor position in the window
+
+    //Calculate switch 
+    ImVec2 switch_size = ImVec2(31, 14);
+    ImVec2 switch_pos = ImVec2(pos.x + x_space_can_use - switch_size.x, pos.y);
+    ImU32 switch_color = IM_COL32(26, 26, 26, 255);
+    ImU32 switch_unselected_color = IM_COL32(197, 197, 197, 255);
+    ImU32 switch_selected_color = IM_COL32(118, 56, 142, 255);
+
+    // 6. Calculate the total bounding box of the checkbox including label and padding
+    const ImRect total_bb(pos, pos + ImVec2(switch_size.x + label_size.x + x_space_can_use, label_size.y + description_size.y + 40.0f));
+
+    // 7. Reserve space in the layout for the item
+    ItemSize(total_bb, style.FramePadding.y);
+
+    // 8. Check if the item is visible and interactable
+    if (!ItemAdd(total_bb, id))
+    {
+        return false; // Not visible or interactable, skip rendering and interaction
+    }
+
+    bool hovered, held;
+    bool pressed = ButtonBehavior(ImRect(switch_pos - ImVec2(5.0f, 5.0f), switch_pos + switch_size + ImVec2(5.0f, 5.0f)), id, &hovered, &held);
+    if (pressed)
+    {
+        *v = !(*v);
+        MarkItemEdited(id); 
+    }
+
+    ImVec2 label_pos = ImVec2(pos.x, pos.y);
+    ImVec2 description_pos = ImVec2(pos.x, pos.y + label_size.y + 20.0f);
+
+    drawSwitchBackground(draw_list, switch_pos, *v, switch_size, switch_color, switch_unselected_color, switch_selected_color);
+    prop_data->primary_font->RenderText(draw_list, 24.0, label_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), label, 0);
+    prop_data->primary_font->RenderText(draw_list, 18.0f, description_pos, IM_COL32(150, 150, 150, 255), ImVec4(0, 0, 1000, 1000), description, 0);
+
+    return pressed;
 }
 
 

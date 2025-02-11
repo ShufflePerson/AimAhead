@@ -37,36 +37,33 @@ namespace capture {
 
 
     bool initializeCUDAResources() {
-        D3D11_TEXTURE2D_DESC desc = {};
-        desc.Width = captureWidth;
-        desc.Height = captureHeight;
-        desc.MipLevels = 1;
-        desc.ArraySize = 1;
-        desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM; 
-        desc.SampleDesc.Count = 1;
-        desc.Usage = D3D11_USAGE_DEFAULT;
-        desc.BindFlags = 0;
-        desc.CPUAccessFlags = 0;
-        desc.MiscFlags = D3D11_RESOURCE_MISC_SHARED;
+        D3D11_TEXTURE2D_DESC desc = {
+            static_cast<UINT>(captureWidth),
+            static_cast<UINT>(captureHeight),
+            1, 1,
+            DXGI_FORMAT_B8G8R8A8_UNORM,
+            {1, 0},
+            D3D11_USAGE_DEFAULT,
+            D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET,
+            0,
+            0
+        };
+
 
         HRESULT hr = g_device->CreateTexture2D(&desc, nullptr, &g_cudaTexture);
         if (FAILED(hr)) {
             std::cerr << XorStr("Failed to create CUDA texture: ") << std::hex << hr << std::endl;
             return false;
         }
-
-        cudaError_t cudaErr = cudaGraphicsD3D11RegisterResource(&g_cudaResource, g_cudaTexture, cudaGraphicsRegisterFlagsNone);
-        if (cudaErr != cudaSuccess) {
-            std::cerr << XorStr("CUDA resource registration failed: ") << cudaGetErrorString(cudaErr) << std::endl;
-            return false;
-        }
-
         return true;
     }
     bool InitializeCapture() {
         HRESULT hr;
-        cudaSetDevice(0);
-
+        cudaError_t cudaStatus = cudaSetDevice(0); // Select device 0
+        if (cudaStatus != cudaSuccess) {
+            std::cerr << "cudaSetDevice(0) failed: " << cudaGetErrorString(cudaStatus) << std::endl;
+            return false; // Or handle error
+        }
         hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&g_factory);
         if (FAILED(hr)) {
             std::cerr << XorStr("Error creating DXGIFactory: ") << std::hex << hr << std::endl;
@@ -158,7 +155,12 @@ namespace capture {
         if (g_adapter) g_adapter->Release();
         if (g_factory) g_factory->Release();
     }
+
+
+
     bool captureScreenRegion(std::vector<BYTE>& capturedData) {
+        int captureStartX = (g_screenWidth - captureWidth) / 2;
+        int captureStartY = (g_screenHeight - captureHeight) / 2;
         HRESULT hr;
         IDXGIResource* tempDesktopResource = nullptr;
         DXGI_OUTDUPL_FRAME_INFO frameInfo;
@@ -197,10 +199,6 @@ namespace capture {
                 capturedData.resize(requiredSize);
             }
 
-            // Calculate safe capture area (consider precomputing if screen size is static)
-            int captureStartX = std::clamp((g_screenWidth - captureWidth) / 2, 0, g_screenWidth - captureWidth);
-            int captureStartY = std::clamp((g_screenHeight - captureHeight) / 2, 0, g_screenHeight - captureHeight);
-
             // Set up pointers
             BYTE* pSource = static_cast<BYTE*>(mappedResource.pData)
                 + captureStartY * mappedResource.RowPitch
@@ -237,6 +235,117 @@ namespace capture {
 
         return frameReleased;
     }
+    bool captureScreenRegionGPU(cv::cuda::GpuMat& gpuMat) {
+        int captureStartX = (g_screenWidth - captureWidth) / 2;
+        int captureStartY = (g_screenHeight - captureHeight) / 2;
+        HRESULT hr;
+        IDXGIResource* tempDesktopResource = nullptr;
+        DXGI_OUTDUPL_FRAME_INFO frameInfo;
+        ID3D11Texture2D* texture = nullptr;
+        bool frameReleased = false;
+        cudaError_t cudaStatus;
+        cudaGraphicsResource_t cudaResource = nullptr;
+
+        hr = g_desktopDuplication->AcquireNextFrame(0, &frameInfo, &tempDesktopResource);
+        if (FAILED(hr)) {
+            return false;
+        }
+
+        do {
+            hr = tempDesktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&texture));
+            if (FAILED(hr)) {
+                break;
+            }
+
+            if (captureStartX < 0 || captureStartY < 0) {
+                captureStartX = std::max(0, captureStartX);
+                captureStartY = std::max(0, captureStartY);
+            }
+
+            D3D11_BOX srcBox = {
+                static_cast<UINT>(captureStartX),
+                static_cast<UINT>(captureStartY),
+                0,
+                static_cast<UINT>(captureStartX + captureWidth),
+                static_cast<UINT>(captureStartY + captureHeight),
+                1
+            };
+
+            g_context->CopySubresourceRegion(
+                g_cudaTexture,
+                0,
+                0, 0, 0,
+                texture,
+                0,
+                &srcBox
+            );
+
+            cudaStatus = cudaGraphicsD3D11RegisterResource(&cudaResource, g_cudaTexture, cudaGraphicsRegisterFlagsNone);
+            if (cudaStatus != cudaSuccess) {
+                break;
+            }
+
+            cudaStatus = cudaGraphicsMapResources(1, &cudaResource, 0);
+            if (cudaStatus != cudaSuccess) {
+                cudaGraphicsUnregisterResource(cudaResource);
+                cudaResource = nullptr;
+                break;
+            }
+
+            cudaArray* cuArray = nullptr;
+            cudaStatus = cudaGraphicsSubResourceGetMappedArray(&cuArray, cudaResource, 0, 0);
+            if (cudaStatus != cudaSuccess) {
+                cudaGraphicsUnmapResources(1, &cudaResource, 0);
+                cudaGraphicsUnregisterResource(cudaResource);
+                cudaResource = nullptr;
+                break;
+            }
+
+            cv::cuda::GpuMat tempGpuMat(
+                captureHeight,
+                captureWidth,
+                CV_8UC4
+            );
+
+            if (gpuMat.empty() || gpuMat.size() != tempGpuMat.size() || gpuMat.type() != tempGpuMat.type()) {
+                gpuMat.create(tempGpuMat.size(), tempGpuMat.type());
+            }
+
+            size_t spitch = captureWidth * 4;
+            cudaStatus = cudaMemcpy2DFromArray(gpuMat.data, gpuMat.step, cuArray, 0, 0, spitch, captureHeight, cudaMemcpyDeviceToDevice);
+            if (cudaStatus != cudaSuccess) {
+                cudaGraphicsUnmapResources(1, &cudaResource, 0);
+                cudaGraphicsUnregisterResource(cudaResource);
+                cudaResource = nullptr;
+                break;
+            }
+
+            cudaStatus = cudaGraphicsUnmapResources(1, &cudaResource, 0);
+            if (cudaStatus != cudaSuccess) {
+            }
+
+            cudaStatus = cudaGraphicsUnregisterResource(cudaResource);
+            if (cudaStatus != cudaSuccess) {
+            }
+            cudaResource = nullptr;
+
+            frameReleased = true;
+        } while (false);
+
+        if (texture) {
+            texture->Release();
+        }
+        if (tempDesktopResource) {
+            tempDesktopResource->Release();
+        }
+        g_desktopDuplication->ReleaseFrame();
+
+        if (frameReleased) {
+            cv::cuda::cvtColor(gpuMat, gpuMat, cv::COLOR_BGRA2RGB);
+        }
+        return frameReleased;
+    }
+    
     inline void cudaCheckError(cudaError_t error) {
         if (error != cudaSuccess) {
             std::cerr << XorStr("CUDA Error: ") << cudaGetErrorString(error) << std::endl;
@@ -257,79 +366,4 @@ namespace capture {
 
         return inputGpuMat(cropRect);
     }
-
-    cv::cuda::GpuMat captureScreenRegion() {
-        HRESULT hr;
-        IDXGIResource* tempDesktopResource = nullptr;
-        DXGI_OUTDUPL_FRAME_INFO frameInfo;
-        ID3D11Texture2D* desktopTexture = nullptr;
-        cv::cuda::GpuMat gpuMat;
-        bool frameAcquired = false;
-
-        hr = g_desktopDuplication->AcquireNextFrame(1000, &frameInfo, &tempDesktopResource);
-        if (FAILED(hr)) {
-            if (hr != DXGI_ERROR_WAIT_TIMEOUT)
-                std::cerr << XorStr("AcquireNextFrame failed: 0x") << std::hex << hr << std::endl;
-            return gpuMat; // Return empty GpuMat on failure
-        }
-        frameAcquired = true;
-
-        do {
-            // Query for ID3D11Texture2D
-            hr = tempDesktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&desktopTexture));
-            if (FAILED(hr)) {
-                std::cerr << XorStr("Failed to get desktop texture: 0x") << std::hex << hr << std::endl;
-                break;
-            }
-
-            // Calculate capture region (adjust as in original code)
-            int captureStartX = std::max(0, (g_screenWidth - captureWidth) / 2);
-            int captureStartY = std::max(0, (g_screenHeight - captureHeight) / 2);
-            captureStartX = std::min(captureStartX, g_screenWidth - captureWidth);
-            captureStartY = std::min(captureStartY, g_screenHeight - captureHeight);
-
-            // Copy the region of interest to CUDA texture
-            D3D11_BOX region = {
-                static_cast<UINT>(captureStartX), static_cast<UINT>(captureStartY), 0,
-                static_cast<UINT>(captureStartX + captureWidth), static_cast<UINT>(captureStartY + captureHeight), 1
-            };
-            g_context->CopySubresourceRegion(g_cudaTexture, 0, 0, 0, 0, desktopTexture, 0, &region);
-
-            // Map CUDA resource
-            cudaError_t cudaErr = cudaGraphicsMapResources(1, &g_cudaResource, 0);
-            if (cudaErr != cudaSuccess) {
-                std::cerr << XorStr("cudaGraphicsMapResources failed: ") << cudaGetErrorString(cudaErr) << std::endl;
-                break;
-            }
-
-            cudaArray* cuArray;
-            cudaErr = cudaGraphicsSubResourceGetMappedArray(&cuArray, g_cudaResource, 0, 0);
-            if (cudaErr != cudaSuccess) {
-                std::cerr << XorStr("cudaGraphicsSubResourceGetMappedArray failed: ") << cudaGetErrorString(cudaErr) << std::endl;
-                cudaGraphicsUnmapResources(1, &g_cudaResource, 0);
-                break;
-            }
-
-            // Create GpuMat and copy data from CUDA array
-            gpuMat.create(captureHeight, captureWidth, CV_8UC4);
-            size_t spitch = captureWidth * 4; // BGRA (4 bytes per pixel)
-            cudaErr = cudaMemcpy2DFromArray(gpuMat.data, gpuMat.step, cuArray, 0, 0, spitch, captureHeight, cudaMemcpyDeviceToDevice);
-            if (cudaErr != cudaSuccess) {
-                std::cerr << XorStr("cudaMemcpy2DFromArray failed: ") << cudaGetErrorString(cudaErr) << std::endl;
-                gpuMat.release();
-            }
-
-            // Unmap CUDA resource
-            cudaGraphicsUnmapResources(1, &g_cudaResource, 0);
-
-        } while (false);
-
-        // Cleanup
-        if (desktopTexture) desktopTexture->Release();
-        if (tempDesktopResource) tempDesktopResource->Release();
-        if (frameAcquired) g_desktopDuplication->ReleaseFrame();
-
-        return gpuMat;
-    }
-
 }

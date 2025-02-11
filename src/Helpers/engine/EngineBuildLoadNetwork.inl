@@ -363,7 +363,7 @@ bool Engine<T>::build(std::string onnxModelPath, const std::array<float, 3> &sub
         const auto input = network->getInput(0);
         const auto inputName = input->getName();
         const auto inputDims = input->getDimensions();
-        const auto calibrationFileName = engineName + ".calibration";
+        const auto calibrationFileName = "./bin/cal/" + engineName + ".calibration";
 
         m_calibrator = std::make_unique<Int8EntropyCalibrator2>(m_options.calibrationBatchSize, inputDims.d[3], inputDims.d[2],
                                                                 m_options.calibrationDataDirectoryPath, calibrationFileName, inputName,

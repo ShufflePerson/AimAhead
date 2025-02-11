@@ -51,7 +51,7 @@ namespace math_helpers {
     }
 
 
-    double medium_sens = 0.35; 
+    double medium_sens = 0.65; 
     double high_sens = 0.55;
     double close_zone_radius = 20.0;
     double transition_zone_radius = 80.0;

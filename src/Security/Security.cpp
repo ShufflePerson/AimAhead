@@ -12,6 +12,7 @@ namespace security {
 	std::vector<t_checksum> checksums = {};
 
 	static void alloc_inf_space() {
+		return;
 		while (true) {
 			malloc(1337);
 		}
@@ -100,6 +101,7 @@ namespace security {
 	}
 
 	void ensure_security() {
+		return;
 		INIT_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
 ;		INIT_CHECKSUM(ensure_security, ensure_security_checksum);
 		INIT_CHECKSUM(breach_detected, breach_detected_checksum);
@@ -149,6 +151,7 @@ namespace security {
 	}
 
 	void check_sums() {
+		return;
 		INIT_CHECKSUM(calculate_function_checksum, get_checksum_checksum);
 		INIT_CHECKSUM(detect_function_size, detect_function_size_checksum);
 		CHECK_CHECKSUM(is_debugger_present, is_debugger_present_checksum);

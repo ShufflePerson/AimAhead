@@ -5,6 +5,7 @@
 #define VK_S 0x53
 #define VK_D 0x44
 
+#define USE_NEW_GUI
 
 namespace gui {
 	AimConfig* config;
@@ -127,6 +128,7 @@ namespace gui {
         draw_list->AddText(NULL, 0, pos, col, text);
     }
 
+
     void init_gui() {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -134,7 +136,8 @@ namespace gui {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        GLFWwindow* window = glfwCreateWindow(640, 640, XorStr("AimAhead"), NULL, NULL);
+        glfwSwapInterval(1);
+        GLFWwindow* window = glfwCreateWindow(837, 527, XorStr("AimAhead"), NULL, NULL);
         if (window == NULL) {
             std::cout << XorStr("Failed to create GLFW window") << std::endl;
             glfwTerminate();
@@ -155,94 +158,40 @@ namespace gui {
         }
 
         gladLoadGL();
-        glViewport(0, 0, 640, 640);
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
         ImGui::StyleColorsDark();
         io.IniFilename = nullptr;
 
-        ImGuiStyle& style = ImGui::GetStyle();
-
-        style.WindowMinSize = ImVec2(160, 20);
-        style.FramePadding = ImVec2(4, 2);
-        style.ItemSpacing = ImVec2(6, 2);
-        style.ItemInnerSpacing = ImVec2(6, 4);
-        style.WindowRounding = 4.0f;
-        style.FrameRounding = 2.0f;
-        style.IndentSpacing = 6.0f;
-        style.ItemInnerSpacing = ImVec2(2, 4);
-        style.ColumnsMinSpacing = 50.0f;
-        style.GrabMinSize = 14.0f;
-        style.GrabRounding = 16.0f;
-        style.ScrollbarSize = 12.0f;
-        style.ScrollbarRounding = 16.0f;
-        style.Alpha = 1.0f;
-
-        style.Colors[ImGuiCol_Text] = ImVec4(0.86f, 0.93f, 0.89f, 0.78f);
-        style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.86f, 0.93f, 0.89f, 0.28f);
-        style.Colors[ImGuiCol_WindowBg] = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
-        style.Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
-        style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-        style.Colors[ImGuiCol_FrameBg] = ImVec4(0.20f, 0.22f, 0.27f, 1.00f);
-        style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.92f, 0.18f, 0.29f, 0.18f);
-        style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_TitleBg] = ImVec4(0.20f, 0.22f, 0.27f, 1.00f);
-        style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.20f, 0.22f, 0.27f, 0.75f);
-        style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.20f, 0.22f, 0.27f, 0.47f);
-        style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.20f, 0.22f, 0.27f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.09f, 0.15f, 0.16f, 1.00f);
-        style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
-        style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_CheckMark] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
-        style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
-        style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_Button] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
-        style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.92f, 0.18f, 0.29f, 0.86f);
-        style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_Header] = ImVec4(0.92f, 0.18f, 0.29f, 0.76f);
-        style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.92f, 0.18f, 0.29f, 0.86f);
-        style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_Separator] = ImVec4(0.14f, 0.16f, 0.19f, 1.00f);
-        style.Colors[ImGuiCol_SeparatorHovered] = ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
-        style.Colors[ImGuiCol_SeparatorActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
-        style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.92f, 0.18f, 0.29f, 0.78f);
-        style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_PlotLines] = ImVec4(0.86f, 0.93f, 0.89f, 0.63f);
-        style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.86f, 0.93f, 0.89f, 0.63f);
-        style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.92f, 0.18f, 0.29f, 1.00f);
-        style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.92f, 0.18f, 0.29f, 0.43f);
-        style.Colors[ImGuiCol_PopupBg] = ImVec4(0.20f, 0.22f, 0.27f, 0.9f);
-
+#ifdef USE_NEW_GUI
+        aimahead_ui::load_fonts();
+        aimahead_ui::init_imgui_syles();
+#endif
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(XorStr("#version 330"));
         toggle_window();
         toggle_window();
-        toggle_window();
 
         size_t current_tab = 0;
-        ImFontConfig fontcfg = {
-        };
-        ImFont* font_large = io.Fonts->AddFontFromFileTTF("./bin/font.ttf", 18.0f);
-        if (font_large == nullptr) {
-            font_large = io.Fonts->AddFontDefault();
-        }
-        
+
+
         while (!glfwWindowShouldClose(window)) {
-            if (config == nullptr) continue;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            if (!g_is_visible)
+                glViewport(0, 0, 640, 640);
+            else 
+                glViewport(0, 0, 837, 527);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
             ImGui::SetNextWindowPos(ImVec2(0, 0));
-            ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
             ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
             if (!g_is_visible) {
+                ImGui::SetNextWindowSize(ImVec2(640, 640));
                 flags |= ImGuiWindowFlags_NoBackground;
                 ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
                 ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -310,9 +259,13 @@ namespace gui {
 
             }
             else {
+                ImGui::SetNextWindowSize(ImVec2(837, 527));
+#ifdef USE_NEW_GUI
+                aimahead_ui::draw_ui_imgui();
+#endif
+#ifndef USE_NEW_GUI
                 ImGui::Begin(XorStr("Overlay"), nullptr, flags);
                 //render_rgb_outline();
-                ImGui::PushFont(font_large);
                 ImGui::NewLine();
 
 
@@ -338,12 +291,11 @@ namespace gui {
                 ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10));
                 ImGui::Text(fps_text, config->read_only__i_fps);
                 ImGui::End();
-                ImGui::PopFont();
-
+#endif
                 auto current_time = std::chrono::system_clock::now();
                 auto time_diff = current_time - last_config_save;
                 auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(time_diff);
-                if (milliseconds > std::chrono::milliseconds(1000)) {
+                if (milliseconds > std::chrono::milliseconds(10000)) {
                     config_manager::save_config(get_config());
                 }
             }
