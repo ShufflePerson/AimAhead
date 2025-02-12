@@ -8114,17 +8114,17 @@ void drawSlider(ImDrawList* draw_list, ImVec2 pos, ImVec2 size, float filled_amo
 
 
     draw_list->AddCircleFilled(
-        ImVec2(pos.x + filled_size.x - (circle_radius / 2), pos.y + (circle_radius / 2)),
+        ImVec2(pos.x + filled_size.x + (circle_radius / 2) - 2.0f, pos.y + (circle_radius / 2)),
         circle_radius,
         circle_color
     );
 }
 
-
+float label_font_size = 17.0f;
+float description_font_size = 14.0f;
+float button_font_size = 14.0f;
 bool ImGui::AH_Checkbox(const char* label, const char* description, bool* v, AH_Checkbox_Prop* prop_data)
 {
-    float label_font_size = 21.0f;
-    float description_font_size = 17.0f;
     float descritpion_top_padding = 5.0f;
     float padding_between_items = 25.0f;
     float x_space_can_use = prop_data->f_available_x_space;
@@ -8181,11 +8181,10 @@ bool ImGui::AH_Checkbox(const char* label, const char* description, bool* v, AH_
 }
 
 bool ImGui::AH_Slider(const char* label, float* v, float min, float max, const char* suffix, AH_Slider_Prop* prop_data) {
-    int filled_amount_percent = static_cast<int>(*v);
-    float text_size = 21.0f;
+    int selected_amount_int = static_cast<int>(*v);
 
     char value_buf[64];
-    const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), ImGuiDataType_S32, (void*)&filled_amount_percent, "%d");
+    const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), ImGuiDataType_S32, (void*)&selected_amount_int, "%d");
     size_t remaining_space = IM_ARRAYSIZE(value_buf) - (value_buf_end - value_buf);
     int appended_len = snprintf((char*)value_buf_end, remaining_space, "%s", suffix);
     if (appended_len < 0 || (size_t)appended_len >= remaining_space) {
@@ -8208,8 +8207,8 @@ bool ImGui::AH_Slider(const char* label, float* v, float min, float max, const c
     ImVec2 pos = GetCursorPos();
 
 
-    ImVec2 label_size = prop_data->primary_font->CalcTextSizeA(text_size, FLT_MAX, 0, label);
-    ImVec2 value_size = prop_data->primary_font->CalcTextSizeA(text_size, FLT_MAX, 0, value_buf, value_buf_end);
+    ImVec2 label_size = prop_data->primary_font->CalcTextSizeA(label_font_size, FLT_MAX, 0, label);
+    ImVec2 value_size = prop_data->primary_font->CalcTextSizeA(label_font_size, FLT_MAX, 0, value_buf, value_buf_end);
 
     ImVec2 label_pos = ImVec2(pos.x, pos.y);
     ImVec2 value_pos = ImVec2(pos.x + prop_data->f_available_x_space - value_size.x, pos.y);
@@ -8233,7 +8232,8 @@ bool ImGui::AH_Slider(const char* label, float* v, float min, float max, const c
         ImVec2 mouse_pos = GetMousePos();
         ImVec2 mouse_delta_relative_to_slider = ImVec2(mouse_pos.x - slider_pos.x, 0);
         float fill_percent = mouse_delta_relative_to_slider.x / slider_size.x;
-        float new_value = (min + max) * fill_percent;
+        float new_value = (max - min) * fill_percent;
+        new_value += min;
         if (new_value < min) {
             new_value = min;
         }
@@ -8243,17 +8243,16 @@ bool ImGui::AH_Slider(const char* label, float* v, float min, float max, const c
         *v = new_value;
     }
 
-    prop_data->primary_font->RenderText(draw_list, text_size, label_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), label, 0);
-    prop_data->primary_font->RenderText(draw_list, text_size, value_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), value_buf, value_buf_end);
-    drawSlider(draw_list, slider_pos, slider_size, (*v / max), prop_data->unselected_color, prop_data->selected_color, prop_data->circle_color, hovered);
+    prop_data->primary_font->RenderText(draw_list, label_font_size, label_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), label, 0);
+    prop_data->primary_font->RenderText(draw_list, label_font_size, value_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), value_buf, value_buf_end);
+    drawSlider(draw_list, slider_pos, slider_size, ((*v - min) / (max - min)), prop_data->unselected_color, prop_data->selected_color, prop_data->circle_color, hovered);
 
     SetCursorPosX(total_bb.Min.x);
+    return left_click_down;
 }
 
 bool ImGui::AH_ButtonInfo(const char* label, const char* description, const char* button_text, bool* v, AH_ButtonInfo_Prop* prop_data) {
-    float label_font_size = 21.0f;
-    float description_font_size = 17.0f;
-    float button_font_size = 19.0f;
+    float label_font_size = 17.0f;
     ImVec2 button_padding = ImVec2(30.0f, 10.0f);
     float descritpion_top_padding = 5.0f;
     float padding_between_items = 25.0f;

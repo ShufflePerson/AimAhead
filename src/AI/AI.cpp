@@ -52,9 +52,9 @@ namespace ai {
         return allBoundingBoxes;
     }
 
-    Options init_default_engine_options() {
+    Options init_default_engine_options(AimConfig *cfg) {
         Options options;
-        options.precision = Precision::INT8;
+        options.precision = cfg->b_int8_mode ? Precision::INT8 : Precision::FP16;
         options.calibrationDataDirectoryPath = XorStr("./bin/int8/");
         options.optBatchSize = 1;
         options.maxBatchSize = 1;
@@ -78,7 +78,7 @@ namespace ai {
 
 
     void main_loop(AimConfig* cfg) {
-        Engine<float>* engine_ptr = new Engine<float>(init_default_engine_options());
+        Engine<float>* engine_ptr = new Engine<float>(init_default_engine_options(cfg));
         init_default_engine(engine_ptr, cfg);
 
         using namespace std::chrono;
@@ -150,7 +150,7 @@ namespace ai {
                 i_currently_loaded_model_index = cfg->i_selected_model_index;
                 delete engine_ptr;
                 engine_ptr = nullptr;
-                engine_ptr = new Engine<float>(init_default_engine_options());
+                engine_ptr = new Engine<float>(init_default_engine_options(cfg));
                 init_default_engine(engine_ptr, cfg);
                 security::check_sums();
             }
@@ -208,10 +208,8 @@ namespace ai {
                         triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
                     }
                 }
-                if (last_position.x == target_cordinates.x && last_position.y == target_cordinates.y) {
-                    continue;
-                }
-    
+
+                
                 current_target.b_active = true;
                 current_target.i_last_seen_frame = current_frame_count;
                 current_target.p_last_position = target_cordinates;
@@ -262,7 +260,7 @@ namespace ai {
             gpuImg.release();
 
 
-            if (cfg->i_fps_cap != 0) {
+            if (cfg->b_limit_fps) {
                 averaging_interval = cfg->i_fps_cap;
                 high_resolution_clock::time_point current_time = high_resolution_clock::now();
                 duration<double> time_since_last_run = current_time - start_time;

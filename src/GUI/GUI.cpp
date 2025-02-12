@@ -136,7 +136,7 @@ namespace gui {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        glfwSwapInterval(1);
+        glfwSwapInterval(10);
         GLFWwindow* window = glfwCreateWindow(950, 600, XorStr("AimAhead"), NULL, NULL);
         if (window == NULL) {
             std::cout << XorStr("Failed to create GLFW window") << std::endl;
@@ -167,6 +167,7 @@ namespace gui {
 #ifdef USE_NEW_GUI
         aimahead_ui::load_fonts();
         aimahead_ui::init_imgui_syles();
+        aimahead_ui::init_tabs();
 #endif
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -294,7 +295,7 @@ namespace gui {
                 auto current_time = std::chrono::system_clock::now();
                 auto time_diff = current_time - last_config_save;
                 auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(time_diff);
-                if (milliseconds > std::chrono::milliseconds(10000)) {
+                if (milliseconds > std::chrono::milliseconds(1000)) {
                     config_manager::save_config(get_config());
                 }
             }

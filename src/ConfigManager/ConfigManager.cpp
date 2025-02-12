@@ -33,6 +33,7 @@ namespace config_manager {
         file.write(reinterpret_cast<const char*>(&config.b_save_training_data), sizeof(config.b_save_training_data));
         file.write(reinterpret_cast<const char*>(&config.b_only_run_on_hidden_cursor), sizeof(config.b_only_run_on_hidden_cursor));
         file.write(reinterpret_cast<const char*>(&config.i_fps_cap), sizeof(config.i_fps_cap));
+        file.write(reinterpret_cast<const char*>(&config.b_limit_fps), sizeof(config.b_limit_fps));
         file.write(reinterpret_cast<const char*>(&config.i_selected_model_index), sizeof(config.i_selected_model_index));
         file.write(reinterpret_cast<const char*>(&config.f_minimum_top_margin), sizeof(config.f_minimum_top_margin));
         file.write(reinterpret_cast<const char*>(&config.i_minimum_confidence), sizeof(config.i_minimum_confidence));
@@ -46,6 +47,7 @@ namespace config_manager {
         file.write(reinterpret_cast<const char*>(&config.i_fov_radius), sizeof(config.i_fov_radius));
         file.write(reinterpret_cast<const char*>(&config.c_fov), sizeof(config.c_fov));
         file.write(reinterpret_cast<const char*>(&config.c_esp), sizeof(config.c_esp));
+        file.write(reinterpret_cast<const char*>(&config.b_int8_mode), sizeof(config.b_int8_mode));
         file.write(reinterpret_cast<const char*>(&config.read_only__i_fps), sizeof(config.read_only__i_fps));
 
 
@@ -88,6 +90,7 @@ namespace config_manager {
         file.read(reinterpret_cast<char*>(&config.b_save_training_data), sizeof(config.b_save_training_data));
         file.read(reinterpret_cast<char*>(&config.b_only_run_on_hidden_cursor), sizeof(config.b_only_run_on_hidden_cursor));
         file.read(reinterpret_cast<char*>(&config.i_fps_cap), sizeof(config.i_fps_cap));
+        file.read(reinterpret_cast<char*>(&config.b_limit_fps), sizeof(config.b_limit_fps));
         file.read(reinterpret_cast<char*>(&config.i_selected_model_index), sizeof(config.i_selected_model_index));
         file.read(reinterpret_cast<char*>(&config.f_minimum_top_margin), sizeof(config.f_minimum_top_margin));
         file.read(reinterpret_cast<char*>(&config.i_minimum_confidence), sizeof(config.i_minimum_confidence));
@@ -101,6 +104,7 @@ namespace config_manager {
         file.read(reinterpret_cast<char*>(&config.i_fov_radius), sizeof(config.i_fov_radius));
         file.read(reinterpret_cast<char*>(&config.c_fov), sizeof(config.c_fov));
         file.read(reinterpret_cast<char*>(&config.c_esp), sizeof(config.c_esp));
+        file.read(reinterpret_cast<char*>(&config.b_int8_mode), sizeof(config.b_int8_mode));
         file.read(reinterpret_cast<char*>(&config.read_only__i_fps), sizeof(config.read_only__i_fps));
 
 

@@ -22,8 +22,8 @@ GLuint aimahead_ui::mat_to_texture(const cv::Mat& image) {
         dataFormat = GL_BGR;
     }
     else if (image.channels() == 4) {
-        internalFormat = GL_RGBA8;
-        dataFormat = GL_BGRA;
+        internalFormat = GL_RGBA8; 
+        dataFormat = GL_BGRA;     
     }
     else {
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -36,8 +36,6 @@ GLuint aimahead_ui::mat_to_texture(const cv::Mat& image) {
         glDeleteTextures(1, &textureID);
         return 0;
     }
-
-
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.cols, image.rows, 0, dataFormat, GL_UNSIGNED_BYTE, image.data);
 

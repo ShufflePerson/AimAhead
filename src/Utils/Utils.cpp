@@ -128,7 +128,8 @@ namespace utils {
         cfg->i_auto_trigger_delay = 0;
         cfg->i_auto_trigger_recoil_adjustment_amount = 150;
         cfg->i_auto_trigger_recoil_adjustment_wait_time = 500;
-        cfg->i_fps_cap = 0;
+        cfg->i_fps_cap = 60;
+        cfg->b_limit_fps = false;
         cfg->i_selected_model_index = 0;
         cfg->i_minimum_confidence = 45;
         cfg->b_geforce_now_mode = false;
@@ -138,6 +139,7 @@ namespace utils {
         cfg->i_fov_radius = 20;
         cfg->c_esp = IM_COL32(243, 211, 11, 220);
         cfg->c_fov = IM_COL32(243, 211, 11, 220);
+        cfg->b_int8_mode = false;
         cfg->read_only__i_fps = 0;
     }
 

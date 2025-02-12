@@ -18,18 +18,16 @@
 
 
 namespace aimahead_ui {
-	void init_imgui_syles();
-	void draw_ui_imgui(AimConfig *cfg);
-	
-	ImVec2 draw_container_box(const char* title);
-	void draw_sidebar();
-	GLuint mat_to_texture(const cv::Mat& image);
-
 	enum EFont {
 		FONT_MEDIUM = 100,
 	};
-	void load_fonts();
-	ImFont* get_font(EFont font_type);
+
+	enum ETab {
+		AIMBOT_TAB = 200,
+		VISUALS_TAB = 300,
+		MISC_TAB = 400,
+		SETTINGS = 500
+	};
 
 	struct TColors {
 		ImVec4 Dark = RGBA_TO_FLOAT(35, 35, 35);
@@ -44,7 +42,7 @@ namespace aimahead_ui {
 		cv::Mat mat;
 		GLuint textureID;
 	};
-	
+
 	struct TMenuSettings {
 		float f_column_size = 250.0f;
 		float f_box_margin = 20.0f;
@@ -52,6 +50,47 @@ namespace aimahead_ui {
 		int i_current_box = 0;
 	};
 
+	struct TTabItem {
+		TImage image;
+		TImage active_image;
+		const char* text;
+		ETab tab_type;
+	};
+
+
+	static TMenuSettings menu_settings;
+	static bool b_menu_settings_init = false;
+
+	ImGui::AH_Checkbox_Prop get_default_checkbox_prop();
+	ImGui::AH_Slider_Prop get_default_slider_prop();
+	ImGui::AH_ButtonInfo_Prop get_default_buttoninfo_prop();
+
+	void init_imgui_syles();
+	void draw_ui_imgui(AimConfig *cfg);
+	
+	ImVec2 draw_container_box(const char* title);
+	void draw_sidebar();
+	GLuint mat_to_texture(const cv::Mat& image);
+
+
+
+
+
+
+	void load_fonts();
+	ImFont* get_font(EFont font_type);
+
+	void init_tabs();
+
 	//Utils
 	void render_outline(ImVec2 topLeft, ImVec2 bottomRight, ImU32 color, float thickness = 1.0f);
+	TTabItem get_tab_item(const char* text, const char* image_path, ETab tab_id);
+
+	//Tabs
+	void draw_aimbot_tab(AimConfig* cfg);
+	void draw_visuals_tab(AimConfig* cfg);
+	void draw_misc_tab(AimConfig* cfg);
+	void draw_settings_tab(AimConfig* cfg);
+
+
 }

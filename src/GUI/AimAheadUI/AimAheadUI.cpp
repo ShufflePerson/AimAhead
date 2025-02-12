@@ -1,25 +1,69 @@
 #include "AimAheadUI.h"
 
 
-aimahead_ui::TMenuSettings menu_settings;
-bool b_menu_settings_init = false;
 
 
-bool v1 = false;
-bool v2 = false;
-bool v3 = false;
-float vv = 60.0f;
-float vv2 = 0.0f;
-float vv3 = 100.0f;
-float vv4 = 50.0f;
+std::vector<aimahead_ui::TTabItem> tab_cache;
+aimahead_ui::ETab active_tab = aimahead_ui::ETab::AIMBOT_TAB;
+
+
+aimahead_ui::TTabItem aimahead_ui::get_tab_item(const char* text, const char* image_path, aimahead_ui::ETab tab_id) {
+    std::string path_non_active = image_path;
+    path_non_active += ".png";
+    cv::Mat img_mat = cv::imread(path_non_active.c_str(), cv::IMREAD_UNCHANGED);
+    if (img_mat.empty()) {
+        printf(XorStr("[ERROR] (aimahead_ui::get_tab_item): The path %s is not valid."), image_path);
+        return {};
+    }
+
+    std::string path_active = image_path;
+    path_active += "_0.png";
+    cv::Mat img_mat_active = cv::imread(path_active.c_str(), cv::IMREAD_UNCHANGED);
+    if (img_mat_active.empty()) {
+        printf(XorStr("[ERROR] (aimahead_ui::get_tab_item): The path %s is not valid."), image_path);
+        return {};
+    }
+
+
+    GLuint texture_id = aimahead_ui::mat_to_texture(img_mat);
+    aimahead_ui::TImage image_struct;
+    image_struct.mat = img_mat;
+    image_struct.textureID = texture_id;
+
+    GLuint texture_id_2 = aimahead_ui::mat_to_texture(img_mat_active);
+    aimahead_ui::TImage image_struct_2;
+    image_struct_2.mat = img_mat_active;
+    image_struct_2.textureID = texture_id_2;
+
+    aimahead_ui::TTabItem tab_item;
+    tab_item.image = image_struct;
+    tab_item.active_image = image_struct_2;
+    tab_item.text = text;
+    tab_item.tab_type = tab_id;
+
+    return tab_item;
+}
+
+void aimahead_ui::init_tabs() {
+    tab_cache.push_back(get_tab_item("AIMBOT", "./bin/ui/0", ETab::AIMBOT_TAB));
+    tab_cache.push_back(get_tab_item("VISUALS", "./bin/ui/1", ETab::VISUALS_TAB));
+    tab_cache.push_back(get_tab_item("MISC", "./bin/ui/2", ETab::MISC_TAB));
+    tab_cache.push_back(get_tab_item("SETTINGS", "./bin/ui/3", ETab::SETTINGS));
+}
+
+
+
 void aimahead_ui::draw_ui_imgui(AimConfig *cfg)
 {
     if (!b_menu_settings_init) {
-        b_menu_settings_init = true;
         menu_settings.f_column_size = 250.0f;
         menu_settings.f_sidebar_width = 100.0f;
         menu_settings.i_current_box = 0;
         menu_settings.f_box_margin = 20.0f;
+
+
+
+        b_menu_settings_init = true;
     }
     menu_settings.i_current_box = 0;
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
@@ -29,46 +73,30 @@ void aimahead_ui::draw_ui_imgui(AimConfig *cfg)
 
     draw_sidebar();
 
-    ImGui::AH_Checkbox_Prop checkbox_prop;
-    checkbox_prop.f_available_x_space = menu_settings.f_column_size - (menu_settings.f_box_margin * 2);
-    checkbox_prop.primary_font = get_font(EFont::FONT_MEDIUM);
-
-    ImGui::AH_Slider_Prop slider_prop;
-    slider_prop.f_available_x_space = menu_settings.f_column_size - (menu_settings.f_box_margin * 2);
-    slider_prop.primary_font = get_font(EFont::FONT_MEDIUM);
-    slider_prop.circle_color = IM_COL32(166, 74, 201, 255);
-    slider_prop.unselected_color = IM_COL32(82, 82, 82, 255);
-    slider_prop.selected_color = IM_COL32(118, 56, 142, 255);
-
-    ImGui::AH_ButtonInfo_Prop buttoninfo_prop;
-    buttoninfo_prop.f_available_x_space = menu_settings.f_column_size - (menu_settings.f_box_margin * 2);
-    buttoninfo_prop.primary_font = get_font(EFont::FONT_MEDIUM);
-    buttoninfo_prop.button_background = IM_COL32(118, 56, 142, 255);
+    switch (active_tab)
+    {
+    case aimahead_ui::AIMBOT_TAB:
+        draw_aimbot_tab(cfg);
+        break;
+    case aimahead_ui::VISUALS_TAB:
+        draw_visuals_tab(cfg);
+        break;
+    case aimahead_ui::MISC_TAB:
+        draw_misc_tab(cfg);
+        break;
+    case aimahead_ui::SETTINGS:
+        draw_settings_tab(cfg);
+        break;
+    default:
+        printf(XorStr("[ERROR AT aimahead_ui::draw_ui_imgui]: Invalid active_tab: %d\n"), active_tab);
+        break;
+    }
     
-    ImVec2 container_box_pos = draw_container_box("GENERAL");
-    ImGui::SetCursorPosX(container_box_pos.x);
-    ImGui::SetCursorPosY(container_box_pos.y);
-    ImGui::AH_Checkbox("Aimbot Enabled", "Enables Aimbot", &cfg->b_aimbot, &checkbox_prop);
-    ImGui::AH_ButtonInfo("Aim Key", "Aimbot keybind", "Left", &v1, &buttoninfo_prop);
-    ImGui::AH_Checkbox("Always Aim", "Aims at all times", &cfg->b_always_aim, &checkbox_prop);
-    ImGui::AH_Slider("Sensitivity", &vv, 1.0f, 100.0f, "%", &slider_prop);
-    ImGui::AH_Slider("Reaction Time", &vv2, 0.0f, 300.0f, "ms", & slider_prop);
-
-
-    ImVec2 triggerbot_container = draw_container_box("TRIGGERBOT");
-    ImGui::SetCursorPosX(triggerbot_container.x);
-    ImGui::SetCursorPosY(triggerbot_container.y);
-    ImGui::AH_Checkbox("Triggerbot", "Shoot automatically", &cfg->b_auto_trigger, &checkbox_prop);
-    ImGui::AH_Checkbox("Adjust for recoil", "Helps with recoil control", &cfg->b_adjust_auto_trigger_for_recoil, &checkbox_prop);
-    ImGui::AH_Checkbox("Precise", "Only shoots at selected position.", &v3, &checkbox_prop);
-    ImGui::AH_Slider("Triggerbot Delay", &vv3, 0.0f, 300.0f, "ms", &slider_prop);
-    ImGui::AH_Slider("Recoil Amount", &vv4, 50.0f, 300.0f, "%", &slider_prop);
-
-
-    ImVec2 prediction_container = draw_container_box("PREDICTIONS");
-    ImGui::SetCursorPosX(prediction_container.x);
-    ImGui::SetCursorPosY(prediction_container.y);
-    ImGui::AH_Checkbox("Predict", "Predicts the next frame.", &cfg->b_predict_next_frame, &checkbox_prop);
+    const char* fps_text = XorStr("FPS: %d");
+    ImVec2 window_size = ImGui::GetWindowSize();
+    ImVec2 text_size = ImGui::CalcTextSize(fps_text);
+    ImGui::SetCursorPos(ImVec2(window_size.x - text_size.x - 5.0f, window_size.y - text_size.y - 5.0f));
+    ImGui::Text(fps_text, cfg->read_only__i_fps);
 
     ImGui::End();
 }
@@ -88,7 +116,7 @@ ImVec2 aimahead_ui::draw_container_box(const char* title) {
     render_outline(pos, br, ImGui::ColorConvertFloat4ToU32(colors.Box_Stroke), 1.0);
 
     ImFont* font = get_font(EFont::FONT_MEDIUM);
-    font->RenderText(draw_list, 18.0f, starting_contents_pos, IM_COL32(106, 106, 106, 255), ImVec4(0, 0, 2500, 2500), title, 0);
+    font->RenderText(draw_list, 14.0f, starting_contents_pos, IM_COL32(106, 106, 106, 255), ImVec4(0, 0, 2500, 2500), title, 0);
     
     menu_settings.i_current_box++;
     return ImVec2(starting_contents_pos.x, starting_contents_pos.y + 30);
@@ -100,7 +128,52 @@ void aimahead_ui::draw_sidebar() {
     
     ImVec2 sidebar_size = ImVec2(menu_settings.f_sidebar_width, windowSize.y);
     ImVec2 sidebar_pos = ImVec2(0, 0);
-
     draw_list->AddRectFilled(sidebar_pos, sidebar_size, ImGui::ColorConvertFloat4ToU32(colors.Sidebar));
     draw_list->AddLine(ImVec2(sidebar_size.x, 0), ImVec2(sidebar_size.x, sidebar_size.y), ImGui::ColorConvertFloat4ToU32(colors.Box_Stroke), 1.0f);
+
+
+    int i_total_tab_items = tab_cache.size();
+    ImVec2 pos = ImVec2(0, 66);
+    ImFont* font = get_font(EFont::FONT_MEDIUM);
+    float font_size = 14.0f;
+    float image_width = 22.0f;
+    float sidebar_center_x = sidebar_size.x / 2;
+    float item_padding = 20.0f;
+    float active_tab_padding = 10.0f;
+    for (const auto &tab : tab_cache) {
+        ImU32 text_color = IM_COL32(226, 226, 226, 255);
+        GLuint texture_id = tab.image.textureID;
+        ImVec2 image_pos = ImVec2(sidebar_center_x - (image_width / 2), pos.y);
+        float image_ratio = tab.image.mat.cols / tab.image.mat.rows;
+        ImVec2 image_size = ImVec2(image_width, image_ratio * image_width);
+        pos.y += image_size.y + 10.0f;
+
+        ImVec2 text_size = font->CalcTextSizeA(font_size, FLT_MAX, 0.0f, tab.text, 0);
+        ImVec2 text_pos = ImVec2(sidebar_center_x - (text_size.x / 2), pos.y);
+
+        ImVec2 start_pos = ImVec2(0, image_pos.y - active_tab_padding);
+        ImVec2 end_pos = ImVec2(sidebar_size.x, text_pos.y + text_size.y + active_tab_padding);
+
+        ImRect full_bb = ImRect(start_pos, end_pos);
+        pos.y += text_size.y;
+        pos.y += item_padding;
+
+        bool hovered = ImGui::IsMouseHoveringRect(full_bb.Min, full_bb.Max);
+        if (hovered) {
+            draw_list->AddRectFilled(start_pos, end_pos, IM_COL32(24, 24, 24, 255));
+
+            if (ImGui::IsMouseClicked(0)) {
+                active_tab = tab.tab_type;
+            }
+        }
+
+        if (active_tab == tab.tab_type) {
+            draw_list->AddRectFilled(start_pos, end_pos, IM_COL32(25, 25, 25, 255));
+            text_color = IM_COL32(118, 56, 142, 255);
+            texture_id = tab.active_image.textureID;
+        }
+
+        draw_list->AddImage((void*)(intptr_t)(texture_id), image_pos, ImVec2(image_size.x + image_pos.x, image_size.y + image_pos.y));
+        font->RenderText(draw_list, font_size, text_pos, text_color, ImVec4(0, 0, 1000, 1000), tab.text, 0);
+    }
 }

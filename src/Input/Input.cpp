@@ -2,7 +2,6 @@
 
 namespace input {
     DWORD lastKey = 0;
-
 	void send_input_mouse_relative(double dx, double dy, AimConfig *cfg) {
         static double accumulated_dx = 0.0;
         static double accumulated_dy = 0.0;

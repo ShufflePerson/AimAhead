@@ -1,5 +1,5 @@
 #pragma once
-#define CONFIG_ITERATION 7
+#define CONFIG_ITERATION 8
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -75,6 +75,7 @@ struct AimConfig {
 	bool b_only_run_on_hidden_cursor;
 	//Framerate cap
 	int i_fps_cap;
+	bool b_limit_fps;
 	//Currently selected model
 	int i_selected_model_index;
 	//Minimum margin for TOP::EAimPosition
@@ -100,6 +101,9 @@ struct AimConfig {
 	//Colors
 	unsigned int c_fov;
 	unsigned int c_esp;
+	
+	//Model 
+	bool b_int8_mode;
 
 	//Read Only
 	int read_only__i_fps;
