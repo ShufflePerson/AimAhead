@@ -8051,32 +8051,26 @@ void ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
 
 
 
-
-//Utils
 void drawSwitchBackground(ImDrawList* draw_list, ImVec2 pos, bool active, ImVec2 size, ImU32 color, ImU32 unselected_color, ImU32 selected_color) {
-    float radius = size.y / 2.0f; // Radius is half the height for a fully rounded end
+    float radius = size.y / 2.0f; 
 
-    // Clamp radius to avoid issues with very small sizes
-    radius = ImMin(radius, size.x / 2.0f); // Ensure radius doesn't exceed half the width
+    radius = ImMin(radius, size.x / 2.0f);
 
-    // 1. Draw the central rectangle
     draw_list->AddRectFilled(
-        ImVec2(pos.x + radius, pos.y), // Top-left corner (shifted by radius)
-        ImVec2(pos.x + size.x - radius, pos.y + size.y), // Bottom-right corner (shifted by radius)
+        ImVec2(pos.x + radius, pos.y), 
+        ImVec2(pos.x + size.x - radius, pos.y + size.y), 
         color,
-        0.0f // No rounding for the central rectangle
+        0.0f 
     );
 
-    // 2. Draw the left semi-circle (actually a full circle, but part is covered by the rectangle)
     draw_list->AddCircleFilled(
-        ImVec2(pos.x + radius, pos.y + radius), // Center of the left circle
+        ImVec2(pos.x + radius, pos.y + radius), 
         radius,
         color
     );
 
-    // 3. Draw the right semi-circle
     draw_list->AddCircleFilled(
-        ImVec2(pos.x + size.x - radius, pos.y + radius), // Center of the right circle
+        ImVec2(pos.x + size.x - radius, pos.y + radius), 
         radius,
         color
     );
@@ -8097,47 +8091,75 @@ void drawSwitchBackground(ImDrawList* draw_list, ImVec2 pos, bool active, ImVec2
     }
 }
 
+void drawSlider(ImDrawList* draw_list, ImVec2 pos, ImVec2 size, float filled_amount, ImU32 unselected_color, ImU32 selected_color, ImU32 circle_color, bool hovered) {
+    ImVec2 filled_size = ImVec2(size.x * filled_amount, size.y);
+    float circle_radius = size.y;
+    if (hovered) {
+        circle_radius *= 1.5;
+    }
+
+    draw_list->AddRectFilled(
+        ImVec2(pos.x, pos.y),
+        ImVec2(pos.x + size.x, pos.y + size.y),
+        unselected_color,
+        0.0f
+    );
+
+    draw_list->AddRectFilled(
+        ImVec2(pos.x, pos.y),
+        ImVec2(pos.x + filled_size.x, pos.y + filled_size.y),
+        selected_color,
+        0.0f
+    );
+
+
+    draw_list->AddCircleFilled(
+        ImVec2(pos.x + filled_size.x - (circle_radius / 2), pos.y + (circle_radius / 2)),
+        circle_radius,
+        circle_color
+    );
+}
+
 
 bool ImGui::AH_Checkbox(const char* label, const char* description, bool* v, AH_Checkbox_Prop* prop_data)
 {
+    float label_font_size = 21.0f;
+    float description_font_size = 17.0f;
+    float descritpion_top_padding = 5.0f;
+    float padding_between_items = 25.0f;
     float x_space_can_use = prop_data->f_available_x_space;
-    // 1. Get current window and check if items should be skipped
+    float max_x_space_usage = 0.7f;
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
         return false;
 
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-    // 2. Get ImGui context and style
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
 
-    // 3. Generate unique ID for the checkbox
     const ImGuiID id = window->GetID(label);
 
-    // 4. Calculate label size
-    const ImVec2 label_size = prop_data->primary_font->CalcTextSizeA(0, FLT_MAX, 24.0f, label);
-    const ImVec2 description_size = prop_data->primary_font->CalcTextSizeA(0, FLT_MAX, 18.0f, description);
+    const ImVec2 label_size = prop_data->primary_font->CalcTextSizeA(label_font_size, FLT_MAX, 0, label);
+    const ImVec2 description_size = prop_data->primary_font->CalcTextSizeA(description_font_size, FLT_MAX, x_space_can_use * max_x_space_usage, description);
 
-    const ImVec2 pos = window->DC.CursorPos; // Current cursor position in the window
+    const ImVec2 pos = window->DC.CursorPos; 
 
-    //Calculate switch 
-    ImVec2 switch_size = ImVec2(31, 14);
-    ImVec2 switch_pos = ImVec2(pos.x + x_space_can_use - switch_size.x, pos.y);
+    float total_height = label_size.y + description_size.y;
+    
+    ImVec2 switch_size = ImVec2(35.3f, 15.0f);
+    ImVec2 switch_pos = ImVec2(pos.x + x_space_can_use - switch_size.x, pos.y + (total_height / 2) - (switch_size.y / 2));
     ImU32 switch_color = IM_COL32(26, 26, 26, 255);
     ImU32 switch_unselected_color = IM_COL32(197, 197, 197, 255);
     ImU32 switch_selected_color = IM_COL32(118, 56, 142, 255);
 
-    // 6. Calculate the total bounding box of the checkbox including label and padding
-    const ImRect total_bb(pos, pos + ImVec2(switch_size.x + label_size.x + x_space_can_use, label_size.y + description_size.y + 40.0f));
+    const ImRect total_bb(pos, pos + ImVec2(switch_size.x + label_size.x + x_space_can_use, label_size.y + description_size.y + padding_between_items));
 
-    // 7. Reserve space in the layout for the item
     ItemSize(total_bb, style.FramePadding.y);
 
-    // 8. Check if the item is visible and interactable
     if (!ItemAdd(total_bb, id))
     {
-        return false; // Not visible or interactable, skip rendering and interaction
+        return false; 
     }
 
     bool hovered, held;
@@ -8149,13 +8171,147 @@ bool ImGui::AH_Checkbox(const char* label, const char* description, bool* v, AH_
     }
 
     ImVec2 label_pos = ImVec2(pos.x, pos.y);
-    ImVec2 description_pos = ImVec2(pos.x, pos.y + label_size.y + 20.0f);
+    ImVec2 description_pos = ImVec2(pos.x, pos.y + label_size.y + descritpion_top_padding);
 
     drawSwitchBackground(draw_list, switch_pos, *v, switch_size, switch_color, switch_unselected_color, switch_selected_color);
-    prop_data->primary_font->RenderText(draw_list, 24.0, label_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), label, 0);
-    prop_data->primary_font->RenderText(draw_list, 18.0f, description_pos, IM_COL32(150, 150, 150, 255), ImVec4(0, 0, 1000, 1000), description, 0);
-
+    prop_data->primary_font->RenderText(draw_list, label_font_size, label_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), label, 0);
+    prop_data->primary_font->RenderText(draw_list, description_font_size, description_pos, IM_COL32(150, 150, 150, 255), ImVec4(0, 0, 1000, 1000), description, 0, x_space_can_use * max_x_space_usage);
+    SetCursorPosX(total_bb.Min.x);
     return pressed;
+}
+
+bool ImGui::AH_Slider(const char* label, float* v, float min, float max, const char* suffix, AH_Slider_Prop* prop_data) {
+    int filled_amount_percent = static_cast<int>(*v);
+    float text_size = 21.0f;
+
+    char value_buf[64];
+    const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), ImGuiDataType_S32, (void*)&filled_amount_percent, "%d");
+    size_t remaining_space = IM_ARRAYSIZE(value_buf) - (value_buf_end - value_buf);
+    int appended_len = snprintf((char*)value_buf_end, remaining_space, "%s", suffix);
+    if (appended_len < 0 || (size_t)appended_len >= remaining_space) {
+        if (remaining_space > 0) {
+            ((char*)value_buf_end)[remaining_space - 1] = '\0'; 
+        }
+    }
+
+    value_buf_end = value_buf_end + appended_len;
+
+
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    ImGuiContext& g = *GImGui;
+    const ImGuiStyle& style = g.Style;
+    const ImGuiID id = window->GetID(label);
+    ImVec2 pos = GetCursorPos();
+
+
+    ImVec2 label_size = prop_data->primary_font->CalcTextSizeA(text_size, FLT_MAX, 0, label);
+    ImVec2 value_size = prop_data->primary_font->CalcTextSizeA(text_size, FLT_MAX, 0, value_buf, value_buf_end);
+
+    ImVec2 label_pos = ImVec2(pos.x, pos.y);
+    ImVec2 value_pos = ImVec2(pos.x + prop_data->f_available_x_space - value_size.x, pos.y);
+
+    ImVec2 slider_size = ImVec2((pos.x + prop_data->f_available_x_space) - pos.x, 7);
+    ImVec2 slider_pos = ImVec2(pos.x, pos.y + label_size.y + 7.0f);
+    ImVec2 total_size = ImVec2(slider_size.x, slider_size.y + 25.0f);
+    total_size.y += label_size.y;
+    total_size.y += 7.0f;
+
+    ImRect total_bb = ImRect(pos, pos + total_size);
+    ItemSize(total_bb, style.FramePadding.y);
+    if (!ItemAdd(total_bb, id))
+    {
+        return false;
+    }
+    ImRect total_bb_of_slider = ImRect(slider_pos - ImVec2(30.0f, 10.0f), slider_pos + slider_size + ImVec2(30.0f, 10.0f));
+    bool hovered = IsMouseHoveringRect(total_bb_of_slider.Min, total_bb_of_slider.Max);
+    bool left_click_down = IsMouseDown(0);
+    if (hovered && left_click_down) {
+        ImVec2 mouse_pos = GetMousePos();
+        ImVec2 mouse_delta_relative_to_slider = ImVec2(mouse_pos.x - slider_pos.x, 0);
+        float fill_percent = mouse_delta_relative_to_slider.x / slider_size.x;
+        float new_value = (min + max) * fill_percent;
+        if (new_value < min) {
+            new_value = min;
+        }
+        if (new_value > max) {
+            new_value = max;
+        }
+        *v = new_value;
+    }
+
+    prop_data->primary_font->RenderText(draw_list, text_size, label_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), label, 0);
+    prop_data->primary_font->RenderText(draw_list, text_size, value_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), value_buf, value_buf_end);
+    drawSlider(draw_list, slider_pos, slider_size, (*v / max), prop_data->unselected_color, prop_data->selected_color, prop_data->circle_color, hovered);
+
+    SetCursorPosX(total_bb.Min.x);
+}
+
+bool ImGui::AH_ButtonInfo(const char* label, const char* description, const char* button_text, bool* v, AH_ButtonInfo_Prop* prop_data) {
+    float label_font_size = 21.0f;
+    float description_font_size = 17.0f;
+    float button_font_size = 19.0f;
+    ImVec2 button_padding = ImVec2(30.0f, 10.0f);
+    float descritpion_top_padding = 5.0f;
+    float padding_between_items = 25.0f;
+    float x_space_can_use = prop_data->f_available_x_space;
+    float max_x_space_usage = 0.7f;
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+    ImGuiContext& g = *GImGui;
+    const ImGuiStyle& style = g.Style;
+
+    const ImGuiID id = window->GetID(label);
+    const ImVec2 pos = window->DC.CursorPos;
+
+    const ImVec2 label_size = prop_data->primary_font->CalcTextSizeA(label_font_size, FLT_MAX, 0, label);
+    const ImVec2 description_size = prop_data->primary_font->CalcTextSizeA(description_font_size, FLT_MAX, x_space_can_use * max_x_space_usage, description);
+    float total_height = label_size.y + description_size.y;
+
+    const ImVec2 button_text_size = prop_data->primary_font->CalcTextSizeA(button_font_size, FLT_MAX, 0, button_text);
+    const ImVec2 button_size = ImVec2(button_text_size.x + button_padding.x, button_text_size.y + button_padding.y);
+    const ImVec2 button_pos = ImVec2(pos.x + x_space_can_use - button_size.x, pos.y + (total_height / 2) - (button_size.y / 2));
+
+
+    const ImRect total_bb(pos, pos + ImVec2(label_size.x + x_space_can_use, label_size.y + description_size.y + padding_between_items));
+
+    ItemSize(total_bb, style.FramePadding.y);
+
+    if (!ItemAdd(total_bb, id))
+    {
+        return false;
+    }
+
+    bool hovered, held;
+    float alpha = 1.0f;
+    bool pressed = ButtonBehavior(ImRect(button_pos - ImVec2(5.0f, 5.0f), button_pos + button_size + ImVec2(5.0f, 5.0f)), id, &hovered, &held);
+    if (hovered) {
+        alpha = 0.8f;
+    }
+    if (pressed || held) {
+        alpha = 0.6f;
+    }
+
+    ImVec2 label_pos = ImVec2(pos.x, pos.y);
+    ImVec2 description_pos = ImVec2(pos.x, pos.y + label_size.y + descritpion_top_padding);
+    ImU32 color = prop_data->button_background;
+    ImVec4 color_vec4 = ColorConvertU32ToFloat4(color);
+    color_vec4.w = alpha;
+
+    draw_list->AddRectFilled(button_pos, button_pos + button_size, ColorConvertFloat4ToU32(color_vec4));
+    prop_data->primary_font->RenderText(draw_list, label_font_size, label_pos, IM_COL32(221, 221, 221, 255), ImVec4(0, 0, 1000, 1000), label, 0);
+    prop_data->primary_font->RenderText(draw_list, description_font_size, description_pos, IM_COL32(150, 150, 150, 255), ImVec4(0, 0, 1000, 1000), description, 0, x_space_can_use * max_x_space_usage);
+    prop_data->primary_font->RenderText(draw_list, button_font_size, ImVec2(button_pos.x + (button_size.x / 2) - (button_text_size.x / 2), button_pos.y + (button_size.y / 2) - (button_text_size.y / 2)), IM_COL32(207, 207, 207, 255), ImVec4(0, 0, 1000, 1000), button_text, 0);
+    SetCursorPosX(total_bb.Min.x);
+    return pressed;
+
 }
 
 

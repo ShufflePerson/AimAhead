@@ -465,8 +465,25 @@ namespace ImGui
         ImFont* primary_font;
     };
 
+    struct AH_Slider_Prop {
+        float f_available_x_space;
+        ImFont* primary_font;
+        ImU32 unselected_color;
+        ImU32 selected_color;
+        ImU32 circle_color;
+    };
+
+    struct AH_ButtonInfo_Prop {
+        float f_available_x_space;
+        ImFont* primary_font;
+        ImU32 button_background;
+    };
+
+
     // Widgets: AimAhead
     IMGUI_API bool          AH_Checkbox(const char* label, const char* description, bool* v, AH_Checkbox_Prop* prop_data);
+    IMGUI_API bool          AH_Slider(const char* label, float* v, float min, float max, const char* suffix, AH_Slider_Prop* prop_data);
+    IMGUI_API bool          AH_ButtonInfo(const char* label, const char* description, const char* button_text, bool *v, AH_ButtonInfo_Prop* prop_data);
 
 
     // Widgets: Text

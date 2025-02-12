@@ -137,7 +137,7 @@ namespace gui {
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         glfwSwapInterval(1);
-        GLFWwindow* window = glfwCreateWindow(837, 527, XorStr("AimAhead"), NULL, NULL);
+        GLFWwindow* window = glfwCreateWindow(950, 600, XorStr("AimAhead"), NULL, NULL);
         if (window == NULL) {
             std::cout << XorStr("Failed to create GLFW window") << std::endl;
             glfwTerminate();
@@ -178,9 +178,8 @@ namespace gui {
 
 
         while (!glfwWindowShouldClose(window)) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
             if (!g_is_visible)
-                glViewport(0, 0, 640, 640);
+                glViewport(0, 0, 950, 600);
             else 
                 glViewport(0, 0, 837, 527);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -259,9 +258,9 @@ namespace gui {
 
             }
             else {
-                ImGui::SetNextWindowSize(ImVec2(837, 527));
+                ImGui::SetNextWindowSize(ImVec2(950, 600));
 #ifdef USE_NEW_GUI
-                aimahead_ui::draw_ui_imgui();
+                aimahead_ui::draw_ui_imgui(config);
 #endif
 #ifndef USE_NEW_GUI
                 ImGui::Begin(XorStr("Overlay"), nullptr, flags);

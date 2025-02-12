@@ -106,8 +106,8 @@ namespace utils {
     void init_config_with_defaults(AimConfig* cfg) {
         cfg->config_iteration = CONFIG_ITERATION;
         cfg->b_auto_trigger = true;
-        cfg->b_predict_next_frame = false;
-        cfg->b_anti_target_jitter = true;
+        cfg->b_predict_next_frame = true;
+        cfg->b_anti_target_jitter = false;
         cfg->b_save_training_data = false;
         cfg->b_aimbot = true;
         cfg->b_draw_targets_on_screen = true;
@@ -121,20 +121,20 @@ namespace utils {
         cfg->i_max_prediction_frames = 24;
         cfg->i_future_frames_to_predict = 2;
         cfg->d_maximum_jitter_amount = 30.0f;
-        cfg->f_minimum_top_margin = 15.0f;
-        cfg->i_head_margin = 20;
+        cfg->f_minimum_top_margin = 10.0f;
+        cfg->i_head_margin = 10;
         cfg->i_maximum_wait_time_for_target_reappearence = 40;
         cfg->i_sensitivity = 0.22;
         cfg->i_auto_trigger_delay = 0;
         cfg->i_auto_trigger_recoil_adjustment_amount = 150;
         cfg->i_auto_trigger_recoil_adjustment_wait_time = 500;
-        cfg->i_fps_cap = 120;
+        cfg->i_fps_cap = 0;
         cfg->i_selected_model_index = 0;
-        cfg->i_minimum_confidence = 55;
+        cfg->i_minimum_confidence = 45;
         cfg->b_geforce_now_mode = false;
         cfg->b_counter_strafe = false;
-        cfg->b_aim_fov = true;
-        cfg->b_draw_aim_fov = true;
+        cfg->b_aim_fov = false;
+        cfg->b_draw_aim_fov = false;
         cfg->i_fov_radius = 20;
         cfg->c_esp = IM_COL32(243, 211, 11, 220);
         cfg->c_fov = IM_COL32(243, 211, 11, 220);

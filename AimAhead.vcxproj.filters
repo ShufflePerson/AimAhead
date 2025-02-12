@@ -156,6 +156,9 @@
     <ClCompile Include="src\GUI\AimAheadUI\Utils\RenderOutline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI\AimAheadUI\Features\Styles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI\AI.h">

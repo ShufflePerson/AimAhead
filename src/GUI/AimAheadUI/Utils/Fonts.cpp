@@ -9,7 +9,7 @@ ImFont* font_extrabold;
 ImFont* font_bold;
 ImFont* font_black;
 void aimahead_ui::load_fonts() {
-	float font_size = 26.0f;
+	float font_size = 32.0f;
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 	std::filesystem::path font_dir = std::filesystem::absolute("./bin/fonts");
