@@ -13,8 +13,10 @@
 #include <opencv2/cudaarithm.hpp>
 #include <opencv2/cudawarping.hpp>
 #include <opencv2/cudaimgproc.hpp>
+#include <memory> 
 #include "../Helpers/logger.h"
 #include "../Security/xor.h"
+#include "../Utils/Timer.h"
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
@@ -24,4 +26,9 @@ namespace capture {
     void _ReleaseCapture();
     bool captureScreenRegion(std::vector<BYTE>& capturedData);
     bool captureScreenRegionGPU(cv::cuda::GpuMat& gpuMat);
+    
+    void capture_cache_loop();
+    bool get_cached_mat(cv::cuda::GpuMat &dst);
+    bool should_update();
+    void set_should_update(bool val);
 }

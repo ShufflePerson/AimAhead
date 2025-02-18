@@ -20,6 +20,45 @@ namespace capture {
     const int captureWidth = 640;
     const int captureHeight = 640;
 
+    std::atomic<std::shared_ptr<cv::cuda::GpuMat>> g_matCachePtr;
+    std::atomic<bool> g_shouldUpdateCache = true;
+    std::atomic<bool> g_waitingForNewFrame = false;
+
+    bool should_update() {
+        return g_shouldUpdateCache.load(std::memory_order_relaxed);
+    }
+
+    void set_should_update(bool val) {
+        g_shouldUpdateCache.store(val, std::memory_order_release);
+    }
+
+    void capture_cache_loop() {
+        while (true) {
+            if (!should_update()) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                continue;
+            }
+            cv::cuda::GpuMat new_mat(640, 640, CV_8UC3);
+            g_waitingForNewFrame.store(true, std::memory_order_release);
+            captureScreenRegionGPU(new_mat);
+            std::shared_ptr<cv::cuda::GpuMat> new_mat_ptr = std::make_shared<cv::cuda::GpuMat>();
+            new_mat.copyTo(*new_mat_ptr);
+            g_matCachePtr.store(new_mat_ptr, std::memory_order_release);
+            g_waitingForNewFrame.store(false, std::memory_order_release);
+        }
+    }
+
+    bool get_cached_mat(cv::cuda::GpuMat& dst) {
+        if (g_waitingForNewFrame.load(std::memory_order_relaxed) == true) return false;
+        std::shared_ptr<cv::cuda::GpuMat> current_mat_ptr = g_matCachePtr.load(std::memory_order_acquire);
+        if (current_mat_ptr->empty()) return false;
+        if (current_mat_ptr) {
+            current_mat_ptr->copyTo(dst);
+            return true;
+        }
+        return false;
+    }
+
     cv::cuda::GpuMat convertTo3Channels(const cv::cuda::GpuMat& input) {
         if (input.type() == CV_8UC4) {
             cv::cuda::GpuMat channels[4];
@@ -342,6 +381,9 @@ namespace capture {
 
         if (frameReleased) {
             cv::cuda::cvtColor(gpuMat, gpuMat, cv::COLOR_BGRA2RGB);
+            if (640 != captureHeight || 640 != captureWidth) {
+                cv::cuda::resize(gpuMat, gpuMat, cv::Size(640, 640));
+            }
         }
         return frameReleased;
     }
