@@ -74,8 +74,8 @@ namespace math_helpers {
             current_sens = high_sens * (1.0 - t) + medium_sens * t; 
         }
 
-        mouse_movements.x = (aim_cordinates.x - middle_point) * current_sens;
-        mouse_movements.y = (aim_cordinates.y - middle_point) * current_sens;
+        mouse_movements.x = (aim_cordinates.x - middle_point) * current_sens * dt * sens;
+        mouse_movements.y = (aim_cordinates.y - middle_point) * current_sens * dt * sens;
 
         double movement_magnitude = std::sqrt(mouse_movements.x * mouse_movements.x + mouse_movements.y * mouse_movements.y);
         if (movement_magnitude > max_movement) {
