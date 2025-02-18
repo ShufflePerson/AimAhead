@@ -193,6 +193,8 @@
     <ClCompile Include="src\Security\SecurityFeatures\MiscSecurity.cpp" />
     <ClCompile Include="src\Security\SecurityUtils\crc\crc.cpp" />
     <ClCompile Include="src\Security\SecurityUtils\FunctionPatches.cpp" />
+    <ClCompile Include="src\sharedmemory\sender.cpp" />
+    <ClCompile Include="src\sharedmemory\sharedmemory.cpp" />
     <ClCompile Include="src\Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +223,7 @@
     <ClInclude Include="src\Security\Security.h" />
     <ClInclude Include="src\Security\SecurityUtils\crc\crc.h" />
     <ClInclude Include="src\Security\xor.h" />
+    <ClInclude Include="src\sharedmemory\sharedmemory.h" />
     <ClInclude Include="src\Structs\BoundingBox.h" />
     <ClInclude Include="src\Structs\Config.h" />
     <ClInclude Include="src\Structs\CurrentTarget.h" />
