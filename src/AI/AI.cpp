@@ -127,12 +127,13 @@ namespace ai {
 
         int i_currently_loaded_model_index = cfg->i_selected_model_index;
 
+        cv::cuda::GpuMat gpuImg(640, 640, CV_8UC3);
+
         while (true) {
             current_frame_time = steady_clock::now();
             dt = duration<double>(current_frame_time - last_frame_time).count();
             start_time = high_resolution_clock::now();
 
-            cv::cuda::GpuMat gpuImg(640, 640, CV_8UC3);
             if (!capture::captureScreenRegionGPU(gpuImg)) {
                 continue;
             }
@@ -171,7 +172,9 @@ namespace ai {
 
 
 
+            capture::set_should_update(false);
             std::vector<BoundingBox> results = ai::runInference(gpuImg, minObjectness, *engine_ptr);
+            capture::set_should_update(true);
 
             if (results.size() > 0) {
                 BoundingBox box = results[0];
@@ -185,7 +188,7 @@ namespace ai {
                 handle_save_training_data(cfg, gpuImg);
 
                 Vector2 target_cordinates = math_helpers::get_aim_position(box.xmin, box.xmax, box.ymin, box.ymax, cfg->e_aim_position, cfg);
-                bool is_target_hittable = (target_cordinates.x >= box.xmin && target_cordinates.x <= box.xmax && target_cordinates.y >= box.ymin && target_cordinates.y <= box.ymax);
+                bool is_target_hittable = (box.xmin <= 320 && 320 <= box.xmax && box.ymin <= 320 && 320 <= box.ymax);
                 Vector2 last_position = current_target.p_last_position;
 
                 if (cfg->b_anti_target_jitter && current_target.b_active) {
