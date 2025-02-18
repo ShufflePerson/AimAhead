@@ -137,7 +137,7 @@ namespace utils {
         cfg->b_aim_fov = false;
         cfg->b_draw_aim_fov = false;
         cfg->i_fov_radius = 20;
-        cfg->c_esp = IM_COL32(243, 211, 11, 220);
+        cfg->c_esp = IM_COL32(52, 49, 216, 220);
         cfg->c_fov = IM_COL32(243, 211, 11, 220);
         cfg->b_int8_mode = false;
         cfg->read_only__i_fps = 0;
