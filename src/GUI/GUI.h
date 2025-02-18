@@ -22,6 +22,7 @@
 #include "./Preview/Preview.h"
 #include "../Security/xor.h"
 #include "../Security/Security.h"
+#include "../Utils/Timer.h"
 
 #include "./AimAheadUI/AimAheadUI.h"
 

@@ -7,6 +7,8 @@
 
 #define USE_NEW_GUI
 
+#define CAPTURE_SIZE 640
+
 namespace gui {
 	AimConfig* config;
 	void load_config(AimConfig* cfg) {
@@ -136,8 +138,8 @@ namespace gui {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        glfwSwapInterval(10);
-        GLFWwindow* window = glfwCreateWindow(950, 600, XorStr("AimAhead"), NULL, NULL);
+        glfwSwapInterval(3);
+        GLFWwindow* window = glfwCreateWindow(CAPTURE_SIZE * 2, CAPTURE_SIZE * 2, XorStr("AimAhead"), NULL, NULL);
         if (window == NULL) {
             std::cout << XorStr("Failed to create GLFW window") << std::endl;
             glfwTerminate();
@@ -148,8 +150,8 @@ namespace gui {
         std::pair<int, int> screen_size = utils::get_primary_display_size();
         int screenWidth = screen_size.first;
         int screenHeight = screen_size.second;
-        int windowWidth = 640;
-        int windowHeight = 640;
+        int windowWidth = CAPTURE_SIZE * 2;
+        int windowHeight = CAPTURE_SIZE * 2;
         glfwSetWindowPos(window, (screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2);
 
         g_hwnd = glfwGetWin32Window(window);
@@ -176,13 +178,10 @@ namespace gui {
         toggle_window();
 
         size_t current_tab = 0;
+        glViewport(0, 0, CAPTURE_SIZE * 2, CAPTURE_SIZE * 2);
 
 
         while (!glfwWindowShouldClose(window)) {
-            if (!g_is_visible)
-                glViewport(0, 0, 950, 600);
-            else 
-                glViewport(0, 0, 837, 527);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             ImGui_ImplOpenGL3_NewFrame();
@@ -191,16 +190,16 @@ namespace gui {
             ImGui::SetNextWindowPos(ImVec2(0, 0));
             ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
             if (!g_is_visible) {
-                ImGui::SetNextWindowSize(ImVec2(640, 640));
+                ImGui::SetNextWindowSize(ImVec2(CAPTURE_SIZE * 2, CAPTURE_SIZE * 2));
                 flags |= ImGuiWindowFlags_NoBackground;
                 ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
                 ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
                 if (g_bounding_boxes.size() > 0) {
                     for (auto& box : g_bounding_boxes) {
-                        ImVec2 p_min = ImVec2(box.xmin, box.ymin);
-                        ImVec2 p_max = ImVec2(box.xmax, box.ymax);
-                        draw_list->AddRect(p_min, p_max, config->c_esp, 5.0f, ImDrawListFlags_AntiAliasedLines, 1.10f);
+                        ImVec2 p_min = ImVec2(box.xmin + 320, box.ymin + 320);
+                        ImVec2 p_max = ImVec2(box.xmax + 320, box.ymax + 320);
+                        aimahead_ui::draw_esp_box(p_min, p_max, config->c_esp, aimahead_ui::EBoxEsp::BOX_ESP_TRIANGLE, BOX_ESP_FLAG_FILLED);
 
                         if (config->b_draw_confidence) {
                             float percentageValue = box.confidence * 100.0f;
