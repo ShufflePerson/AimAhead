@@ -2,9 +2,11 @@
 #include "../../../ModelManager/ModelManager.h"
 
 float f_fps_cap = 0.1f;
+float f_min_confidence = 0.1f;
 void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
     if (f_fps_cap == 0.1f) {
         f_fps_cap = static_cast<float>(cfg->i_fps_cap);
+        f_min_confidence = static_cast<float>(cfg->i_minimum_confidence);
     }
     ImGui::AH_Checkbox_Prop checkbox_prop = get_default_checkbox_prop();
     ImGui::AH_Slider_Prop slider_prop = get_default_slider_prop();
@@ -21,7 +23,9 @@ void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
             cfg->i_fps_cap = static_cast<int>(f_fps_cap);
         }
     }
-
+    if (ImGui::AH_Slider(XorStr("Minimum Confidence"), &f_min_confidence, 1.0f, 100.0f, "%", &slider_prop)) {
+        cfg->i_minimum_confidence = static_cast<int>(f_min_confidence);
+    }
 
     std::vector<std::string> loaded_models = model_manager::get_loaded_models();
     ImGui::ListBox(
