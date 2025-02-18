@@ -17,6 +17,8 @@
 #define RGBA_TO_FLOAT(x, y, z) ImVec4(x/255, y/255, z/255, 1.0f)
 
 
+constexpr uint32_t BOX_ESP_FLAG_FILLED = 1 << 0;
+
 namespace aimahead_ui {
 	enum EFont {
 		FONT_MEDIUM = 100,
@@ -28,6 +30,12 @@ namespace aimahead_ui {
 		MISC_TAB = 400,
 		SETTINGS = 500
 	};
+
+	enum EBoxEsp {
+		BOX_ESP_DEFAULT = 0,
+		BOX_ESP_TRIANGLE = 1,
+	};
+
 
 	struct TColors {
 		ImVec4 Dark = RGBA_TO_FLOAT(35, 35, 35);
@@ -92,5 +100,7 @@ namespace aimahead_ui {
 	void draw_misc_tab(AimConfig* cfg);
 	void draw_settings_tab(AimConfig* cfg);
 
-
+	void draw_esp_box(ImVec2 min, ImVec2 max, ImU32 col, EBoxEsp type, uint32_t flags);
+	void draw_esp_box_default(ImVec2 min, ImVec2 max, ImU32 col, uint32_t flags);
+	void draw_esp_box_triangle(ImVec2 min, ImVec2 max, ImU32 col, uint32_t flags);
 }

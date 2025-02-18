@@ -60,16 +60,13 @@ void aimahead_ui::draw_ui_imgui(AimConfig *cfg)
         menu_settings.f_sidebar_width = 100.0f;
         menu_settings.i_current_box = 0;
         menu_settings.f_box_margin = 20.0f;
-
-
-
         b_menu_settings_init = true;
     }
     menu_settings.i_current_box = 0;
-    ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
-    ImGui::Begin(XorStr("AimAhead"), nullptr, flags);
-    ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    ImVec2 windowSize = ImGui::GetWindowSize();
+        ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
+        ImGui::Begin(XorStr("AimAhead"), nullptr, flags);
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+        ImVec2 windowSize = ImGui::GetWindowSize();
 
     draw_sidebar();
 
@@ -95,7 +92,7 @@ void aimahead_ui::draw_ui_imgui(AimConfig *cfg)
     const char* fps_text = XorStr("FPS: %d");
     ImVec2 window_size = ImGui::GetWindowSize();
     ImVec2 text_size = ImGui::CalcTextSize(fps_text);
-    ImGui::SetCursorPos(ImVec2(window_size.x - text_size.x - 5.0f, window_size.y - text_size.y - 5.0f));
+    ImGui::SetCursorPos(ImVec2(window_size.x - text_size.x - 15.0f, window_size.y - text_size.y - 5.0f));
     ImGui::Text(fps_text, cfg->read_only__i_fps);
 
     ImGui::End();
@@ -176,4 +173,65 @@ void aimahead_ui::draw_sidebar() {
         draw_list->AddImage((void*)(intptr_t)(texture_id), image_pos, ImVec2(image_size.x + image_pos.x, image_size.y + image_pos.y));
         font->RenderText(draw_list, font_size, text_pos, text_color, ImVec4(0, 0, 1000, 1000), tab.text, 0);
     }
+}
+
+
+void aimahead_ui::draw_esp_box(ImVec2 min, ImVec2 max, ImU32 col, EBoxEsp type, uint32_t flags) {
+    if (type == EBoxEsp::BOX_ESP_DEFAULT) {
+        draw_esp_box_default(min, max, col, flags);
+        return;
+    }
+    if (type == EBoxEsp::BOX_ESP_TRIANGLE) {
+        draw_esp_box_triangle(min, max, col, flags);
+        return;
+    }
+}
+
+void aimahead_ui::draw_esp_box_default(ImVec2 min, ImVec2 max, ImU32 col, uint32_t flags) {
+    bool filled = flags & BOX_ESP_FLAG_FILLED;
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+    if (filled) {
+        ImVec4 color_vec4 = ImGui::ColorConvertU32ToFloat4(col);
+        color_vec4.w = 0.3;
+        draw_list->AddRectFilled(min, max, ImGui::ColorConvertFloat4ToU32(color_vec4));
+    }
+
+    draw_list->AddRect(min, max, col);
+}
+
+void aimahead_ui::draw_esp_box_triangle(ImVec2 min, ImVec2 max, ImU32 col, uint32_t flags) {
+    float stroke = 3.0f;
+    float size = (max.x - min.x) / 3;
+    bool filled = flags & BOX_ESP_FLAG_FILLED;
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+
+    if (filled) {
+        ImVec4 color_vec4 = ImGui::ColorConvertU32ToFloat4(col);
+        color_vec4.w = 0.3;
+        draw_list->AddRectFilled(min, max, ImGui::ColorConvertFloat4ToU32(color_vec4));
+    }
+
+    //TOP LEFT -> RIGHT
+    draw_list->AddLine(ImVec2(min.x, min.y), ImVec2(min.x + size, min.y), col, stroke);
+    //TOP LEFT -> DOWN
+    draw_list->AddLine(ImVec2(min.x, min.y), ImVec2(min.x, min.y + size), col, stroke);
+
+    //TOP RIGHT -> LEFT
+    draw_list->AddLine(ImVec2(max.x, min.y), ImVec2(max.x - size, min.y), col, stroke);
+    //TOP RIGHT -> DOWN
+    draw_list->AddLine(ImVec2(max.x, min.y), ImVec2(max.x, min.y + size), col, stroke);
+
+
+    //BOTTOM LEFT -> RIGHT
+    draw_list->AddLine(ImVec2(min.x, max.y), ImVec2(min.x +size, max.y), col, stroke);
+    //BOTTOM LEFT -> UP
+    draw_list->AddLine(ImVec2(min.x, max.y), ImVec2(min.x, max.y - size), col, stroke);
+    //BOTTOM RIGHT -> LEFT
+    draw_list->AddLine(ImVec2(max.x, max.y), ImVec2(max.x - size, max.y), col, stroke);
+    //BOTTOM RIGHT -> UP
+    draw_list->AddLine(ImVec2(max.x, max.y), ImVec2(max.x, max.y - size), col, stroke);
 }
