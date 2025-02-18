@@ -13,14 +13,8 @@ namespace input {
         int move_y = static_cast<int>(floor(accumulated_dy));
 
         if (move_x != 0 || move_y != 0) {
-            if (cfg->b_geforce_now_mode) {
-                HWND hwnd = utils::get_geforce_now_hwnd();
-                if (hwnd != nullptr) {
-                    POINT currentPos = { 0,0 };
-                    GetCursorPos(&currentPos);
-                    LPARAM lParam = MAKELPARAM(move_x + currentPos.x, move_y + currentPos.y);
-                    SendMessage(hwnd, WM_MOUSEMOVE, 0, lParam);
-                }
+            if (false) {
+                sharedmemory::send_data(static_cast<int32_t>(std::floor(dx)), static_cast<int32_t>(std::floor(dy)));
             }
             else {
                 INPUT input = {};
@@ -47,7 +41,11 @@ namespace input {
         SendInput(2, input, sizeof(INPUT));
     }
 
-    void send_input_mouse_event(bool down) {
+    void send_input_mouse_event(bool down, AimConfig* cfg) {
+        if (cfg->b_geforce_now_mode) {
+            sharedmemory::send_data(static_cast<int32_t>(0), static_cast<int32_t>(0), down ? 1 : 2);
+            return;
+        }
         INPUT input[2];
         input[0].type = INPUT_MOUSE;
         input[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;

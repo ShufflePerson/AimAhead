@@ -19,14 +19,14 @@ namespace triggerbot {
         if (should_fire) {
             if (!currently_fire_active) {
                 currently_fire_active = true;
-                input::send_input_mouse_event(true);
+                input::send_input_mouse_event(true, cfg);
                 started_shooting_at = std::chrono::system_clock::now();
             }
         }
         else {
             if (currently_fire_active) {
                 currently_fire_active = false;
-                input::send_input_mouse_event(false);
+                input::send_input_mouse_event(false, cfg);
                 y_sens_multiplier = 1.0;
             }
         }

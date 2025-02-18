@@ -13,10 +13,10 @@
 #include "../Structs/Config.h"
 #include "../Utils/Utils.h"
 #include "../GUI/GUI.h"
-
+#include "../sharedmemory/sharedmemory.h"
 namespace input {
 	void send_input_mouse_relative(double dx, double dy, AimConfig *cfg);
-	void send_input_mouse_event(bool down);
+	void send_input_mouse_event(bool down, AimConfig* cfg);
 
 	bool is_mouse_hidden();
 
