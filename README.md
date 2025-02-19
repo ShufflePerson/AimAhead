@@ -1,7 +1,7 @@
 # AimAhead: The fastest AI powered Aim Assist
 
 [![GitHub Stars](https://img.shields.io/github/stars/ShufflePerson/AimAhead?style=social)](https://github.com/ShufflePerson/AimAhead)
-[![License](https://img.shields.io/badge/License-MIT-brightgreen)](LICENSE)
+[![License](https://img.shields.io/badge/License-GNU-brightgreen)](LICENSE)
 
 **AimAhead was built from the ground up with speed and features in mind. Depending on the model, it can reach anywhere from 100 to 200 cycles per second.**
 
