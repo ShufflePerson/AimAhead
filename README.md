@@ -1,9 +1,3 @@
-TODO:
-//    ImGui::AH_Checkbox(XorStr("Precise"), XorStr("Only shoots at selected position."), &v3, &checkbox_prop);
-//    ImGui::AH_ButtonInfo(XorStr("Aim Key"), XorStr("Aimbot keybind"), XorStr("Left"), &v1, &buttoninfo_prop);
-//    ImGui::AH_Slider(XorStr("Reaction Time"), &vv2, 0.0f, 300.0f, "ms", &slider_prop);
-
-
 # AimAhead: The fastest AI powered Aim Assist
 
 [![GitHub Stars](https://img.shields.io/github/stars/ShufflePerson/AimAhead?style=social)](https://github.com/ShufflePerson/AimAhead)
