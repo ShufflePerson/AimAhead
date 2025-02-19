@@ -6,6 +6,11 @@ void gui::__render__settings_tab__(AimConfig* config) {
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Saves training data to the data folder."));
 
     ImGui::NewLine();
+    ImGui::Checkbox(XorStr("Use new menu"), &config->b_use_new_gui);
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Toggles between Legacy and New UI."));
+
+
+    ImGui::NewLine();
     ImGui::Text(XorStr("Minimum Confidence"));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(200);

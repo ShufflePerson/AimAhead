@@ -63,10 +63,10 @@ void aimahead_ui::draw_ui_imgui(AimConfig *cfg)
         b_menu_settings_init = true;
     }
     menu_settings.i_current_box = 0;
-        ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
-        ImGui::Begin(XorStr("AimAhead"), nullptr, flags);
-        ImDrawList* draw_list = ImGui::GetWindowDrawList();
-        ImVec2 windowSize = ImGui::GetWindowSize();
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
+    ImGui::Begin(XorStr("AimAhead"), nullptr, flags);
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    ImVec2 windowSize = ImGui::GetWindowSize();
 
     draw_sidebar();
 
@@ -100,11 +100,12 @@ void aimahead_ui::draw_ui_imgui(AimConfig *cfg)
 
 
 ImVec2 aimahead_ui::draw_container_box(const char* title) {
+    ImVec2 window_pos = ImGui::GetWindowPos();
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     ImVec2 windowSize = ImGui::GetWindowSize();
     float start_x = menu_settings.f_sidebar_width + 20.0f + ((menu_settings.f_column_size + 30.0f) * menu_settings.i_current_box);
     ImVec2 box_size = ImVec2(menu_settings.f_column_size, 520);
-    ImVec2 pos = ImVec2(start_x, (windowSize.y / 2) - (box_size.y / 2));
+    ImVec2 pos = ImVec2(start_x + window_pos.x, (windowSize.y / 2) - (box_size.y / 2) + window_pos.y);
     ImVec2 br = ImVec2(pos.x + box_size.x, pos.y + box_size.y);
     ImVec2 starting_contents_pos = ImVec2(pos.x + menu_settings.f_box_margin, pos.y + 20);
 
@@ -116,7 +117,7 @@ ImVec2 aimahead_ui::draw_container_box(const char* title) {
     font->RenderText(draw_list, 14.0f, starting_contents_pos, IM_COL32(106, 106, 106, 255), ImVec4(0, 0, 2500, 2500), title, 0);
     
     menu_settings.i_current_box++;
-    return ImVec2(starting_contents_pos.x, starting_contents_pos.y + 30);
+    return ImVec2(starting_contents_pos.x - window_pos.x, starting_contents_pos.y + 30 - window_pos.y);
 }
 
 void aimahead_ui::draw_sidebar() {
@@ -124,9 +125,9 @@ void aimahead_ui::draw_sidebar() {
     ImVec2 windowSize = ImGui::GetWindowSize();
     
     ImVec2 sidebar_size = ImVec2(menu_settings.f_sidebar_width, windowSize.y);
-    ImVec2 sidebar_pos = ImVec2(0, 0);
+    ImVec2 sidebar_pos = ImGui::GetWindowPos();
     draw_list->AddRectFilled(sidebar_pos, sidebar_size, ImGui::ColorConvertFloat4ToU32(colors.Sidebar));
-    draw_list->AddLine(ImVec2(sidebar_size.x, 0), ImVec2(sidebar_size.x, sidebar_size.y), ImGui::ColorConvertFloat4ToU32(colors.Box_Stroke), 1.0f);
+    draw_list->AddLine(ImVec2(sidebar_size.x + sidebar_pos.x, sidebar_pos.y), ImVec2(sidebar_size.x + sidebar_pos.x, sidebar_size.y + sidebar_pos.y), ImGui::ColorConvertFloat4ToU32(colors.Box_Stroke), 1.0f);
 
 
     int i_total_tab_items = tab_cache.size();
@@ -140,16 +141,16 @@ void aimahead_ui::draw_sidebar() {
     for (const auto &tab : tab_cache) {
         ImU32 text_color = IM_COL32(226, 226, 226, 255);
         GLuint texture_id = tab.image.textureID;
-        ImVec2 image_pos = ImVec2(sidebar_center_x - (image_width / 2), pos.y);
+        ImVec2 image_pos = ImVec2(sidebar_center_x - (image_width / 2) + sidebar_pos.x, pos.y + sidebar_pos.y);
         float image_ratio = tab.image.mat.cols / tab.image.mat.rows;
         ImVec2 image_size = ImVec2(image_width, image_ratio * image_width);
         pos.y += image_size.y + 10.0f;
 
         ImVec2 text_size = font->CalcTextSizeA(font_size, FLT_MAX, 0.0f, tab.text, 0);
-        ImVec2 text_pos = ImVec2(sidebar_center_x - (text_size.x / 2), pos.y);
+        ImVec2 text_pos = ImVec2(sidebar_center_x - (text_size.x / 2) + sidebar_pos.x, pos.y + sidebar_pos.y);
 
-        ImVec2 start_pos = ImVec2(0, image_pos.y - active_tab_padding);
-        ImVec2 end_pos = ImVec2(sidebar_size.x, text_pos.y + text_size.y + active_tab_padding);
+        ImVec2 start_pos = ImVec2(sidebar_pos.x, image_pos.y - active_tab_padding);
+        ImVec2 end_pos = ImVec2(sidebar_size.x + sidebar_pos.x, text_pos.y + text_size.y + active_tab_padding);
 
         ImRect full_bb = ImRect(start_pos, end_pos);
         pos.y += text_size.y;

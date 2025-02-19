@@ -140,6 +140,7 @@ namespace utils {
         cfg->c_esp = IM_COL32(52, 49, 216, 220);
         cfg->c_fov = IM_COL32(243, 211, 11, 220);
         cfg->b_int8_mode = false;
+        cfg->b_use_new_gui = true;
         cfg->read_only__i_fps = 0;
     }
 

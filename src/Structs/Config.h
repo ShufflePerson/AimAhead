@@ -1,5 +1,5 @@
 #pragma once
-#define CONFIG_ITERATION 8
+#define CONFIG_ITERATION 10
 
 enum ETargetMode {
 	OBJECTIVE,
@@ -104,6 +104,8 @@ struct AimConfig {
 	
 	//Model 
 	bool b_int8_mode;
+
+	bool b_use_new_gui;
 
 	//Read Only
 	int read_only__i_fps;

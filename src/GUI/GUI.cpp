@@ -166,11 +166,9 @@ namespace gui {
         ImGui::StyleColorsDark();
         io.IniFilename = nullptr;
 
-#ifdef USE_NEW_GUI
         aimahead_ui::load_fonts();
         aimahead_ui::init_imgui_syles();
         aimahead_ui::init_tabs();
-#endif
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(XorStr("#version 330"));
@@ -259,38 +257,37 @@ namespace gui {
             }
             else {
                 ImGui::SetNextWindowSize(ImVec2(950, 600));
-#ifdef USE_NEW_GUI
-                aimahead_ui::draw_ui_imgui(config);
-#endif
-#ifndef USE_NEW_GUI
-                ImGui::Begin(XorStr("Overlay"), nullptr, flags);
-                //render_rgb_outline();
-                ImGui::NewLine();
+                if (config->b_use_new_gui) {
+                    aimahead_ui::draw_ui_imgui(config);
+                } else {
+                    ImGui::Begin(XorStr("Overlay"), nullptr, flags);
+                    //render_rgb_outline();
+                    ImGui::NewLine();
 
 
-                render_tabs(current_tab);
-                if (current_tab == 0) {
-                    __render__aimbot_tab__(config);
+                    render_tabs(current_tab);
+                    if (current_tab == 0) {
+                        __render__aimbot_tab__(config);
+                    }
+                    if (current_tab == 1) {
+                        __render__visuals_tab__(config);
+                    }
+                    if (current_tab == 2) {
+                        __render__misc_tab__(config);
+                    }
+                    if (current_tab == 3) {
+                        __render__preview_tab__(config);
+                    }
+                    if (current_tab == 4) {
+                        __render__settings_tab__(config);
+                    }
+                    const char* fps_text = XorStr("FPS: %d");
+                    ImVec2 window_size = ImGui::GetWindowSize();
+                    ImVec2 text_size = ImGui::CalcTextSize(fps_text);
+                    ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10));
+                    ImGui::Text(fps_text, config->read_only__i_fps);
+                    ImGui::End();
                 }
-                if (current_tab == 1) {
-                    __render__visuals_tab__(config);
-                }
-                if (current_tab == 2) {
-                    __render__misc_tab__(config);
-                }
-                if (current_tab == 3) {
-                    __render__preview_tab__(config);
-                }
-                if (current_tab == 4) {
-                    __render__settings_tab__(config);
-                }
-                const char* fps_text = XorStr("FPS: %d");
-                ImVec2 window_size = ImGui::GetWindowSize();
-                ImVec2 text_size = ImGui::CalcTextSize(fps_text);
-                ImGui::SetCursorPos(ImVec2(10, window_size.y - text_size.y - 10));
-                ImGui::Text(fps_text, config->read_only__i_fps);
-                ImGui::End();
-#endif
                 auto current_time = std::chrono::system_clock::now();
                 auto time_diff = current_time - last_config_save;
                 auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(time_diff);
