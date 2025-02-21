@@ -13,7 +13,7 @@ namespace input {
         int move_y = static_cast<int>(floor(accumulated_dy));
 
         if (move_x != 0 || move_y != 0) {
-            if (false) {
+            if (cfg->b_geforce_now_mode) {
                 sharedmemory::send_data(static_cast<int32_t>(std::floor(dx)), static_cast<int32_t>(std::floor(dy)));
             }
             else {
@@ -43,7 +43,7 @@ namespace input {
 
     void send_input_mouse_event(bool down, AimConfig* cfg) {
         if (cfg->b_geforce_now_mode) {
-            sharedmemory::send_data(static_cast<int32_t>(0), static_cast<int32_t>(0), down ? 1 : 2);
+            sharedmemory::send_data(-999, -999, true, down);
             return;
         }
         INPUT input[2];
