@@ -16,12 +16,10 @@
 #include "Structs/CurrentTarget.h"
 #include "./Security/Security.h"
 #include "Connection/Connection.h"
-
 #include "./sharedmemory/sharedmemory.h"
+#include "./Injector/injector.h"
 
 int main(int argc, char* argv[]) {
-    //Disabled for now
-    //sharedmemory::init_sender();
 
     std::thread security_thread(security::ensure_security);
 
@@ -37,7 +35,7 @@ int main(int argc, char* argv[]) {
     model_manager::update_models_list();
     config_manager::load_config_or_init_new(&cfg);
     gui::load_config(&cfg);
-
+    sharedmemory::init_sender();
     if (!capture::InitializeCapture()) {
         throw std::runtime_error(XorStr("Failed to start screen capture."));
         return 1;
