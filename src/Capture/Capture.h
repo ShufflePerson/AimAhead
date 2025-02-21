@@ -24,9 +24,9 @@
 namespace capture {
     bool InitializeCapture();
     void _ReleaseCapture();
-    bool captureScreenRegion(std::vector<BYTE>& capturedData);
     bool captureScreenRegionGPU(cv::cuda::GpuMat& gpuMat);
-    
+    bool get_mat_from_shared_handle(HANDLE sharedHandle, cv::cuda::GpuMat& gpuMat);
+
     void capture_cache_loop();
     bool get_cached_mat(cv::cuda::GpuMat &dst);
     bool should_update();

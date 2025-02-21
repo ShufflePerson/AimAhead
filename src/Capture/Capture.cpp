@@ -98,10 +98,10 @@ namespace capture {
     }
     bool InitializeCapture() {
         HRESULT hr;
-        cudaError_t cudaStatus = cudaSetDevice(0); // Select device 0
+        cudaError_t cudaStatus = cudaSetDevice(0); 
         if (cudaStatus != cudaSuccess) {
             std::cerr << "cudaSetDevice(0) failed: " << cudaGetErrorString(cudaStatus) << std::endl;
-            return false; // Or handle error
+            return false;
         }
         hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&g_factory);
         if (FAILED(hr)) {
@@ -125,7 +125,6 @@ namespace capture {
         g_output->GetDesc(&outputDesc);
         g_screenWidth = outputDesc.DesktopCoordinates.right - outputDesc.DesktopCoordinates.left;
         g_screenHeight = outputDesc.DesktopCoordinates.bottom - outputDesc.DesktopCoordinates.top;
-
         D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
         hr = D3D11CreateDevice(
             g_adapter,
@@ -196,84 +195,6 @@ namespace capture {
     }
 
 
-
-    bool captureScreenRegion(std::vector<BYTE>& capturedData) {
-        int captureStartX = (g_screenWidth - captureWidth) / 2;
-        int captureStartY = (g_screenHeight - captureHeight) / 2;
-        HRESULT hr;
-        IDXGIResource* tempDesktopResource = nullptr;
-        DXGI_OUTDUPL_FRAME_INFO frameInfo;
-        ID3D11Texture2D* texture = nullptr;
-        bool frameReleased = false;
-
-        // Use non-blocking frame acquisition
-        hr = g_desktopDuplication->AcquireNextFrame(0, &frameInfo, &tempDesktopResource);
-        if (FAILED(hr)) {
-            if (hr != DXGI_ERROR_WAIT_TIMEOUT) {
-                // Consider removing error logging in release builds
-                // std::cerr << "Acquire error: 0x" << std::hex << hr << std::endl;
-            }
-            return false;
-        }
-
-        do {
-            // Directly query for texture interface from acquired resource
-            hr = tempDesktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&texture));
-            if (FAILED(hr)) break;
-
-            // Copy to staging texture (assumes g_stagingTexture is pre-created)
-            g_context->CopyResource(g_stagingTexture, texture);
-
-            // Map staging texture for CPU access
-            D3D11_MAPPED_SUBRESOURCE mappedResource;
-            hr = g_context->Map(g_stagingTexture, 0, D3D11_MAP_READ, 0, &mappedResource);
-            if (FAILED(hr)) break;
-
-            // Calculate capture parameters
-            const int uStride = captureWidth * 4;
-            const int requiredSize = captureWidth * captureHeight * 4;
-
-            // Optimized resize check
-            if (capturedData.size() != requiredSize) {
-                capturedData.resize(requiredSize);
-            }
-
-            // Set up pointers
-            BYTE* pSource = static_cast<BYTE*>(mappedResource.pData)
-                + captureStartY * mappedResource.RowPitch
-                + captureStartX * 4;
-            BYTE* pDest = capturedData.data();
-
-            // Optimized copy based on row pitch
-            const size_t destStride = captureWidth * 4;
-            const size_t sourceStride = mappedResource.RowPitch;
-
-            if (sourceStride == destStride) {
-                // Single copy if pitches match
-                memcpy(pDest, pSource, destStride * captureHeight);
-            }
-            else {
-                // Copy row-by-row if pitches differ
-                for (int y = 0; y < captureHeight; ++y) {
-                    memcpy(pDest + y * destStride,
-                        pSource + y * sourceStride,
-                        destStride);
-                }
-            }
-
-            g_context->Unmap(g_stagingTexture, 0);
-            frameReleased = true;
-        } while (false);
-
-        // Cleanup resources
-        if (texture) texture->Release();
-        if (tempDesktopResource) tempDesktopResource->Release();
-
-        // Release frame reference
-        g_desktopDuplication->ReleaseFrame();
-
-        return frameReleased;
-    }
     bool captureScreenRegionGPU(cv::cuda::GpuMat& gpuMat) {
         int captureStartX = (g_screenWidth - captureWidth) / 2;
         int captureStartY = (g_screenHeight - captureHeight) / 2;
@@ -284,12 +205,10 @@ namespace capture {
         bool frameReleased = false;
         cudaError_t cudaStatus;
         cudaGraphicsResource_t cudaResource = nullptr;
-
         hr = g_desktopDuplication->AcquireNextFrame(0, &frameInfo, &tempDesktopResource);
         if (FAILED(hr)) {
             return false;
         }
-
         do {
             hr = tempDesktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&texture));
             if (FAILED(hr)) {
@@ -387,25 +306,17 @@ namespace capture {
         }
         return frameReleased;
     }
-    
-    inline void cudaCheckError(cudaError_t error) {
-        if (error != cudaSuccess) {
-            std::cerr << XorStr("CUDA Error: ") << cudaGetErrorString(error) << std::endl;
-            exit(-1);
+
+    bool get_mat_from_shared_handle(HANDLE sharedHandle, cv::cuda::GpuMat& gpuMat) {
+        ID3D11Texture2D* pTexture = nullptr;
+
+        HRESULT hr;
+
+        hr = g_device->OpenSharedResource(sharedHandle, __uuidof(ID3D11Texture2D), (void**)&pTexture);
+        if (!SUCCEEDED(hr)) {
+            std::cout << "[capture::get_mat_from_shared_handle] Failed due to OpenSharedResource -> " << hr << "\n";
         }
+        return false;
     }
 
-    cv::cuda::GpuMat crop_center_square(const cv::cuda::GpuMat& inputGpuMat) {
-        int originalWidth = inputGpuMat.cols;
-        int originalHeight = inputGpuMat.rows;
-
-        int cropSize = 640;
-
-        int startX = (originalWidth - cropSize) / 2;
-        int startY = (originalHeight - cropSize) / 2;
-
-        cv::Rect cropRect(startX, startY, cropSize, cropSize);
-
-        return inputGpuMat(cropRect);
-    }
 }
