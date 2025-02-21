@@ -69,6 +69,7 @@ AimAhead works by capturing your screen, then running it through an AI model of 
 *   To open/close the menu, click [INS] ( insert ) on your keyboard. It is next to the HOME key.
 *   To use the **INT8** mode, place at least a few thousand training images inside the bin\int8 directory. 
 *   To use the Geforce Now mode, first enable it, then make sure that Geforce Now is closed and click "Inject". After that launch Geforce Now. Done.
+*   The default triggerbot key is X, when X is being held down, Triggerbot will shoot as soon as the target is visible.
 
 
 ## Todo / Bugs
