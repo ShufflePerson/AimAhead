@@ -64,6 +64,14 @@ AimAhead works by capturing your screen, then running it through an AI model of 
 5.  **Set It Up:**  Adjust the config
 6.  **Done!**
 
----
+## How to use
+
+*   To open/close the menu, click [INS] ( insert ) on your keyboard. It is next to the HOME key.
+*   To use the **INT8** mode, place at least a few thousand training images inside the bin\int8 directory. 
+
+
+## Todo / Bugs
+*   Unable to change Aim Keybind
+*   Custom Listbox for Models tab and selecting the aim position.
 
 **Good Luck!**
