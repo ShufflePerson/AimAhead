@@ -15,7 +15,6 @@ void aimahead_ui::draw_misc_tab(AimConfig *cfg) {
     ImGui::SetCursorPosX(container_box_pos.x);
     ImGui::SetCursorPosY(container_box_pos.y);
     ImGui::AH_Checkbox(XorStr("In-Game Check"), XorStr("Aimbot only runs in-game"), &cfg->b_only_run_on_hidden_cursor, &checkbox_prop);
-    //ImGui::AH_Checkbox(XorStr("Geforce Now Mode"), XorStr("Send inputs to GFN"), &cfg->b_geforce_now_mode, &checkbox_prop);
     ImGui::AH_Checkbox(XorStr("Counter Strafe"), XorStr("Instantly stop moving"), &cfg->b_counter_strafe, &checkbox_prop);
 
     ImVec2 aiming_box = draw_container_box(XorStr("AIMING"));
