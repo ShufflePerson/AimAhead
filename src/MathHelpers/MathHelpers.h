@@ -9,6 +9,7 @@
 #include "../Structs/Config.h"
 #include "../Structs/BoundingBox.h"
 #include "../Structs/Vector2.h"
+#include "../constants.h"
 
 namespace math_helpers {
 	Vector2 get_aim_position(int xmin, int xmax, int ymin, int ymax, EAimPosition aim_position, AimConfig* cfg);

@@ -1,13 +1,12 @@
 #include "MathHelpers.h"
 
 namespace math_helpers {
-    double middle_point = 320;
 
     Vector2 get_aim_position(int xmin, int xmax, int ymin, int ymax,  EAimPosition aim_position, AimConfig* cfg) {
         double boxMiddleX = (xmin + xmax) / 2.0;
         double boxMiddleY = (ymin + ymax) / 2.0;
-        double aim_position_X = boxMiddleX - middle_point;
-        double aim_position_Y = boxMiddleY - middle_point;
+        double aim_position_X = boxMiddleX - dCENTER_AREA_X;
+        double aim_position_Y = boxMiddleY - dCENTER_AREA_Y;
 
         if (aim_position == TOP) {
             double boxHeight = abs(ymax - ymin);
@@ -15,15 +14,14 @@ namespace math_helpers {
             if (margin_from_top <= cfg->f_minimum_top_margin) {
                 margin_from_top = cfg->f_minimum_top_margin;
             }
-            aim_position_Y = (ymin + margin_from_top) - middle_point;
+            aim_position_Y = (ymin + margin_from_top) - dCENTER_AREA_Y;
         }
-
-        if (aim_position == CHEST) {
+        else if (aim_position == CHEST) {
             double boxHeight = abs(ymax - ymin);
             double margin_from_top = boxHeight * 0.35;
-            aim_position_Y = (ymin + margin_from_top) - middle_point;
+            aim_position_Y = (ymin + margin_from_top) - dCENTER_AREA_Y;
         }
-        return { aim_position_X + middle_point, aim_position_Y + middle_point};
+        return { aim_position_X + dCENTER_AREA_X, aim_position_Y + dCENTER_AREA_Y };
     }
 
     Vector2 get_velocity(Vector2 first, Vector2 second, float dt) {
@@ -57,9 +55,10 @@ namespace math_helpers {
     double transition_zone_radius = 80.0;
     double max_movement = 35.0;
     double deadzone_threshold = 10.0;
+
     Vector2 get_mouse_movement(Vector2 aim_cordinates, double sens, double dt) {
         Vector2 mouse_movements;
-        double distance = std::sqrt(std::pow(aim_cordinates.x - middle_point, 2) + std::pow(aim_cordinates.y - middle_point, 2));
+        double distance = std::sqrt(std::pow(aim_cordinates.x - dCENTER_AREA_X, 2) + std::pow(aim_cordinates.y - dCENTER_AREA_Y, 2));
         double current_sens;
 
         if (distance <= close_zone_radius) {
@@ -74,8 +73,8 @@ namespace math_helpers {
             current_sens = high_sens * (1.0 - t) + medium_sens * t; 
         }
 
-        mouse_movements.x = (aim_cordinates.x - middle_point) * current_sens * dt * sens;
-        mouse_movements.y = (aim_cordinates.y - middle_point) * current_sens * dt * sens;
+        mouse_movements.x = (aim_cordinates.x - dCENTER_AREA_X) * current_sens * dt * sens;
+        mouse_movements.y = (aim_cordinates.y - dCENTER_AREA_Y) * current_sens * dt * sens;
 
         double movement_magnitude = std::sqrt(mouse_movements.x * mouse_movements.x + mouse_movements.y * mouse_movements.y);
         if (movement_magnitude > max_movement) {
@@ -85,14 +84,13 @@ namespace math_helpers {
         }
 
         if (distance <= close_zone_radius) {
-            if (std::abs(aim_cordinates.x - middle_point) < deadzone_threshold) {
+            if (std::abs(aim_cordinates.x - dCENTER_AREA_X) < deadzone_threshold) {
                 mouse_movements.x /= 2.0;
             }
-            if (std::abs(aim_cordinates.y - middle_point) < deadzone_threshold) {
+            if (std::abs(aim_cordinates.y - dCENTER_AREA_Y) < deadzone_threshold) {
                 mouse_movements.y /= 2.0;
             }
         }
-
         return mouse_movements;
     }
 
@@ -119,8 +117,8 @@ namespace math_helpers {
     }
 
     BoundingBox find_closests(std::vector<BoundingBox>& boxes) {
-        float target_x = 320.0f;
-        float target_y = 320.0f;
+        float target_x = fCENTER_AREA_X;
+        float target_y = fCENTER_AREA_Y;
         float min_distance = 99999;
         BoundingBox closest_box = boxes[0];
 
@@ -139,9 +137,7 @@ namespace math_helpers {
     }
 
     bool is_point_inside_circle(double pointX, double pointY, double radius) {
-        double centerX = 320;
-        double centerY = 320;
-        double distanceSquared = std::pow(pointX - centerX, 2) + std::pow(pointY - centerY, 2);
+        double distanceSquared = std::pow(pointX - dCENTER_AREA_X, 2) + std::pow(pointY - dCENTER_AREA_Y, 2);
 
         double radiusSquared = std::pow(radius, 2);
 
