@@ -127,25 +127,53 @@ namespace ai {
 
         int i_currently_loaded_model_index = cfg->i_selected_model_index;
 
+        sharedmemory::ITextureData* texture_data = nullptr;
+        int last_frame_tick = 1;
         cv::cuda::GpuMat gpuImg(640, 640, CV_8UC3);
+        cfg->read_only__i_fps = 0;
+        //cv::namedWindow("CUDA GpuMat Display", cv::WINDOW_NORMAL); 
 
         while (true) {
             current_frame_time = steady_clock::now();
             dt = duration<double>(current_frame_time - last_frame_time).count();
             start_time = high_resolution_clock::now();
 
-            if (!capture::captureScreenRegionGPU(gpuImg)) {
-                continue;
-            }
-            float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
-            bool holding_triggerbot_key = (GetAsyncKeyState(cfg->k_triggerbot_key) & 0x8000);
-            bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(cfg->k_aim_key) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
-            capturedData.clear();
-
             if (gui::get_is_visible()) {
                 ai::handle_preview(cfg, *engine_ptr);
                 continue;
             }
+
+            //Disabled GFN screencapture due to bugs.
+            if (false && cfg->b_geforce_now_mode) {
+                if (texture_data == nullptr || !texture_data->m_bTextureReady) {
+                    texture_data = sharedmemory::get_texture_data();
+                    continue;
+                }
+                if (last_frame_tick == texture_data->m_iFrameTick) continue;
+                last_frame_tick = texture_data->m_iFrameTick;
+                if (!capture::get_mat_from_shared_handle(texture_data->m_hHandle, gpuImg)) {
+                    printf("failed\n");
+                    continue;
+                }
+            }
+            else {
+                if (!capture::captureScreenRegionGPU(gpuImg)) {
+                    continue;
+                }
+            }
+
+            /*
+            cv::Mat h_display_mat;
+            gpuImg.download(h_display_mat);
+            cv::imshow("CUDA GpuMat Display", h_display_mat);
+            cv::waitKey(1);
+            */
+
+            float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
+            bool holding_triggerbot_key = (GetAsyncKeyState(cfg->k_triggerbot_key) & 0x8000);
+            bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(cfg->k_aim_key) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
+
+
             if (i_currently_loaded_model_index != cfg->i_selected_model_index) {
                 security::check_sums();
                 i_currently_loaded_model_index = cfg->i_selected_model_index;
@@ -185,12 +213,15 @@ namespace ai {
                 dbg_info.b_have_active_target = current_target.b_active;
                 dbg_info.i_prediction_frames_gathered = current_target.v_location_history.size();
                 box = calculate_target_box(results, cfg);
+                if (box.xmin == 0) {
+                    std::cerr << "Invalid box was returned by calculate_target_box." << std::endl;
+                    continue;
+                }
                 handle_save_training_data(cfg, gpuImg);
 
                 Vector2 target_cordinates = math_helpers::get_aim_position(box.xmin, box.xmax, box.ymin, box.ymax, cfg->e_aim_position, cfg);
                 bool is_target_hittable = (box.xmin <= 320 && 320 <= box.xmax && box.ymin <= 320 && 320 <= box.ymax);
                 Vector2 last_position = current_target.p_last_position;
-
                 if (cfg->b_anti_target_jitter && current_target.b_active) {
                     double delta_between_old_and_new_pos = math_helpers::get_delta_between_positions(last_position, target_cordinates);
                     if (delta_between_old_and_new_pos > cfg->d_maximum_jitter_amount) {
@@ -237,12 +268,10 @@ namespace ai {
             }
             else {
                 gui::update_boxes({});
-                if (cfg->b_auto_trigger) {
-                    triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
-                }
+
                 dbg_info.i_frames_since_target_was_seen = current_frame_count - current_target.i_last_seen_frame;
 
-                if (current_frame_count - current_target.i_last_seen_frame > 30) {
+                if (current_frame_count - current_target.i_last_seen_frame > 240) {
                     current_target.b_active = false;
                     current_target.v_location_history.clear();
                     current_target.p_last_position = { 0.0, 0.0 };
@@ -251,6 +280,9 @@ namespace ai {
                     dbg_info.i_prediction_frames_gathered = 0;
                     dbg_info.target_velocity_x = 0.0;
                     dbg_info.target_velocity_y = 0.0;
+                    if (cfg->b_auto_trigger) {
+                        triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
+                    }
                 }
                 i_jitter_detected_at = 0;
                 b_jitter_Detected = false;
@@ -261,7 +293,6 @@ namespace ai {
             cpuImg.release();
 #endif
             gpuImg.release();
-
 
             if (cfg->b_limit_fps) {
                 averaging_interval = cfg->i_fps_cap;
