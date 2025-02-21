@@ -13,6 +13,7 @@
 #include "../../Security/xor.h"
 #include "./UIMath/UIMath.h"
 #include "../../Structs/Config.h"
+#include "../../Injector/injector.h"
 
 #define RGBA_TO_FLOAT(x, y, z) ImVec4(x/255, y/255, z/255, 1.0f)
 
