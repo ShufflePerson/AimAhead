@@ -139,7 +139,7 @@ namespace gui {
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         glfwSwapInterval(3);
-        GLFWwindow* window = glfwCreateWindow(CAPTURE_SIZE * 2, CAPTURE_SIZE * 2, XorStr("AimAhead"), NULL, NULL);
+        GLFWwindow* window = glfwCreateWindow(CAPTURE_SIZE * 2, CAPTURE_SIZE, XorStr("AimAhead"), NULL, NULL);
         if (window == NULL) {
             std::cout << XorStr("Failed to create GLFW window") << std::endl;
             glfwTerminate();
@@ -151,7 +151,7 @@ namespace gui {
         int screenWidth = screen_size.first;
         int screenHeight = screen_size.second;
         int windowWidth = CAPTURE_SIZE * 2;
-        int windowHeight = CAPTURE_SIZE * 2;
+        int windowHeight = CAPTURE_SIZE;
         glfwSetWindowPos(window, (screenWidth - windowWidth) / 2, (screenHeight - windowHeight) / 2);
 
         g_hwnd = glfwGetWin32Window(window);
@@ -176,7 +176,7 @@ namespace gui {
         toggle_window();
 
         size_t current_tab = 0;
-        glViewport(0, 0, CAPTURE_SIZE * 2, CAPTURE_SIZE * 2);
+        glViewport(0, 0, CAPTURE_SIZE * 2, CAPTURE_SIZE);
 
 
         while (!glfwWindowShouldClose(window)) {
@@ -188,15 +188,15 @@ namespace gui {
             ImGui::SetNextWindowPos(ImVec2(0, 0));
             ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
             if (!g_is_visible) {
-                ImGui::SetNextWindowSize(ImVec2(CAPTURE_SIZE * 2, CAPTURE_SIZE * 2));
+                ImGui::SetNextWindowSize(ImVec2(CAPTURE_SIZE * 2, CAPTURE_SIZE));
                 flags |= ImGuiWindowFlags_NoBackground;
                 ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
                 ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
                 if (g_bounding_boxes.size() > 0) {
                     for (auto& box : g_bounding_boxes) {
-                        ImVec2 p_min = ImVec2(box.xmin + 320, box.ymin + 320);
-                        ImVec2 p_max = ImVec2(box.xmax + 320, box.ymax + 320);
+                        ImVec2 p_min = ImVec2(box.xmin + 320, box.ymin);
+                        ImVec2 p_max = ImVec2(box.xmax + 320, box.ymax);
                         aimahead_ui::draw_esp_box(p_min, p_max, config->c_esp, aimahead_ui::EBoxEsp::BOX_ESP_TRIANGLE, BOX_ESP_FLAG_FILLED);
 
                         if (config->b_draw_confidence) {
