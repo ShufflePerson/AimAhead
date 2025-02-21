@@ -144,7 +144,6 @@
     <ClCompile Include="src\AimAhead.cpp" />
     <ClCompile Include="src\AI\AI.cpp" />
     <ClCompile Include="src\AI\Funcs\calculateTargetBox.cpp" />
-    <ClCompile Include="src\AI\Funcs\handleModelChanges.cpp" />
     <ClCompile Include="src\AI\Funcs\handlePreview.cpp" />
     <ClCompile Include="src\AI\Funcs\handleSaveTrainingData.cpp" />
     <ClCompile Include="src\Capture\Capture.cpp" />
@@ -184,6 +183,7 @@
     <ClCompile Include="src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Injector\injector.cpp" />
     <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\MathHelpers\MathHelpers.cpp" />
     <ClCompile Include="src\ModelManager\ModelManager.cpp" />
@@ -203,6 +203,7 @@
     <ClInclude Include="src\Collector\Collector.h" />
     <ClInclude Include="src\ConfigManager\ConfigManager.h" />
     <ClInclude Include="src\Connection\Connection.h" />
+    <ClInclude Include="src\constants.h" />
     <ClInclude Include="src\Debug\Debug.h" />
     <ClInclude Include="src\Engine\Engine.h" />
     <ClInclude Include="src\Features\Triggerbot\Triggerbot.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\Helpers\macros.h" />
     <ClInclude Include="src\Helpers\util\Stopwatch.h" />
     <ClInclude Include="src\Helpers\util\Util.h" />
+    <ClInclude Include="src\Injector\injector.h" />
     <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\MathHelpers\MathHelpers.h" />
     <ClInclude Include="src\ModelManager\ModelManager.h" />
