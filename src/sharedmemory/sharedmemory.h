@@ -4,38 +4,41 @@
 #include <iostream>
 #include <thread>
 #include <atomic>
+#include <dxgi1_2.h>
+#include <d3d11.h>
 
 namespace sharedmemory {
-    // Structure to hold the shared data (two integers)
-    struct SharedData {
-        uint16_t action; //0 = move, 1 = click
-        int32_t value1;
-        int32_t value2;
-        uint32_t tick;
+    struct ITextureData {
+        HANDLE m_hHandle;
+        DXGI_FORMAT m_iTextureFormat;
+        UINT m_iTextureWidth;
+        UINT m_iTextureHeight;
+        bool m_bTextureReady;
+        int m_iFrameTick;
     };
 
-    // --- Sender Functions ---
+    struct ISharedData {
+        bool m_bSendMouseButton;
+        bool m_bMouseDown;
+        int32_t m_iX;
+        int32_t m_iY;
+        uint32_t m_iTick;
+        ITextureData m_cTextureData;
+    };
+
+
     struct SenderContext {
         HANDLE hMapFile;
-        SharedData* pSharedData;
+        ISharedData* pSharedData;
     };
 
     SenderContext* initSender(const wchar_t* sharedMemoryName);
-    bool sendData(SenderContext* context, int32_t val1, int32_t val2, uint32_t tick, uint16_t action = 0);
+    bool sendData(SenderContext* context, int32_t val1, int32_t val2, uint32_t tick, bool send_mouse = false, bool down = false);
     void cleanupSender(SenderContext* context);
-
-    // --- Receiver Functions ---
-    struct ReceiverContext {
-        HANDLE hMapFile;
-        SharedData* pSharedData;
-        std::atomic<bool> running; // Flag to control the receiver thread
-    };
-
-    ReceiverContext* initReceiver(const wchar_t* sharedMemoryName);
-    void receiveLoop(ReceiverContext* context);
-    void cleanupReceiver(ReceiverContext* context);
 
 
     void init_sender();
-    void send_data(int32_t x, int32_t y, uint16_t action = 0);
+    void send_data(int32_t x, int32_t y, bool send_mouse = false, bool down = false);
+
+    ITextureData* get_texture_data();
 }
