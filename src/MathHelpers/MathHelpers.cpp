@@ -24,13 +24,9 @@ namespace math_helpers {
         return { aim_position_X + dCENTER_AREA_X, aim_position_Y + dCENTER_AREA_Y };
     }
 
-    Vector2 get_velocity(Vector2 first, Vector2 second, float dt) {
-        if (dt == 0.0f) {
-            return { 0.0f, 0.0f };
-        }
-        return { (second.x - first.x) / dt, (second.y - first.y) / dt };
+    Vector2 get_velocity(Vector2 pos1, Vector2 pos0, float dt) {
+        return { (pos1.x - pos0.x) / dt, (pos1.y - pos0.y) / dt };
     }
-
     Vector2 get_avg_velocity(std::vector<Vector2> positions, float dt) {
         Vector2 sum = { 0.0, 0.0 };
         int count = positions.size();
@@ -45,7 +41,7 @@ namespace math_helpers {
             sum.y += velocity.y;
         }
 
-        return {sum.x / count, sum.y / count};
+        return { sum.x / (count - 1), sum.y / (count - 1) };
     }
 
 
@@ -57,6 +53,13 @@ namespace math_helpers {
     double deadzone_threshold = 10.0;
 
     Vector2 get_mouse_movement(Vector2 aim_cordinates, double sens, double dt) {
+        Vector2 mouse_movements = {};
+        mouse_movements.x = (aim_cordinates.x - dCENTER_AREA_X) * (sens / 100.0f) ;
+        mouse_movements.y = (aim_cordinates.y - dCENTER_AREA_Y) * (sens / 100.0f) ;
+        return mouse_movements;
+    }
+
+    Vector2 get_mouse_movement_hard(Vector2 aim_cordinates, double sens, double dt) {
         Vector2 mouse_movements;
         double distance = std::sqrt(std::pow(aim_cordinates.x - dCENTER_AREA_X, 2) + std::pow(aim_cordinates.y - dCENTER_AREA_Y, 2));
         double current_sens;
