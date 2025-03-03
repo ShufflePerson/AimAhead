@@ -122,7 +122,8 @@ namespace ai {
         dbg_info.target_velocity_x = 0.0;
         dbg_info.target_velocity_y = 0.0;
         dbg_info.i_prediction_frames_gathered = 0;
-        //gui::set_debug_info_ptr(&dbg_info);
+        dbg_info.b_render_all_debug = false;
+        gui::set_debug_info_ptr(&dbg_info);
 
 
         int i_currently_loaded_model_index = cfg->i_selected_model_index;
@@ -132,8 +133,14 @@ namespace ai {
         cv::cuda::GpuMat gpuImg(640, 640, CV_8UC3);
         cfg->read_only__i_fps = 0;
         //cv::namedWindow("CUDA GpuMat Display", cv::WINDOW_NORMAL); 
-
+        cfg->i_max_prediction_frames = 5;
+        cfg->i_frames_needed_for_prediction = 2;
         while (true) {
+            float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
+            bool holding_triggerbot_key = (GetAsyncKeyState(cfg->k_triggerbot_key) & 0x8000);
+            bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(cfg->k_aim_key) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
+            if (!holding_aim_key) continue;
+
             current_frame_time = steady_clock::now();
             dt = duration<double>(current_frame_time - last_frame_time).count();
             start_time = high_resolution_clock::now();
@@ -162,16 +169,6 @@ namespace ai {
                 }
             }
 
-            /*
-            cv::Mat h_display_mat;
-            gpuImg.download(h_display_mat);
-            cv::imshow("CUDA GpuMat Display", h_display_mat);
-            cv::waitKey(1);
-            */
-
-            float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
-            bool holding_triggerbot_key = (GetAsyncKeyState(cfg->k_triggerbot_key) & 0x8000);
-            bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(cfg->k_aim_key) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
 
 
             if (i_currently_loaded_model_index != cfg->i_selected_model_index) {
@@ -192,9 +189,10 @@ namespace ai {
             }
 
 
-            if (!holding_triggerbot_key) {
+            if (!holding_triggerbot_key ) {
                 triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
             }
+
 
             current_frame_count++;
 
@@ -206,9 +204,7 @@ namespace ai {
 
             if (results.size() > 0) {
                 BoundingBox box = results[0];
-                if (cfg->b_draw_targets_on_screen) {
-                    gui::update_boxes({ box });
-                }
+
                 dbg_info.i_frames_since_target_was_seen = current_frame_count - current_target.i_last_seen_frame;
                 dbg_info.b_have_active_target = current_target.b_active;
                 dbg_info.i_prediction_frames_gathered = current_target.v_location_history.size();
@@ -217,14 +213,19 @@ namespace ai {
                     std::cerr << "Invalid box was returned by calculate_target_box." << std::endl;
                     continue;
                 }
+
+                if (cfg->b_draw_targets_on_screen) {
+                    gui::update_boxes({ box });
+                }
                 handle_save_training_data(cfg, gpuImg);
 
                 Vector2 target_cordinates = math_helpers::get_aim_position(box.xmin, box.xmax, box.ymin, box.ymax, cfg->e_aim_position, cfg);
-                bool is_target_hittable = (box.xmin <= 320 && 320 <= box.xmax && box.ymin <= 320 && 320 <= box.ymax);
                 Vector2 last_position = current_target.p_last_position;
+                bool is_target_hittable = (box.xmin <= 320 && 320 <= box.xmax && box.ymin <= 320 && 320 <= box.ymax);
+
                 if (cfg->b_anti_target_jitter && current_target.b_active) {
                     double delta_between_old_and_new_pos = math_helpers::get_delta_between_positions(last_position, target_cordinates);
-                    if (delta_between_old_and_new_pos > cfg->d_maximum_jitter_amount) {
+                    if (results.size() > 1 && delta_between_old_and_new_pos > cfg->d_maximum_jitter_amount) {
                         if (dbg_info.i_frames_since_target_was_seen > cfg->i_maximum_wait_time_for_target_reappearence) {
                             current_target.b_active = false;
                             current_target.v_location_history.clear();
@@ -248,18 +249,20 @@ namespace ai {
                 current_target.i_last_seen_frame = current_frame_count;
                 current_target.p_last_position = target_cordinates;
                 current_target.v_location_history.push_back(target_cordinates);
-
                 if (current_target.v_location_history.size() > cfg->i_max_prediction_frames) {
                     size_t elementsToRemove = current_target.v_location_history.size() - cfg->i_max_prediction_frames;
                     current_target.v_location_history.erase(current_target.v_location_history.begin(), current_target.v_location_history.begin() + elementsToRemove);
                 }
 
                 Vector2 target_velocity = math_helpers::get_avg_velocity(current_target.v_location_history, dt);
+                Vector2 prediction = Vector2(target_cordinates.x + (target_velocity.x * dt * 2), target_cordinates.y + (target_velocity.y * dt * 2));
                 dbg_info.target_velocity_x = target_velocity.x;
                 dbg_info.target_velocity_y = target_velocity.y;
+                dbg_info.history.push_back(target_cordinates);
+                dbg_info.prediction = prediction;
 
                 if (cfg->b_always_aim || holding_aim_key) {
-                    Vector2 mouse_movements = math_helpers::get_mouse_movement(target_cordinates, cfg->i_sensitivity, dt);
+                    Vector2 mouse_movements = math_helpers::get_mouse_movement(current_target.v_location_history.size() >= cfg->i_frames_needed_for_prediction ? prediction : target_cordinates, cfg->i_sensitivity, dt);
                     input::send_input_mouse_relative(mouse_movements.x, mouse_movements.y, cfg);
                 }
 
@@ -271,7 +274,7 @@ namespace ai {
 
                 dbg_info.i_frames_since_target_was_seen = current_frame_count - current_target.i_last_seen_frame;
 
-                if (current_frame_count - current_target.i_last_seen_frame > 240) {
+                if (current_frame_count - current_target.i_last_seen_frame > 30) {
                     current_target.b_active = false;
                     current_target.v_location_history.clear();
                     current_target.p_last_position = { 0.0, 0.0 };
@@ -280,10 +283,13 @@ namespace ai {
                     dbg_info.i_prediction_frames_gathered = 0;
                     dbg_info.target_velocity_x = 0.0;
                     dbg_info.target_velocity_y = 0.0;
+                    dbg_info.history.clear();
+                    dbg_info.prediction = { 0, 0 };
                     if (cfg->b_auto_trigger) {
                         triggerbot::auto_fire_tick(false, d_additional_y_sens_multiplier, cfg);
                     }
                 }
+
                 i_jitter_detected_at = 0;
                 b_jitter_Detected = false;
             }
