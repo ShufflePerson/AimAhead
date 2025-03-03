@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 #include <chrono>
 #include <opencv2/cudaimgproc.hpp>
 #include <opencv2/opencv.hpp>
@@ -14,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cmath>
 #include <system_error> 
 #include "../Debug/Debug.h"
 #include "../Collector/Collector.h"
@@ -40,4 +42,7 @@ namespace utils {
 	std::pair<int, int> get_primary_display_size();
 
 	HWND get_geforce_now_hwnd();
+
+	std::vector<BoundingBox> get_individual_targets(std::vector<BoundingBox> &results);
+
 }

@@ -67,6 +67,67 @@ namespace utils {
             geforce_now_window = getHwndFromTitle(XorStr("NVIDIA Geforce NOW"));
         }
         return geforce_now_window;
+
+    }
+
+    static float calculateIoU(const BoundingBox& box1, const BoundingBox& box2) {
+        float x_intersection_min = std::max(box1.xmin, box2.xmin);
+        float y_intersection_min = std::max(box1.ymin, box2.ymin);
+        float x_intersection_max = std::min(box1.xmax, box2.xmax);
+        float y_intersection_max = std::min(box1.ymax, box2.ymax);
+
+        float intersection_width = std::max(0.0f, x_intersection_max - x_intersection_min);
+        float intersection_height = std::max(0.0f, y_intersection_max - y_intersection_min);
+
+        float intersection_area = intersection_width * intersection_height;
+
+        float box1_area = (box1.xmax - box1.xmin) * (box1.ymax - box1.ymin);
+        float box2_area = (box2.xmax - box2.xmin) * (box2.ymax - box2.ymin);
+        float union_area = box1_area + box2_area - intersection_area;
+
+        if (union_area == 0.0f) {
+            return 0.0f; 
+        }
+        return intersection_area / union_area;
+    }
+
+
+    std::vector<BoundingBox> get_individual_targets(std::vector<BoundingBox>& boxes)
+    {
+        float iouThreshold = 0.5f;
+        if (boxes.empty()) {
+            return {}; 
+        }
+
+        std::sort(boxes.begin(), boxes.end(), [](const BoundingBox& a, const BoundingBox& b) {
+            return a.confidence > b.confidence;
+            });
+
+        std::vector<BoundingBox> nonOverlappingBoxes;
+        std::vector<bool> suppressed(boxes.size(), false);
+
+        for (size_t i = 0; i < boxes.size(); ++i) {
+            if (suppressed[i]) {
+                continue; 
+            }
+
+            nonOverlappingBoxes.push_back(boxes[i]); 
+            suppressed[i] = true; 
+
+            for (size_t j = i + 1; j < boxes.size(); ++j) {
+                if (suppressed[j]) {
+                    continue;
+                }
+
+                float iou = calculateIoU(boxes[i], boxes[j]);
+
+                if (iou > iouThreshold) {
+                    suppressed[j] = true; 
+                }
+            }
+        }
+
+        return nonOverlappingBoxes;
     }
     
     std::string generate_uuidv4() {
