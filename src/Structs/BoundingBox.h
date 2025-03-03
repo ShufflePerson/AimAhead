@@ -5,4 +5,5 @@ struct BoundingBox {
     float xmax;
     float ymax;
     float confidence;
+    bool is_target = false;
 };
