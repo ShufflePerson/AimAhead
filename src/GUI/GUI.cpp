@@ -114,19 +114,16 @@ namespace gui {
     {
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-        // Draw the stroke (outline)
         draw_list->AddText(NULL, 0, ImVec2(pos.x - strokeWidth, pos.y - strokeWidth), strokeColor, text);
         draw_list->AddText(NULL, 0, ImVec2(pos.x - strokeWidth, pos.y + strokeWidth), strokeColor, text);
         draw_list->AddText(NULL, 0, ImVec2(pos.x + strokeWidth, pos.y - strokeWidth), strokeColor, text);
         draw_list->AddText(NULL, 0, ImVec2(pos.x + strokeWidth, pos.y + strokeWidth), strokeColor, text);
 
-        // Thinner diagonal strokes for better look (optional)
         draw_list->AddText(NULL, 0, ImVec2(pos.x - strokeWidth * 0.707f, pos.y - strokeWidth * 0.707f), strokeColor, text);
         draw_list->AddText(NULL, 0, ImVec2(pos.x - strokeWidth * 0.707f, pos.y + strokeWidth * 0.707f), strokeColor, text);
         draw_list->AddText(NULL, 0, ImVec2(pos.x + strokeWidth * 0.707f, pos.y - strokeWidth * 0.707f), strokeColor, text);
         draw_list->AddText(NULL, 0, ImVec2(pos.x + strokeWidth * 0.707f, pos.y + strokeWidth * 0.707f), strokeColor, text);
 
-        // Draw the main text on top
         draw_list->AddText(NULL, 0, pos, col, text);
     }
 
@@ -214,6 +211,8 @@ namespace gui {
                             draw_list->AddText(text_pos, text_color, confidence_text.c_str());
                         }
                     }
+
+
                 }
                 ImVec2 center = ImVec2(320, 320);
                 if (config->b_draw_aim_fov && config->b_aim_fov) {
@@ -221,35 +220,48 @@ namespace gui {
                 }
 
                 if (dbg_info != nullptr) {
-                    float strokeWidth = 1.0f; // Adjust as needed for outline thickness
-                    ImU32 strokeColor = IM_COL32(0, 0, 0, 255); // Black outline
+   
+                    if (dbg_info->prediction.x != 0 || dbg_info->prediction.y != 0) {
+                        draw_list->AddRectFilled(ImVec2(dbg_info->prediction.x - 5 + 320, dbg_info->prediction.y - 5), ImVec2(dbg_info->prediction.x + 5 + 320, dbg_info->prediction.y + 5), IM_COL32(0, 0, 255, 255));
+                    }
 
-                    ImGui::PushStyleColor(ImGuiCol_Text, dbg_info->b_have_active_target ? IM_COL32(0, 255, 0, 255) : IM_COL32(255, 0, 0, 255));
-                    ImVec2 text_pos = ImGui::GetCursorScreenPos();
-                    OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), dbg_info->b_have_active_target ? "Have Active Target: TRUE" : "Have Active Target: FALSE", strokeWidth, strokeColor);
-                    ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
-                    ImGui::PopStyleColor();
+                    if (dbg_info->b_render_all_debug) {
+                        for (auto& pos : dbg_info->history) {
+                            draw_list->AddRectFilled(ImVec2(pos.x - 1 + 320, pos.y - 1), ImVec2(pos.x + 1 + 320, pos.y + 1), IM_COL32(255, 255, 255, 255));
+                        }
+                        draw_list->AddRectFilled(ImVec2(0, 0), ImVec2(400, 200), IM_COL32(0, 0, 0, 255));
+                        float strokeWidth = 0.0f;
+                        ImU32 strokeColor = IM_COL32(255, 255, 255, 255);
 
-                    text_pos = ImGui::GetCursorScreenPos();
-                    char buf[256]; // Adjust size as needed
-                    sprintf(buf, "Frames since target was seen: %d", dbg_info->i_frames_since_target_was_seen);
-                    OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
-                    ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
+                        ImGui::PushStyleColor(ImGuiCol_Text, dbg_info->b_have_active_target ? IM_COL32(0, 255, 0, 255) : IM_COL32(255, 0, 0, 255));
+                        ImVec2 text_pos = ImGui::GetCursorScreenPos();
+                        OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), dbg_info->b_have_active_target ? "Have Active Target: TRUE" : "Have Active Target: FALSE", strokeWidth, strokeColor);
+                        ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
+                        ImGui::PopStyleColor();
 
-                    text_pos = ImGui::GetCursorScreenPos();
-                    sprintf(buf, "Target Velocity X: %.2f", dbg_info->target_velocity_x);
-                    OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
-                    ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
+                        text_pos = ImGui::GetCursorScreenPos();
+                        char buf[256]; // Adjust size as needed
+                        sprintf(buf, "Frames since target was seen: %d", dbg_info->i_frames_since_target_was_seen);
+                        OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
+                        ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
 
-                    text_pos = ImGui::GetCursorScreenPos();
-                    sprintf(buf, "Target Velocity Y: %.2f", dbg_info->target_velocity_y);
-                    OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
-                    ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
+                        text_pos = ImGui::GetCursorScreenPos();
+                        sprintf(buf, "Target Velocity X: %.2f", dbg_info->target_velocity_x);
+                        OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
+                        ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
 
-                    text_pos = ImGui::GetCursorScreenPos();
-                    sprintf(buf, "Prediction Frames Gathered: %d", dbg_info->i_prediction_frames_gathered);
-                    OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
-                    ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
+                        text_pos = ImGui::GetCursorScreenPos();
+                        sprintf(buf, "Target Velocity Y: %.2f", dbg_info->target_velocity_y);
+                        OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
+                        ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
+
+                        text_pos = ImGui::GetCursorScreenPos();
+                        sprintf(buf, "Prediction Frames Gathered: %d", dbg_info->i_prediction_frames_gathered);
+                        OutlinedText(text_pos, ImGui::GetColorU32(ImGuiCol_Text), buf, strokeWidth, strokeColor);
+                        ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));  // Move cursor down
+                    }
+
+                   
 
                 }
                 ImGui::End();
