@@ -1,8 +1,9 @@
-#include "./Helpers/logger.h"
-#include "./Engine/Engine.h"
 #include <chrono>
 #include <opencv2/cudaimgproc.hpp>
 #include <opencv2/opencv.hpp>
+#include <Wincon.h>
+#include "./Helpers/logger.h"
+#include "./Engine/Engine.h"
 #include "./Capture/Capture.h"
 #include "./Structs/BoundingBox.h"
 #include "./AI/AI.h"
@@ -76,6 +77,12 @@ int main(int argc, char* argv[]) {
 
     system("pause");
     return 0;
+}
+
+
+extern "C" {
+    __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;// Optimus: force switch to discrete GPU
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;//AMD
 }
 
 //todo:
