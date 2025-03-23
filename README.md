@@ -3,6 +3,9 @@
 [![GitHub Stars](https://img.shields.io/github/stars/ShufflePerson/AimAhead?style=social)](https://github.com/ShufflePerson/AimAhead)
 [![License](https://img.shields.io/badge/License-GNU-brightgreen)](LICENSE)
 
+
+## Discord
+You can help out the development by reporting bugs or requesting features on AimAhead's Discord!
 [discord.gg/ZhspwZ9FXf](https://discord.gg/ZhspwZ9FXf)
 
 **AimAhead was built from the ground up with speed and features in mind. Depending on the model, it can reach anywhere from 100 to 200 cycles per second.**
