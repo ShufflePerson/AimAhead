@@ -127,8 +127,13 @@ namespace gui {
         draw_list->AddText(NULL, 0, pos, col, text);
     }
 
+    void glfwErrorCallback(int error, const char* description)
+    {
+        std::cerr << XorStr("GLFW Error ") << error << XorStr(": ") << description << std::endl;
+    }
 
     void init_gui() {
+        glfwSetErrorCallback(glfwErrorCallback);
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

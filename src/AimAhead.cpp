@@ -75,5 +75,10 @@ int main(int argc, char* argv[]) {
 
     ai::main_loop(&cfg);
 
+    system("pause");
     return 0;
 }
+
+//todo:
+//proper anti jitter
+//multiple esp

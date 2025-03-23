@@ -96,6 +96,7 @@ namespace capture {
         }
         return true;
     }
+
     bool InitializeCapture() {
         HRESULT hr;
         cudaError_t cudaStatus = cudaSetDevice(0); 
