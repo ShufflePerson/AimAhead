@@ -15,7 +15,6 @@
 #include "../Features/Triggerbot/Triggerbot.h"
 #include "../Security/xor.h"
 #include "../Security/Security.h"
-#include "../Connection/Connection.h"
 #include "../Utils/Timer.h"
 #include "../constants.h"
 #include "../sharedmemory/sharedmemory.h"

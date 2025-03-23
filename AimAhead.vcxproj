@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\howku\Desktop\AimAheadServer\Server\Packets;includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -153,9 +153,6 @@
     <ClCompile Include="src\Capture\Capture.cpp" />
     <ClCompile Include="src\Collector\Collector.cpp" />
     <ClCompile Include="src\ConfigManager\ConfigManager.cpp" />
-    <ClCompile Include="src\Connection\Connection.cpp" />
-    <ClCompile Include="src\Connection\Messages\HandleBasePacket.cpp" />
-    <ClCompile Include="src\Connection\Messages\HandleKeepAlivePacket.cpp" />
     <ClCompile Include="src\Debug\Debug.cpp" />
     <ClCompile Include="src\Engine\Engine.cpp" />
     <ClCompile Include="src\Features\Triggerbot\Triggerbot.cpp" />
@@ -206,7 +203,6 @@
     <ClInclude Include="src\Capture\Capture.h" />
     <ClInclude Include="src\Collector\Collector.h" />
     <ClInclude Include="src\ConfigManager\ConfigManager.h" />
-    <ClInclude Include="src\Connection\Connection.h" />
     <ClInclude Include="src\constants.h" />
     <ClInclude Include="src\Debug\Debug.h" />
     <ClInclude Include="src\Engine\Engine.h" />

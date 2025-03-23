@@ -15,7 +15,6 @@
 #include "Structs/Config.h"
 #include "Structs/CurrentTarget.h"
 #include "./Security/Security.h"
-#include "Connection/Connection.h"
 #include "./sharedmemory/sharedmemory.h"
 #include "./Injector/injector.h"
 

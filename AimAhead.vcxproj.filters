@@ -120,15 +120,6 @@
     <ClCompile Include="src\GUI\CustomGUI\RGBOutline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Connection\Connection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Connection\Messages\HandleBasePacket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Connection\Messages\HandleKeepAlivePacket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AI\Funcs\handlePreview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -258,9 +249,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Security\checksums.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Connection\Connection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Structs\DebugInfo.h">
