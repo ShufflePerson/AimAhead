@@ -1,4 +1,5 @@
 #pragma once
+#ifdef COMPILE_GFN_MODE
 #include <iostream>
 #include <windows.h>
 #include <tlhelp32.h>
@@ -11,3 +12,4 @@ namespace injector {
 
 	bool is_injected();
 }
+#endif

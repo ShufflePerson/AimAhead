@@ -54,6 +54,7 @@ void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
     ImGui::SetCursorPosX(gfn_box_pos.x);
     ImGui::SetCursorPosY(gfn_box_pos.y);
     ImGui::AH_Checkbox(XorStr("Geforce Now Mode"), XorStr("Send inputs to GFN"), &cfg->b_geforce_now_mode, &checkbox_prop);
+#ifdef COMPILE_GFN_MODE
     if (ImGui::AH_ButtonInfo(XorStr("Inject"), XorStr("Press before launching GFN"), XorStr("INJECT"), &v1, &buttoninfo_prop)) {
         if (injector::get_gfn_pid() != -1) {
             MessageBoxA(NULL, "Please click Inject before you launch Geforce Now.", "GFN Running!", MB_ICONERROR);
@@ -67,4 +68,5 @@ void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
             MessageBoxA(NULL, "Already Injected. Restart to re-inject.", "Alerady Injected!", MB_ICONERROR);
         }
     }
+#endif  
 }

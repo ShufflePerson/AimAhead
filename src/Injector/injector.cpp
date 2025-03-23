@@ -1,3 +1,4 @@
+#ifdef COMPILE_GFN_MODE
 #include "injector.h"
 
 static bool g_bGfnInjected = false;
@@ -10,7 +11,7 @@ int injector::get_gfn_pid() {
 	HANDLE h_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (h_snapshot == INVALID_HANDLE_VALUE) return -1;
 
-	PROCESSENTRY32 proc;
+	PROCESSENTRY32 proc{};
 	proc.dwSize = sizeof(PROCESSENTRY32);
 	char gfn_proc_name[] = ("GeForceNOW.exe");
 
@@ -74,3 +75,5 @@ void injector::inject() {
 	g_bGfnInjected = true;
 	printf(XorStr("[injector::inject] Aimahead GFN has been injected!\n"));
 }
+
+#endif
