@@ -70,10 +70,6 @@ AimAhead works by capturing your screen, then running it through an AI model of 
 5.  **Set It Up:**  Adjust the config
 6.  **Done!**
 
-## Trojan?
-
-AimAhead is flagged as a trojan by most Anti Viruses. This is due to the GFN Mode which injects into Geforce Now, you can compile it yourself! 
-
 ## How to use
 
 *   To open/close the menu, click [INS] ( insert ) on your keyboard. It is next to the HOME key.
