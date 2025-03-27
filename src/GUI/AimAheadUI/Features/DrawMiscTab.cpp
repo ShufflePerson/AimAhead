@@ -1,11 +1,14 @@
 #include "../AimAheadUI.h"
 
 
-float f_head_margin = 0.1f;
 void aimahead_ui::draw_misc_tab(AimConfig *cfg) {
-    if (f_head_margin == 0.1f) {
-        f_head_margin = static_cast<float>(cfg->i_head_margin);
+    static float fHeadMargin = 0.1f;
+
+    if (fHeadMargin == 0.1f) {
+        fHeadMargin = static_cast<float>(cfg->i_head_margin);
     }
+
+
     ImGui::AH_Checkbox_Prop checkbox_prop = get_default_checkbox_prop();
     ImGui::AH_Slider_Prop slider_prop = get_default_slider_prop();
     ImGui::AH_ButtonInfo_Prop buttoninfo_prop = get_default_buttoninfo_prop();
@@ -26,7 +29,7 @@ void aimahead_ui::draw_misc_tab(AimConfig *cfg) {
     ImGui::SetCursorPosX(margin_box.x);
     ImGui::SetCursorPosY(margin_box.y);
     ImGui::AH_Slider(XorStr("Minimum"), &cfg->f_minimum_top_margin, 1.0f, 20.0f, "px", &slider_prop);
-    if (ImGui::AH_Slider(XorStr("Head Margin"), &f_head_margin, 1.0f, 30.0f, "%", &slider_prop)) {
-        cfg->i_head_margin = static_cast<int>(f_head_margin);
+    if (ImGui::AH_Slider(XorStr("Head Margin"), &fHeadMargin, 1.0f, 30.0f, "%", &slider_prop)) {
+        cfg->i_head_margin = static_cast<int>(fHeadMargin);
     }
 }

@@ -1,23 +1,24 @@
 #include "../AimAheadUI.h"
 
-bool v1 = false;
-bool v2 = false;
-bool v3 = false;
-float f_sens_cache = 0.1f;
-float f_recoil_amount_cache = 0.1f;
-float f_triggerbot_delay = 0.1f;
-float f_fov_radius_cache = 0.1f;
-float vv2 = 0.0f;
-float vv4 = 50.0f;
+
 void aimahead_ui::draw_aimbot_tab(AimConfig *cfg) {
-    if (f_sens_cache == 0.1f) {
-        f_sens_cache = static_cast<float>(cfg->i_sensitivity);
-        f_recoil_amount_cache = static_cast<float>(cfg->i_auto_trigger_recoil_adjustment_amount);
-        f_triggerbot_delay = static_cast<float>(cfg->i_auto_trigger_delay);
+	static bool bAimKeyButtonPressed = false;
+    static bool bPreciseTargeting = false;
+    static float fSens = 0.1f;
+    static float fRecoilAmount = 0.1f;
+    static float fTriggerbotDelay = 0.1f;
+    static float fFovRadius = 0.1f;
+    static float fReactionTime = 0.0f;
+
+
+    if (fSens == 0.1f) {
+        fSens = static_cast<float>(cfg->i_sensitivity);
+        fRecoilAmount = static_cast<float>(cfg->i_auto_trigger_recoil_adjustment_amount);
+        fTriggerbotDelay = static_cast<float>(cfg->i_auto_trigger_delay);
     }
     
-    if (f_fov_radius_cache == 0.1f) {
-        f_fov_radius_cache = static_cast<float>(cfg->i_fov_radius);
+    if (fFovRadius == 0.1f) {
+        fFovRadius = static_cast<float>(cfg->i_fov_radius);
     }
 
     ImGui::AH_Checkbox_Prop checkbox_prop = get_default_checkbox_prop();
@@ -28,14 +29,14 @@ void aimahead_ui::draw_aimbot_tab(AimConfig *cfg) {
     ImGui::SetCursorPosX(container_box_pos.x);
     ImGui::SetCursorPosY(container_box_pos.y);
     ImGui::AH_Checkbox(XorStr("Aimbot Enabled"), XorStr("Enables Aimbot"), &cfg->b_aimbot, &checkbox_prop);
-    ImGui::AH_ButtonInfo(XorStr("Aim Key"), XorStr("Aimbot keybind"), XorStr("Left"), &v1, &buttoninfo_prop);
+    ImGui::AH_ButtonInfo(XorStr("Aim Key"), XorStr("Aimbot keybind"), XorStr("Left"), &bAimKeyButtonPressed, &buttoninfo_prop);
     ImGui::AH_Checkbox(XorStr("Always Aim"), XorStr("Aims at all times"), &cfg->b_always_aim, &checkbox_prop);
-    if (ImGui::AH_Slider(XorStr("Sensitivity"), &f_sens_cache, 1.0f, 100.0f, "%", &slider_prop)) cfg->i_sensitivity = static_cast<int>(f_sens_cache);
-    ImGui::AH_Slider(XorStr("Reaction Time"), &vv2, 0.0f, 300.0f, "ms", &slider_prop);
+    if (ImGui::AH_Slider(XorStr("Sensitivity"), &fSens, 1.0f, 100.0f, "%", &slider_prop)) cfg->i_sensitivity = static_cast<int>(fSens);
+    ImGui::AH_Slider(XorStr("Reaction Time"), &fReactionTime, 0.0f, 300.0f, "ms", &slider_prop);
 
 
     ImGui::AH_Checkbox(XorStr("Fov"), XorStr("Only aim inside the fov"), &cfg->b_aim_fov, &checkbox_prop);
-    if (ImGui::AH_Slider(XorStr("Fov Radius"), &f_fov_radius_cache, 1.0f, 360.0f, "px", &slider_prop)) cfg->i_fov_radius = static_cast<int>(f_fov_radius_cache);
+    if (ImGui::AH_Slider(XorStr("Fov Radius"), &fFovRadius, 1.0f, 360.0f, "px", &slider_prop)) cfg->i_fov_radius = static_cast<int>(fFovRadius);
 
 
     ImVec2 triggerbot_container = draw_container_box(XorStr("TRIGGERBOT"));
@@ -43,9 +44,9 @@ void aimahead_ui::draw_aimbot_tab(AimConfig *cfg) {
     ImGui::SetCursorPosY(triggerbot_container.y);
     ImGui::AH_Checkbox(XorStr("Triggerbot"), XorStr("Shoot automatically"), &cfg->b_auto_trigger, &checkbox_prop);
     ImGui::AH_Checkbox(XorStr("Adjust for recoil"), XorStr("Helps with recoil control"), &cfg->b_adjust_auto_trigger_for_recoil, &checkbox_prop);
-    ImGui::AH_Checkbox(XorStr("Precise"), XorStr("Only shoots at selected position."), &v3, &checkbox_prop);
-    if (ImGui::AH_Slider(XorStr("Triggerbot Delay"), &f_triggerbot_delay, 0.0f, 300.0f, XorStr("ms"), &slider_prop)) cfg->i_auto_trigger_delay = static_cast<int>(f_triggerbot_delay);
-    if (ImGui::AH_Slider(XorStr("Recoil Amount"), &f_recoil_amount_cache, 50.0f, 300.0f, XorStr("%"), &slider_prop)) cfg->i_auto_trigger_recoil_adjustment_amount = static_cast<int>(f_recoil_amount_cache);
+    ImGui::AH_Checkbox(XorStr("Precise"), XorStr("Only shoots at selected position."), &bPreciseTargeting, &checkbox_prop);
+    if (ImGui::AH_Slider(XorStr("Triggerbot Delay"), &fTriggerbotDelay, 0.0f, 300.0f, XorStr("ms"), &slider_prop)) cfg->i_auto_trigger_delay = static_cast<int>(fTriggerbotDelay);
+    if (ImGui::AH_Slider(XorStr("Recoil Amount"), &fRecoilAmount, 50.0f, 300.0f, XorStr("%"), &slider_prop)) cfg->i_auto_trigger_recoil_adjustment_amount = static_cast<int>(fRecoilAmount);
 
 
     ImVec2 prediction_container = draw_container_box(XorStr("PREDICTIONS"));

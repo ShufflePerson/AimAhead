@@ -1,13 +1,14 @@
 #include "../AimAheadUI.h"
 #include "../../../ModelManager/ModelManager.h"
 
-static float f_fps_cap = 0.1f;
-static float f_min_confidence = 0.1f;
-static bool v1 = false;
 void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
-    if (f_fps_cap == 0.1f) {
-        f_fps_cap = static_cast<float>(cfg->i_fps_cap);
-        f_min_confidence = static_cast<float>(cfg->i_minimum_confidence);
+	static float fFpsCap = 0.1f;
+	static float fMinConfidence = 0.1f;
+	static bool bGeforceNowMode = false;
+
+    if (fFpsCap == 0.1f) {
+        fFpsCap = static_cast<float>(cfg->i_fps_cap);
+        fMinConfidence = static_cast<float>(cfg->i_minimum_confidence);
     }
     ImGui::AH_Checkbox_Prop checkbox_prop = get_default_checkbox_prop();
     ImGui::AH_Slider_Prop slider_prop = get_default_slider_prop();
@@ -20,12 +21,12 @@ void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
 
     ImGui::AH_Checkbox(XorStr("Limit FPS"), XorStr("Set a cap on max fps"), &cfg->b_limit_fps, &checkbox_prop);
     if (cfg->b_limit_fps) {
-        if (ImGui::AH_Slider(XorStr("Max FPS"), &f_fps_cap, 1.0f, 240.0f, "FPS", &slider_prop)) {
-            cfg->i_fps_cap = static_cast<int>(f_fps_cap);
+        if (ImGui::AH_Slider(XorStr("Max FPS"), &fFpsCap, 1.0f, 240.0f, "FPS", &slider_prop)) {
+            cfg->i_fps_cap = static_cast<int>(fFpsCap);
         }
     }
-    if (ImGui::AH_Slider(XorStr("Minimum Confidence"), &f_min_confidence, 1.0f, 100.0f, "%", &slider_prop)) {
-        cfg->i_minimum_confidence = static_cast<int>(f_min_confidence);
+    if (ImGui::AH_Slider(XorStr("Minimum Confidence"), &fMinConfidence, 1.0f, 100.0f, "%", &slider_prop)) {
+        cfg->i_minimum_confidence = static_cast<int>(fMinConfidence);
     }
 
     std::vector<std::string> loaded_models = model_manager::get_loaded_models();
@@ -55,7 +56,7 @@ void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
     ImGui::SetCursorPosY(gfn_box_pos.y);
     ImGui::AH_Checkbox(XorStr("Geforce Now Mode"), XorStr("Send inputs to GFN"), &cfg->b_geforce_now_mode, &checkbox_prop);
 #ifdef COMPILE_GFN_MODE
-    if (ImGui::AH_ButtonInfo(XorStr("Inject"), XorStr("Press before launching GFN"), XorStr("INJECT"), &v1, &buttoninfo_prop)) {
+    if (ImGui::AH_ButtonInfo(XorStr("Inject"), XorStr("Press before launching GFN"), XorStr("INJECT"), &bGeforceNowMode, &buttoninfo_prop)) {
         if (injector::get_gfn_pid() != -1) {
             MessageBoxA(NULL, "Please click Inject before you launch Geforce Now.", "GFN Running!", MB_ICONERROR);
             return;
