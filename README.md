@@ -78,8 +78,8 @@ AimAhead is flagged as a trojan by most Anti Viruses. This is due to the GFN Mod
 
 *   To open/close the menu, click [INS] ( insert ) on your keyboard. It is next to the HOME key.
 *   To use the **INT8** mode, place at least a few thousand training images inside the bin\int8 directory. 
-*   To use the Geforce Now mode, first enable it, then make sure that Geforce Now is closed and click "Inject". After that launch Geforce Now. Done.
-*   The default triggerbot key is X, when X is being held down, Triggerbot will shoot as soon as the target is visible.
+*   To use the Geforce Now mode, you need to compile AimAhead with the `COMPILE_GFN_MODE ` macro. Then enable it, make sure that Geforce Now is closed and click "Inject". After that launch Geforce Now. Done.
+*   The default triggerbot key is X, when X is being held down, Triggerbot will shoot as soon as the target is visible. It will also correct the aim if needed.
 
 
 ## Todo / Bugs
