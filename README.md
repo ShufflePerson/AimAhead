@@ -81,5 +81,6 @@ AimAhead works by capturing your screen, then running it through an AI model of 
 ## Todo / Bugs
 *   Unable to change Aim Keybind
 *   Custom Listbox for Models tab and selecting the aim position.
+*   Anti-Jitter causing the Aimbot to lag behind. I highly recommend having it disabled for now.
 
 **Good Luck!**
