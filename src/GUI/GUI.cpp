@@ -219,7 +219,7 @@ namespace gui {
 
 
                 }
-                ImVec2 center = ImVec2(320, 320);
+                ImVec2 center = ImVec2(windowWidth / 2, windowHeight / 2);
                 if (config->b_draw_aim_fov && config->b_aim_fov) {
                     draw_list->AddCircle(center, (float)config->i_fov_radius, config->c_fov, 360);
                 }

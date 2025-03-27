@@ -1,3 +1,4 @@
+#include <windows.h>
 #include <chrono>
 #include <opencv2/cudaimgproc.hpp>
 #include <opencv2/opencv.hpp>
