@@ -49,6 +49,7 @@ void aimahead_ui::draw_settings_tab(AimConfig *cfg) {
     ImGui::SetCursorPosX(menu_box_pos.x);
     ImGui::SetCursorPosY(menu_box_pos.y);
     ImGui::AH_Checkbox(XorStr("Use new menu"), XorStr("Toggle between legacy/new menu"), &cfg->b_use_new_gui, &checkbox_prop);
+    ImGui::AH_Checkbox(XorStr("Performance Mode"), XorStr("Disables ESP/FOV to save CPU"), &cfg->b_performance_mode, &checkbox_prop);
 
 
     ImVec2 gfn_box_pos = draw_container_box(XorStr("GEFORCE NOW"));

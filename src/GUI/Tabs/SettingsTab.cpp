@@ -10,6 +10,7 @@ void gui::__render__settings_tab__(AimConfig* config) {
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip(XorStr("Toggles between Legacy and New UI."));
 
 
+
     ImGui::NewLine();
     ImGui::Text(XorStr("Minimum Confidence"));
     ImGui::SameLine();

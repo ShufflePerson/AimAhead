@@ -45,6 +45,7 @@ AimAhead works by capturing your screen, then running it through an AI model of 
     *   **Only run when cursor is hidden:** AimAhead will only aim whenever you are in-game, this is detected by the fact if your cursor is hidden. Off by default
     *   **Frame Rate Control:**  You can set AimAhead to run at a X amount of times per second to avoid overloading the GPU
     *   **Model Selector:**  Easily switch between different AI models
+    *   **Performance Mode** Disables overlay for visuals like ESP and FOV in order to save CPU.
 
 *   **ESP:**  Get some visual feedback on screen:
 

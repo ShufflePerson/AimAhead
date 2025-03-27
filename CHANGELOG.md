@@ -4,6 +4,7 @@
 ### New
 - Added back FOV Support
 - Added console title randomization
+- Added `Performance Mode` which disables non UI rendering, meaning visuals like ESP won't be rendered. Greatly helps with decreasing CPU usage
 
 ### Fixes
 - Fixed compilation errors caused by late `windows.h` include

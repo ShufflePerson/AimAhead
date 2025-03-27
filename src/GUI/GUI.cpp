@@ -189,6 +189,14 @@ namespace gui {
             ImGui::SetNextWindowPos(ImVec2(0, 0));
             ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus;
             if (!g_is_visible) {
+                if (config->b_performance_mode) {
+					ImGui::Render();
+					ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+					glfwSwapBuffers(window);
+					glfwPollEvents();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+                    continue;
+                }
                 ImGui::SetNextWindowSize(ImVec2(CAPTURE_SIZE * 2, CAPTURE_SIZE));
                 flags |= ImGuiWindowFlags_NoBackground;
                 ImGui::Begin("1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);

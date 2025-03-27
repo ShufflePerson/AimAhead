@@ -49,6 +49,7 @@ namespace config_manager {
         file.write(reinterpret_cast<const char*>(&config.c_esp), sizeof(config.c_esp));
         file.write(reinterpret_cast<const char*>(&config.b_int8_mode), sizeof(config.b_int8_mode));
         file.write(reinterpret_cast<const char*>(&config.b_use_new_gui), sizeof(config.b_use_new_gui));
+        file.write(reinterpret_cast<const char*>(&config.b_performance_mode), sizeof(config.b_performance_mode));
         file.write(reinterpret_cast<const char*>(&config.read_only__i_fps), sizeof(config.read_only__i_fps));
 
 
@@ -107,6 +108,7 @@ namespace config_manager {
         file.read(reinterpret_cast<char*>(&config.c_esp), sizeof(config.c_esp));
         file.read(reinterpret_cast<char*>(&config.b_int8_mode), sizeof(config.b_int8_mode));
         file.read(reinterpret_cast<char*>(&config.b_use_new_gui), sizeof(config.b_use_new_gui));
+        file.read(reinterpret_cast<char*>(&config.b_performance_mode), sizeof(config.b_performance_mode));
         file.read(reinterpret_cast<char*>(&config.read_only__i_fps), sizeof(config.read_only__i_fps));
 
 
