@@ -96,6 +96,7 @@ namespace ai {
         int averaging_interval = 50;
 
         // Frame Information
+        uint64_t iterations_since_update = 0;
         std::size_t current_frame_count = 0;
         steady_clock::time_point last_frame_time = steady_clock::now();;
         steady_clock::time_point current_frame_time = steady_clock::now();;
@@ -139,7 +140,12 @@ namespace ai {
             float minObjectness = static_cast<float>(cfg->i_minimum_confidence) / 100;
             bool holding_triggerbot_key = (GetAsyncKeyState(cfg->k_triggerbot_key) & 0x8000);
             bool holding_aim_key = cfg->b_always_aim || (GetAsyncKeyState(cfg->k_aim_key) & 0x8000) || (holding_triggerbot_key && cfg->b_auto_trigger);
-            if (!holding_aim_key) continue;
+            if (!holding_aim_key && iterations_since_update < 100) {
+                iterations_since_update++;
+                continue;
+            }
+
+            iterations_since_update = 0;
 
             current_frame_time = steady_clock::now();
             dt = duration<double>(current_frame_time - last_frame_time).count();
