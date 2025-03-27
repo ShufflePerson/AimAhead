@@ -66,7 +66,7 @@ AimAhead works by capturing your screen, then running it through an AI model of 
 
 1.  **Install Cuda 12.4:** Make sure you've got an NVIDIA card and CUDA 12.4 installed ([See "Requirements" section](#Requirements)).
 2.  **Get AimAhead:** Download the latest version from the [GitHub Releases page](https://github.com/ShufflePerson/AimAhead/releases)
-3.  **Models In Place:**  Put your ONNX models into the `models` folder. A Fortnite Ballistic model is shipped by default
+3.  **Models In Place:**  Put your ONNX models into the `models` folder.
 4.  **Run It!:**  Start the AimAhead program.
 5.  **Set It Up:**  Adjust the config
 6.  **Done!**
