@@ -62,10 +62,15 @@ namespace ai {
         return options;
     }
 
-    void init_default_engine(Engine<float>* engine, AimConfig* config) {
+    bool init_default_engine(Engine<float>* engine, AimConfig* config) {
         std::array<float, 3> subVals{ 0.f, 0.f, 0.f };
         std::array<float, 3> divVals{ 1.f, 1.f, 1.f };
         bool normalize = true;
+
+        if (model_manager::get_loaded_models().size() == 0) {
+            spdlog::error(XorStr("No models are in the 'models' directory. Please place at least one model and then relaunch AimAhead."));
+            return false;
+        }
 
         spdlog::info(XorStr("Loading the AI model..."));
         std::string model_path = XorStr("./models/");
@@ -74,12 +79,16 @@ namespace ai {
             throw std::runtime_error(XorStr("Unable to build or load TensorRT engine."));
         }
         spdlog::info(XorStr("AI Model loaded!"));
+
+        return true;
     }
 
 
     void main_loop(AimConfig* cfg) {
         Engine<float>* engine_ptr = new Engine<float>(init_default_engine_options(cfg));
-        init_default_engine(engine_ptr, cfg);
+        if (!init_default_engine(engine_ptr, cfg)) {
+            return;
+        }
 
         using namespace std::chrono;
 
