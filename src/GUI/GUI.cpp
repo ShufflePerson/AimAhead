@@ -140,7 +140,6 @@ namespace gui {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        glfwSwapInterval(3);
         GLFWwindow* window = glfwCreateWindow(CAPTURE_SIZE * 2, CAPTURE_SIZE, XorStr("AimAhead"), NULL, NULL);
         if (window == NULL) {
             std::cout << XorStr("Failed to create GLFW window") << std::endl;
@@ -179,7 +178,7 @@ namespace gui {
 
         size_t current_tab = 0;
         glViewport(0, 0, CAPTURE_SIZE * 2, CAPTURE_SIZE);
-
+        glfwSwapInterval(1);
 
         while (!glfwWindowShouldClose(window)) {
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
