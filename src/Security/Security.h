@@ -22,6 +22,7 @@
             } while(0)
 
 namespace security {
+	void randomize_title();
 	bool is_debugger_present();
 	bool do_debug_registers_exist();
 	bool check_heap_flags();

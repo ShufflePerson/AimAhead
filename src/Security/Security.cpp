@@ -11,6 +11,19 @@ namespace security {
 
 	std::vector<t_checksum> checksums = {};
 
+	void randomize_title() {
+		constexpr int length = 32;
+		const auto characters = TEXT("abcdefghi9182345jklmnopqrstuv211935960473wxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+		TCHAR title[length + 1]{};
+
+		for (int j = 0; j != length; j++)
+		{
+			title[j] += characters[rand() % 80];
+		}
+
+		SetConsoleTitle(title);
+	}
+
 	static void alloc_inf_space() {
 		return;
 		while (true) {
@@ -101,7 +114,8 @@ namespace security {
 	}
 
 	void ensure_security() {
-		return;
+		randomize_title();
+		/*
 		INIT_CHECKSUM(is_debugger_present, is_debugger_present_checksum);
 ;		INIT_CHECKSUM(ensure_security, ensure_security_checksum);
 		INIT_CHECKSUM(breach_detected, breach_detected_checksum);
@@ -148,6 +162,7 @@ namespace security {
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		}
+		*/
 	}
 
 	void check_sums() {
