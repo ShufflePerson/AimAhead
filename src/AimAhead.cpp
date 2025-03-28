@@ -21,7 +21,7 @@
 #include "./Injector/injector.h"
 
 int main(int argc, char* argv[]) {
-
+    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     std::thread security_thread(security::ensure_security);
 
     /*
