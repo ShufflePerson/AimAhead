@@ -48,7 +48,7 @@ Int8EntropyCalibrator2::Int8EntropyCalibrator2(int32_t batchSize, int32_t inputW
     if (m_imgPaths.size() < static_cast<size_t>(batchSize)) {
         auto msg = XorStr("Error, there are fewer calibration images than the specified batch size!");
         spdlog::error(msg);
-        throw std::runtime_error(msg);
+        return;
     }
 
     // Randomize the calibration data
