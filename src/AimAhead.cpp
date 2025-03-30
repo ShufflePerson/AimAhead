@@ -76,7 +76,8 @@ int main(int argc, char* argv[]) {
 
     ai::main_loop(&cfg);
 
-    system("pause");
+    std::string buf;
+    std::cin >> buf;
     return 0;
 }
 
