@@ -6,17 +6,17 @@
             "type": "shell",
             "command": "msbuild",
             "args": [
-                "AimAhead.vcxproj", // Path to your .vcxproj file (relative to workspace root)
-                "/property:Configuration=Release", // Or "Release", "Debug|x64", etc. - adjust as needed
-                "/property:Platform=x64"      // Or "x64", etc. - adjust as needed
+                "AimAhead.vcxproj",
+                "/property:Configuration=Release",
+                "/property:Platform=x64"
             ],
             "options": {
-                "cwd": "${workspaceFolder}" // Set working directory to project root
+                "cwd": "${workspaceFolder}"
             },
-            "problemMatcher": "$msCompile", // Use MSBuild's error/warning format
+            "problemMatcher": "$msCompile",
             "group": {
                 "kind": "build",
-                "isDefault": true // Make this the default build task (Ctrl+Shift+B)
+                "isDefault": true
             }
         }
     ]
