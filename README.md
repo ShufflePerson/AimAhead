@@ -13,7 +13,7 @@ You can help out the development by reporting bugs or requesting features on Aim
 AimAhead works by capturing your screen, then running it through an AI model of your liking to find the enemies, after which it aims towards them.
 
 ![AimAhead Tab](github/images/aimbot.png)
-![Demo](github/videos/demo.gif)
+
 
 ## Features
 
